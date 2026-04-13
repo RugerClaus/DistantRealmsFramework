@@ -1,0 +1,8 @@
+# CHANGELOG
+
+LEGEND:
+Development version <VERSION x.x.x> - <DATE> yyyy-mm-dd - Specifies latest version, not current changes in this codebase. use UNRELEASED for the date if that is the case
+
+Development version Alpha 0.0.1 - 2026-04-13
+-----------------------------------------------
+- Deployed raw framework without game with a few additions such as the save and load systems.
