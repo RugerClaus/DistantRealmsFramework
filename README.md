@@ -1,4 +1,30 @@
 <h1>Welcome To The Distant Realms Framework/Engine-thingy</h1>
+
+**DEPENDENCIES**
+
+<p>This project has a few dependencies. The only third party assets are the fonts in assets/font:</p>
+<p>This project uses the OpenSansPX font, a modified version of Open Sans, under the Apache License 2.0. Please see the LICENSE.txt in the assets/font directory for more details.</p>
+
+<p>The reason we're lacking a requirements.txt file, is that there are only 4 dependencies!<p>
+
+<h3>From the root directory run this series of commands to get set up</h3>
+
+```bash
+python3 -m venv virtualenv
+source virtualenv/bin/activate
+pip install pygame-ce pyinstaller mutagen requests
+python3 setup.py
+python3 main.py --dev
+```
+**NOTE:** passing the flag --dev enables developer mode by default on startup
+**NOTE:** `setup.py` is absolutely **ESSENTIAL** to run the program.
+
+**FEATURE ADDITIONS**
+
+<p>For feature additions, before coming up with your own you should take a look at the requested_additions file in the root directory of this repository and see if you can piece in any of those requested features. Then submit a pull request to have your code merged into the main branch. This is mostly notation for me though</p>
+
+======================================================================================================================
+
 <p>In order to handle game events, each event can be thought of as a new state in a tree of states. A child state. Think of Choose Your Own Adventure novels. Each choice influences the path you take. That's down to the application level, and frankly, I think, central to a decent RPG engine.</p>
 
 <p>I've improved a lot of the handling of the framework with this update. Put centralized input handling onto game event handler. Redid all the state handling, and centralized all states to the core/state directory and each layer is separated. Each subdirectory contains every state manager at that layer (i.e. core/state/ApplicationLayer contains both state managers for the APPSTATE and APPMODE) of parallel state machines.</p>
