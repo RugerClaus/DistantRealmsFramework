@@ -27,23 +27,6 @@ Feature Additions
 
 Before adding new features, check the requested_additions file in the root directory. Try implementing one of those ideas first, then submit a pull request.
 
-Credits
-
-Logo designed by Reina Meza
-Instagram: https://www.instagram.com/reinamariemeza/?hl=en
-
-Soundtrack
-Winter Waves — JumpyJuggernaut
-Isle of Atmospheres — JumpyJuggernaut
-Wobble Doom — JumpyJuggernaut
-Millenia — JumpyJuggernaut
-Into The Dark Void — JumpyJuggernaut
-Dances With Synths — JumpyJuggernaut
-Minty Awakening — JumpyJuggernaut
-Lo-Fi-Si — JumpyJuggernaut
-Sound Effects
-Button Hover — RugerClaus
-Button Click — RugerClaus
 Developer Mode
 Debug Overlay
 

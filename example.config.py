@@ -1,11 +1,11 @@
 import platform
 
 config = {
-    "TITLE": "Snow Blitz Beta Play Test Demo",
+    "TITLE": "Distant Realms Framework App Runtime - Alpha",
     "AUTHORS": ["Roger Falck", "Reina Meza"],
-    "VERSION": "0.9.8-beta",
+    "VERSION": "0.0.1",
     "OS": platform.system(),
-    "UPDATE_ZIP_NAME": "snowblitz_update_latest.zip",
+    "UPDATE_ZIP_NAME": "",
     "UPDATER_WINDOWS": "updater.exe",
     "UPDATER_LINUX": "updater",
     "UPDATER_VERSION": "0.0.2",
