@@ -63,29 +63,30 @@ class DebugOverlay:
         opacity_surf = self.font_left.render(opacity_text, False, text_color)
         self.surface.blit(opacity_surf, (left_x, self.system.window.get_height() - opacity_surf.get_height() - 10))
 
-        if self.system.runtime_inspector['seed'] is not None:
-            world_seed_text = f"World Seed: {self.system.runtime_inspector['seed']}"
-            world_seed_surf = self.font_left.render(world_seed_text,False,text_color)
-            self.surface.blit(world_seed_surf,(left_x,left_y))
-            left_y += world_seed_surf.get_height() * 1.2
+        # EXAMPLE USAGE OF self.system.runtime_inspector
+        # if self.system.runtime_inspector['seed'] is not None:
+        #     world_seed_text = f"World Seed: {self.system.runtime_inspector['seed']}"
+        #     world_seed_surf = self.font_left.render(world_seed_text,False,text_color)
+        #     self.surface.blit(world_seed_surf,(left_x,left_y))
+        #     left_y += world_seed_surf.get_height() * 1.2
 
-        if self.system.runtime_inspector["coords"] is not None:
-            coords_text = f"Coordinates: {self.system.runtime_inspector['coords']}"
-            coords_surf = self.font_left.render(coords_text, False, text_color)
-            self.surface.blit(coords_surf, (left_x, left_y))
-            left_y += coords_surf.get_height() * 1.2
+        # if self.system.runtime_inspector["coords"] is not None:
+        #     coords_text = f"Coordinates: {self.system.runtime_inspector['coords']}"
+        #     coords_surf = self.font_left.render(coords_text, False, text_color)
+        #     self.surface.blit(coords_surf, (left_x, left_y))
+        #     left_y += coords_surf.get_height() * 1.2
         
-        if self.system.runtime_inspector["tile"] is not None:
-            tile_text = f"Tile: {self.system.runtime_inspector['tile']}"
-            tile_surf = self.font_left.render(tile_text, False, text_color)
-            self.surface.blit(tile_surf, (left_x, left_y))
-            left_y += tile_surf.get_height() * 1.2
+        # if self.system.runtime_inspector["tile"] is not None:
+        #     tile_text = f"Tile: {self.system.runtime_inspector['tile']}"
+        #     tile_surf = self.font_left.render(tile_text, False, text_color)
+        #     self.surface.blit(tile_surf, (left_x, left_y))
+        #     left_y += tile_surf.get_height() * 1.2
 
-        if self.system.runtime_inspector["chunk"] is not None:
-            chunk_text = f"Chunk: {self.system.runtime_inspector['chunk']}"
-            chunk_surf = self.font_left.render(chunk_text, False, text_color)
-            self.surface.blit(chunk_surf, (left_x, left_y))
-            left_y += chunk_surf.get_height() * 1.2
+        # if self.system.runtime_inspector["chunk"] is not None:
+        #     chunk_text = f"Chunk: {self.system.runtime_inspector['chunk']}"
+        #     chunk_surf = self.font_left.render(chunk_text, False, text_color)
+        #     self.surface.blit(chunk_surf, (left_x, left_y))
+        #     left_y += chunk_surf.get_height() * 1.2
 
         right_x = surface_width - 10
         right_y = 10
