@@ -6,3 +6,4 @@ Development version <VERSION x.x.x> - <DATE> yyyy-mm-dd - Specifies latest versi
 Development version Alpha 0.0.1 - 2026-04-13
 -----------------------------------------------
 - Deployed raw framework without game with a few additions such as the save and load systems.
+- Implemented save/load system and forced username creation. Username creation does not cause any network effects, it's purely metadata, but useful for all kinds of games.
