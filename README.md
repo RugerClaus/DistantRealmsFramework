@@ -12,13 +12,13 @@ There is no requirements.txt because there are only four dependencies.
 
 From the root directory, run:
 
-```bash
+```
 python3 -m venv virtualenv
 source virtualenv/bin/activate
 pip install pygame-ce pyinstaller mutagen requests
 python3 setup.py
 python3 main.py --dev
-
+```
 NOTE: Passing the --dev flag enables developer mode on startup.
 NOTE: setup.py is absolutely essential to run the program.
 
@@ -109,6 +109,7 @@ GAME
 These are stored globally for debugging visibility only. They are not used to control logic.
 
 Example State Enum
+```
 from enum import Enum, auto
 
 class APPSTATE(Enum):
@@ -116,7 +117,9 @@ class APPSTATE(Enum):
     MAIN_MENU = auto()
     GAME = auto()
     QUIT = auto()
+```
 Example State Manager
+```
 from core.state.ApplicationLayer.state import APPSTATE
 from core.state.basestatemanager import BaseStateManager
 from helper import log_state_transition
@@ -136,7 +139,9 @@ class StateManager(BaseStateManager):
             state_name="APPSTATE",
             type="APPLICATION"
         )
+```
 Example Usage
+```
 from core.state.GameLayer.state import GAMESTATE
 from core.state.GameLayer.statemanager import GameStateManager
 
@@ -150,7 +155,7 @@ class Game:
             self.pause_menu.draw()
         elif self.state.is_state(GAMESTATE.PLAYING):
             pass
-
+```
 You can use this pattern anywhere, not just in the draw loop. It is central to the menu and runtime system.
 
 More documentation will be added over time. The next major component to document is the system object.
