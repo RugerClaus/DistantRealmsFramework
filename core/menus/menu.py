@@ -21,6 +21,7 @@ class Menu(BaseMenu):
         self.state = MenuStateManager()
         self.credits = Credits(system)
         self.user_creator = UserCreator(system)
+        self.username_exists = check_username()
         self.recently_updated = check_recently_updated() # checks for if a file exists containing the recentlyupdated boolean
         self.updater = Update()
         self.change_log = ChangeLog(system)
@@ -34,6 +35,12 @@ class Menu(BaseMenu):
             if self.recently_updated:
                 if recently_updated_file == "false":
                     self.state.set_state(MENUSTATE.ROOT)
+                    if not self.username_exists:
+                        self.state.set_state(MENUSTATE.CREATEUSERNAME)
+                        self.create_buttons()
+                    else:
+                        self.state.set_state(MENUSTATE.ROOT)
+                        self.create_buttons()
                 if recently_updated_file == "true":
                     self.state.set_state(MENUSTATE.CHANGELOG)
                     self.create_buttons()

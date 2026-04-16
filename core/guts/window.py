@@ -37,6 +37,9 @@ class Window:
         
     def transform_scale(self, original_surface, new_surface_width, new_surface_height):
         return pygame.transform.scale(original_surface, (new_surface_width, new_surface_height))
+
+    def transform_smoothscale(self,original,newW,newH):
+        return pygame.transform.smoothscale(original,(newW,newH))
     
     def toggle_fullscreen(self):
         if not self.fullscreen:
@@ -89,9 +92,11 @@ class Window:
         overlay.fill((*color, alpha))
         return overlay
     
-    def draw_line(self,point_a,point_b,color):
+    def draw_line(self,point_a,point_b,color,width=None):
         if isinstance(color,tuple):
             pygame.draw.line(self.get_screen(),color,point_a,point_b)
+            if width is not None:
+                pygame.draw.line(self.get_screen(),color,point_a,point_b,width)
         else:
             log_error("color must be a tuple")
 
@@ -122,12 +127,23 @@ class Window:
         else:
             pygame.draw.rect(surface, color, rect, width)
 
+    def make_rect(self, data):
+        x, y, w, h = data
+        return pygame.Rect(x, y, w, h)
+
             
     def load_image(self,file_like):
-        return pygame.image.load(file_like).convert_alpha()
+        img = pygame.image.load(file_like)
+        img = img.convert_alpha()
+        img = img.copy()
+        return img
 
-    def blit(self,surface,destination):
-        self.screen.blit(surface,destination)
+    def blit(self,surface,destination,area=None):
+        if area is not None:
+            x, y, w, h = area
+            area = pygame.Rect(x, y, w, h)
+
+        self.screen.blit(surface, destination, area)
 
     def get_screen(self):
         return self.screen

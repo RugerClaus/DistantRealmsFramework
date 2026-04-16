@@ -26,8 +26,11 @@ class InputManager:
     def get_current_right_control(self):
         return self.get_key_name(self.game_controls.move_right).capitalize()
     
-    def get_current_slow_control(self):
-        return self.get_key_name(self.game_controls.slow).capitalize()
+    def get_current_up_control(self):
+        return self.get_key_name(self.game_controls.move_up).capitalize()
+    
+    def get_current_down_control(self):
+        return self.get_key_name(self.game_controls.move_down).capitalize()
 
     def video_resize_event(self):
         return pygame.VIDEORESIZE
@@ -44,13 +47,17 @@ class InputManager:
     def quit_event(self):
         return pygame.QUIT
 
-    def set_game_controls(self,move_left=None, move_right=None):
+    def set_game_controls(self,move_left=None, move_right=None, move_up=None, move_down=None):
         if move_left is not None and move_right is not None:
-            self.game_controls.set_controls(move_left, move_right)
+            self.game_controls.set_controls(move_left, move_right, move_up, move_down)
         elif move_left is not None:
-            self.game_controls.set_controls(move_left, self.game_controls.move_right)
+            self.game_controls.set_controls(move_left, self.game_controls.move_right, self.game_controls.move_up, self.game_controls.move_down)
         elif move_right is not None:
-            self.game_controls.set_controls(self.game_controls.move_left, move_right)
+            self.game_controls.set_controls(self.game_controls.move_left, move_right, self.game_controls.move_up, self.game_controls.move_down)
+        elif move_up is not None:
+            self.game_controls.set_controls(self.game_controls.move_left, self.game_controls.move_right, move_up, self.game_controls.move_down)
+        elif move_down is not None:
+            self.game_controls.set_controls(self.game_controls.move_left, self.game_controls.move_right, self.game_controls.move_up, move_down)
 
     def key_register(self,key):
         now = self.window.get_current_time()

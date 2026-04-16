@@ -15,7 +15,9 @@ class IOSTREAM:
             "monitor_system_states": [pygame.K_F8,pygame.K_1],
             "monitor_application_states": [pygame.K_F8,pygame.K_2],
             "monitor_game_states": [pygame.K_F8,pygame.K_3],
-            "monitor_all_states": [pygame.K_F8,pygame.K_4]
+            "monitor_all_states": [pygame.K_F8,pygame.K_4],
+            "raise_opacity": [pygame.K_F8,pygame.K_5],
+            "lower_opacity": [pygame.K_F8,pygame.K_6]
         }
         self.buffer = []
         self.buffer_timer = 0

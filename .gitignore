@@ -7,6 +7,7 @@ __pycache__
 saves/constants/high_score
 saves/constants/music_volume
 saves/constants/sfx_volume
+saves/gamedata/world.sav
 /executable
 logs/*/*.log
 logs/*.log

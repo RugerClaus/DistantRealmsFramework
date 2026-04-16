@@ -16,7 +16,7 @@ class App:
         self.game = Game(self.system)
         self.menu = Menu(self.system,self.game)
         self.loading = LoadingManager(self.system)
-        self.debug_overlay = DebugOverlay(self.system,self.game,self.loading)
+        self.debug_overlay = DebugOverlay(self.system,self.loading)
     
     def handle_events(self):
         for event in self.system.input.input_event():
