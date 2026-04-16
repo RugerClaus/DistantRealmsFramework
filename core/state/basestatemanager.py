@@ -1,6 +1,8 @@
 from helper import log_error
 
 class BaseStateManager:
+
+    # this is observable only. no weird state tricks here, just data to send to the debug overlay
     _global_active_system_states = []
     _global_active_application_states = []
     _global_active_game_states = []

@@ -1,4 +1,5 @@
-# Welcome to Distant Realms, a top-down survival RPG
+# Welcome to the Distant Realms Framework for Python
+# An application framework with a working ui system and runtime for making games
 
 ## Dependencies
 
