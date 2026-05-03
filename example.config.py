@@ -2,7 +2,7 @@ import platform
 
 config = {
     "TITLE": "Distant Realms Framework App Runtime - Alpha",
-    "AUTHORS": ["Roger Falck", "Reina Meza"],
+    "AUTHORS": ["Roger Falck", ""],
     "VERSION": "0.0.1",
     "OS": platform.system(),
     "UPDATE_ZIP_NAME": "",

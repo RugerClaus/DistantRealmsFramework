@@ -1,3 +1,4 @@
-Development version Alpha 0.0.1 - 2026-04-13
-- Distant Realms Framework Official Deployment
-- Implemented save/load system and forced username creation. Username creation does not cause any network effects, it's purely metadata, but useful for all kinds of games.
+Development version Alpha 0.0.1a - 2026-05-03
+- Updated helper.py with some instructions on the asset string system
+- Updated config.py to be neutral when using setup
+- Ensured core systems were up to snuff

@@ -15,10 +15,12 @@ def asset(asset):
         return "assets/images/build/linux.png"
     elif asset == "windows_icon":
         return "assets/images/build/windows.ico"
-    elif asset == "multiplierupgrade":
-        return "assets/images/main/multiplierupgrade.png"
-    elif asset == "clock":
-        return "assets/images/main/clock.png"
+    # Game specific assets below. Really this system should be better, but it's been too simple to give up
+    # the time complexity in development time is linear. For simple games, this is a fairly straightforward solution
+    # However in the future, I will rework this like the save/load system to be modular and extensible.
+    else:
+        log_error(f"Can't find asset: {asset}")
+        return None
     
 def log_state_transition(from_state, to_state, state_type, ticks=None, sub_dir=None, log_file=None):
     log_data = {
