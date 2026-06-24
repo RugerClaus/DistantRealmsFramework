@@ -3,7 +3,7 @@ from core.state.GameLayer.statemanager import GameStateManager
 from core.state.ApplicationLayer.dev import DEVELOPER_MODE
 from core.state.ApplicationLayer.state import APPSTATE
 from core.menus.pause import Pause
-from core.game.game_object import GameObject
+from core.application.game_object import GameObject
 
 class GameInterface:
     def __init__(self, system):

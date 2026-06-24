@@ -5,7 +5,7 @@ from core.state.ApplicationLayer.DevTools.Debug.state import DEBUG_OVERLAY_STATE
 from core.state.ApplicationLayer.dev import DEVELOPER_MODE
 from core.state.ApplicationLayer.Loading.state import LOAD_SCREEN_STATE
 from core.util.debugoverlay import DebugOverlay
-from core.game.game import GameInterface
+from core.application.game import GameInterface
 from core.menus.menu import Menu
 from core.loading.loadingmanager import LoadingManager
 
@@ -21,7 +21,7 @@ class App:
     def handle_events(self):
         for event in self.system.input.input_event():
             if event.type == self.system.input.video_resize_event():
-                self.system.window.scale(event.w,event.h)
+                self.system.window.set_mode()
                 self.debug_overlay.scale()
                 if self.system.app_state.is_state(APPSTATE.LOADING):
                     self.loading.rescale_assets()
@@ -56,7 +56,7 @@ class App:
                 if self.system.input.get_key_name(event.key) == "f11":
                     self.system.window.toggle_fullscreen()
                 elif self.system.input.get_key_name(event.key) == "u":
-                    print(read_constant_from_file('username'))
+                    print(str(self.system.window.get_info()))
                 if self.system.app_state.is_state(APPSTATE.LOADING):
                     if self.system.input.get_key_name(event.key) == "space" or self.system.input.get_key_name(event.key) == "return" or self.system.input.get_key_name(event.key) == "escape":
                         self.system.app_state.set_state(APPSTATE.MAIN_MENU)

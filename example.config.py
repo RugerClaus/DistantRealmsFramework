@@ -9,6 +9,7 @@ config = {
     "UPDATER_WINDOWS": "updater.exe",
     "UPDATER_LINUX": "updater",
     "UPDATER_VERSION": "0.0.2",
+    "DISPLAY_MODE": None,
     "API": {
         "LEADERBOARD": "",
         "USER_AUTH": "",

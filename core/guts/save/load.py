@@ -1,5 +1,5 @@
 from helper import *
-from core.game.save_schema import schema
+from core.application.save_schema import schema
 class Load():
     def __init__(self):
         self.game_save_path = "saves/gamedata/world.sav"

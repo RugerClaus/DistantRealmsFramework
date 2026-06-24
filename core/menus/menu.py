@@ -1,4 +1,4 @@
-import webbrowser
+from config import config
 from core.menus.basemenu import BaseMenu
 from core.menus.usercreator import UserCreator
 from core.ui.button import Button
@@ -69,12 +69,12 @@ class Menu(BaseMenu):
 
         if self.state.is_state(MENUSTATE.ROOT) and self.updater.state.is_state(UPDATE_STATE.CURRENT):
             self.buttons = [
-                Button(self.system.sound, self.system.window, "3D engine", center_x, start_y, btn_width, btn_height,
-                    (255, 255, 255), self.button_action_true_color, self.game.renderer),
-                Button(self.system.sound, self.system.window, "Continue", center_x, start_y + spacing, btn_width, btn_height,
+                Button(self.system.sound, self.system.window, "Application", center_x, start_y, btn_width, btn_height,
+                    (255, 255, 255), self.button_action_true_color, self.game.init),
+                Button(self.system.sound, self.system.window, "Sprite Editor", center_x, start_y + spacing, btn_width, btn_height,
                     (255, 255, 255), self.button_action_true_color, None,False),
-                Button(self.system.sound, self.system.window, "Load Game", center_x, start_y + spacing * 2, btn_width, btn_height,
-                    (255, 255, 255), self.button_action_false_color, None,False),
+                Button(self.system.sound, self.system.window, "3D Editor", center_x, start_y + spacing * 2, btn_width, btn_height,
+                    (255, 255, 255), self.button_action_true_color, None,False),
                 Button(self.system.sound, self.system.window, "Settings", center_x, start_y + spacing * 3, btn_width, btn_height,
                     (255, 255, 255), self.button_action_true_color, self.go_to_settings),
                 Button(self.system.sound, self.system.window, "Quit", center_x, start_y + spacing * 4, btn_width, btn_height,
@@ -84,12 +84,12 @@ class Menu(BaseMenu):
             ]
         if self.state.is_state(MENUSTATE.ROOT) and self.updater.state.is_state(UPDATE_STATE.AVAILABLE):
             self.buttons = [
-                Button(self.system.sound, self.system.window, "New Game", center_x, start_y, btn_width, btn_height,
+                Button(self.system.sound, self.system.window, "Application", center_x, start_y, btn_width, btn_height,
+                    (255, 255, 255), self.button_action_true_color, self.game.init),
+                Button(self.system.sound, self.system.window, "Sprite Editor", center_x, start_y + spacing, btn_width, btn_height,
                     (255, 255, 255), self.button_action_true_color, None,False),
-                Button(self.system.sound, self.system.window, "Continue", center_x, start_y + spacing, btn_width, btn_height,
+                Button(self.system.sound, self.system.window, "3D Editor", center_x, start_y + spacing, btn_width, btn_height,
                     (255, 255, 255), self.button_action_true_color, None,False),
-                Button(self.system.sound, self.system.window, "Load Game", center_x, start_y + spacing * 2, btn_width, btn_height,
-                    (255, 255, 255), self.button_action_false_color, None,False),
                 Button(self.system.sound, self.system.window, "Settings", center_x, start_y + spacing * 3, btn_width, btn_height,
                     (255, 255, 255), self.button_action_true_color, self.go_to_settings),
                 Button(self.system.sound, self.system.window, "Quit", center_x, start_y + spacing * 4, btn_width, btn_height,

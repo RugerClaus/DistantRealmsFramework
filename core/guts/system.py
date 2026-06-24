@@ -6,8 +6,8 @@ from core.guts.window import Window
 from core.guts.time import Time
 from core.guts.save.save import Save
 from core.guts.save.load import Load
-from core.game.runtime_inspector import runtime_inspector
-from core.game.save_schema import schema
+from core.application.runtime_inspector import runtime_inspector
+from core.application.save_schema import schema
 
 # state systems
 from core.state.ApplicationLayer.statemanager import StateManager

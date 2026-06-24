@@ -13,11 +13,5 @@
 
 
 schema = {
-<<<<<<< HEAD
-    "WORLDSEED": ("seed", int),
-    "PLAYERWORLDX": ("player_world_x", float),
-    "PLAYERWORLDY": ("player_world_y", float),
-=======
     
->>>>>>> e4a72e9 (first minor update)
 }

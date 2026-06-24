@@ -16,14 +16,15 @@ class Window:
         self.time = Time()
         self.get_current_time = self.time.get_current_time
         self.fullscreen = False
-        self.set_screen()
+        self.set_mode(self.width,self.height,config.get("DISPLAY_MODE"))
         self.Rect = pygame.Rect
+        
         
 
     def mask(self,surface):
         return pygame.mask.from_surface(surface)
 
-    def set_screen(self,width=None,height=None):
+    def set_mode(self,width=None,height=None,mode=None):
         if width is None and height is None:
             self.screen = pygame.display.set_mode((self.width,self.height),pygame.FULLSCREEN if self.fullscreen else pygame.RESIZABLE)
         elif width is not None and height is None:
@@ -32,6 +33,9 @@ class Window:
             self.screen = pygame.display.set_mode((self.width,height),pygame.FULLSCREEN if self.fullscreen else pygame.RESIZABLE)
         else:
             self.screen = pygame.display.set_mode((width,height),pygame.FULLSCREEN if self.fullscreen else pygame.RESIZABLE)
+        if mode == "OPENGL":
+            self.mode = mode
+            self.screen = pygame.display.set_mode((self.width,self.height),pygame.FULLSCREEN if self.fullscreen else pygame.RESIZABLE|pygame.OPENGL|pygame.SCALED)
         pygame.display.set_caption(f"{config['TITLE']} {config['VERSION']}")
 
         icon = self.load_image(asset("linux_icon"))
@@ -46,19 +50,16 @@ class Window:
     def toggle_fullscreen(self):
         if not self.fullscreen:
             self.fullscreen = True
-            self.set_screen()
+            self.set_mode()
         else:
             self.fullscreen = False
-            self.set_screen()
+            self.set_mode()
 
     def get_width(self):
         return self.screen.get_width()
     
     def get_height(self):
         return self.screen.get_height()
-    
-    def scale(self,target_width,target_height):
-        self.screen = pygame.display.set_mode((target_width,target_height),pygame.RESIZABLE)
 
     def get_size(self):
         return self.screen.get_size()
@@ -152,6 +153,11 @@ class Window:
 
     def get_fps(self): #temporary while i refactor to prevent breakage
         return self.time.get_fps()
+    
+    def get_info(self):
+        return f"""{pygame.display.Info()}\n,PYGAMEDRIVER: \n{pygame.display.get_driver()}
+                ,\n PYGAMENUMDISPLAYS: {pygame.display.get_num_displays()}
+        """
     
     def quit(self):
         return pygame.quit()

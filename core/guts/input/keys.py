@@ -23,15 +23,12 @@ class Keys:
     
     def h_key(self):
         return pygame.K_h
-<<<<<<< HEAD
-=======
     
     def e_key(self):
         return pygame.K_e
     
     def q_key(self):
         return pygame.K_q
->>>>>>> e4a72e9 (first minor update)
 
     def seven_key(self):
         return pygame.K_7
