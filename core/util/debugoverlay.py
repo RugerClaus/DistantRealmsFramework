@@ -1,6 +1,6 @@
 from core.ui.font import FontEngine
 from core.state.ApplicationLayer.dev import DEVELOPER_MODE
-from core.state.ApplicationLayer.Debug.StateMonitor.state import MONITOR_STATE
+from core.state.ApplicationLayer.DevTools.Debug.StateMonitor.state import MONITOR_STATE
 
 class DebugOverlay:
     def __init__(self,system,loading):
@@ -41,7 +41,11 @@ class DebugOverlay:
 
     def draw(self):
         text_color = (255, 255, 255)
+<<<<<<< HEAD
         self.surface.fill((0, 0, 0),self.opacity)
+=======
+        self.surface.fill((0, 0, 0,self.opacity))
+>>>>>>> e4a72e9 (first minor update)
         surface_width = self.surface.get_width()
         
         left_x = 10

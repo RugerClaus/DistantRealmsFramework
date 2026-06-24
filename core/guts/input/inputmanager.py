@@ -1,13 +1,13 @@
 import pygame
 from core.guts.input.controls import Controls
-from core.guts.input.iostream import IOSTREAM
+from core.guts.input.CommandModule import CommandModule
 from core.guts.input.keys import Keys
 from core.ui.font import FontEngine
 
 
 class InputManager:
     def __init__(self, window):
-        self.iostream = IOSTREAM()
+        self.CommandModule = CommandModule()
         self.current_keys = set()
         self.released_keys = set()
         self.key_history = {}
@@ -75,7 +75,7 @@ class InputManager:
         else: # returns a command based on the internal input stream service. for handling application wide functionality
             if event.type == pygame.KEYDOWN:
                 self.key_register(event.key)
-                command = self.iostream.update(event)
+                command = self.CommandModule.update(event)
                 return command
 
             elif event.type == pygame.KEYUP:

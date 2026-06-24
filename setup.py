@@ -1,5 +1,6 @@
 import shutil
 import os
+import initialize
 
 example_config = "example.config.py"
 config_file = "config.py"
@@ -11,3 +12,4 @@ if not os.path.exists(example_config):
 shutil.copyfile(example_config, config_file)
 
 print(f"'{config_file}' has been created from '{example_config}'.")
+

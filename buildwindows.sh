@@ -1,7 +1,11 @@
 #!/bin/bash
 set -e
 
+<<<<<<< HEAD
 APP_NAME="MyApp"
+=======
+APP_NAME=$(cat saves/constants/n)
+>>>>>>> e4a72e9 (first minor update)
 MAIN="main.py"
 UPDATER_MAIN="updater.py"
 UPDATER_NAME="updater"

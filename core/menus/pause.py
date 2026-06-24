@@ -56,8 +56,7 @@ class Pause(BaseMenu):
             
     def update(self):
         self.update_toggle_buttons()
-        self.update_toggle_game_buttons()
-        if self.game.game_state.is_state(GAMESTATE.PLAYING):
+        if self.game.state.is_state(GAMESTATE.PLAYING):
             self.back_to_root()
 
     def reset_menu(self):

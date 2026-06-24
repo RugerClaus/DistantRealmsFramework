@@ -2,7 +2,7 @@
 from core.guts.input.keys import Keys
 import pygame
 
-class IOSTREAM:
+class CommandModule:
     def __init__(self):
         self.keys = Keys()
         self.sequences = {

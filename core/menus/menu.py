@@ -69,8 +69,8 @@ class Menu(BaseMenu):
 
         if self.state.is_state(MENUSTATE.ROOT) and self.updater.state.is_state(UPDATE_STATE.CURRENT):
             self.buttons = [
-                Button(self.system.sound, self.system.window, "New Game", center_x, start_y, btn_width, btn_height,
-                    (255, 255, 255), self.button_action_true_color, None,False),
+                Button(self.system.sound, self.system.window, "3D engine", center_x, start_y, btn_width, btn_height,
+                    (255, 255, 255), self.button_action_true_color, self.game.renderer),
                 Button(self.system.sound, self.system.window, "Continue", center_x, start_y + spacing, btn_width, btn_height,
                     (255, 255, 255), self.button_action_true_color, None,False),
                 Button(self.system.sound, self.system.window, "Load Game", center_x, start_y + spacing * 2, btn_width, btn_height,

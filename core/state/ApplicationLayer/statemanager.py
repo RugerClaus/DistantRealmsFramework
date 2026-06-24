@@ -6,7 +6,7 @@ class StateManager(BaseStateManager):
     def __init__(self):
 
         allowed_transitions = {
-            APPSTATE.LOADING: [APPSTATE.MAIN_MENU,APPSTATE.QUIT],
+            APPSTATE.LOADING: [APPSTATE.MAIN_MENU,APPSTATE.GAME,APPSTATE.QUIT],
             APPSTATE.MAIN_MENU: [APPSTATE.GAME,APPSTATE.QUIT],
             APPSTATE.GAME: [APPSTATE.MAIN_MENU,APPSTATE.QUIT]
         }

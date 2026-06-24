@@ -1,4 +1,17 @@
+<<<<<<< HEAD
 Development version Alpha 0.0.1a - 2026-05-03
 - Updated helper.py with some instructions on the asset string system
 - Updated config.py to be neutral when using setup
 - Ensured core systems were up to snuff
+=======
+Development version Alpha 0.1.0 - 2026-06-24 # 
+- Removed custom surface object to rely soley on pygame's main surface. 
+- Included unused experimental files
+- Added more pygame wrappers in Window.py 
+- Added a mesh loader
+- Added a Triangle class
+- Added a basic 3D math module
+- Application name is now in a local config file (this is when the developer runs setup.py)
+- Changed license to MIT. GPL just wasn't open enough for me.
+===______=== removed unused deps
+>>>>>>> e4a72e9 (first minor update)
