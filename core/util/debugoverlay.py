@@ -41,11 +41,7 @@ class DebugOverlay:
 
     def draw(self):
         text_color = (255, 255, 255)
-<<<<<<< HEAD
-        self.surface.fill((0, 0, 0),self.opacity)
-=======
         self.surface.fill((0, 0, 0,self.opacity))
->>>>>>> e4a72e9 (first minor update)
         surface_width = self.surface.get_width()
         
         left_x = 10

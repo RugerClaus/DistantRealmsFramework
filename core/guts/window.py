@@ -84,19 +84,11 @@ class Window:
         overlay.fill((*color, alpha))
         return overlay
     
-<<<<<<< HEAD
-    def draw_line(self,point_a,point_b,color,width=None):
-        if isinstance(color,tuple):
-            pygame.draw.line(self.get_screen(),color,point_a,point_b)
-            if width is not None:
-                pygame.draw.line(self.get_screen(),color,point_a,point_b,width)
-=======
     def draw_line(self,surface,point_a,point_b,color,width=None):
         if isinstance(color,tuple):
             pygame.draw.line(surface,color,point_a,point_b)
             if width is not None:
                 pygame.draw.line(surface,color,point_a,point_b,width)
->>>>>>> e4a72e9 (first minor update)
         else:
             log_error("color must be a tuple")
 
@@ -133,10 +125,6 @@ class Window:
     def make_rect(self, data):
         x, y, w, h = data
         return pygame.Rect(x, y, w, h)
-<<<<<<< HEAD
-
-=======
->>>>>>> e4a72e9 (first minor update)
             
     def load_image(self,file_like):
         img = pygame.image.load(file_like)

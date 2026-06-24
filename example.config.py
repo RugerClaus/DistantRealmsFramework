@@ -1,13 +1,8 @@
 import platform
 
 config = {
-<<<<<<< HEAD
-    "TITLE": "Distant Realms Framework App Runtime - Alpha",
-    "AUTHORS": ["Roger Falck", ""],
-=======
     "TITLE": "My New Application",
     "AUTHORS": ["AuthorA", "AuthorB"],
->>>>>>> e4a72e9 (first minor update)
     "VERSION": "0.0.1",
     "OS": platform.system(),
     "UPDATE_ZIP_NAME": "",

@@ -35,15 +35,6 @@ class System():
         self.input = InputManager(self.window)
 
         self.save_schema = schema
-<<<<<<< HEAD
-        
-        self.save = Save(self.save_schema)
-        self.load = Load()
-
-        self.runtime_inspector = runtime_inspector # this is an observer
-        self.save_telemetry = "" # this sends a message to the main menu if there is no save file found
-=======
->>>>>>> e4a72e9 (first minor update)
         
         self.save = Save(self.save_schema)
         self.load = Load()

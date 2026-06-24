@@ -13,17 +13,10 @@ class App:
     def __init__(self,system):
 
         self.system = system
-<<<<<<< HEAD
-        self.game = Game(self.system)
-        self.menu = Menu(self.system,self.game)
-        self.loading = LoadingManager(self.system)
-        self.debug_overlay = DebugOverlay(self.system,self.loading)
-=======
         self.game = GameInterface(system)
         self.menu = Menu(system,self.game)
         self.loading = LoadingManager(system)
         self.debug_overlay = DebugOverlay(system,self.loading)
->>>>>>> e4a72e9 (first minor update)
     
     def handle_events(self):
         for event in self.system.input.input_event():
