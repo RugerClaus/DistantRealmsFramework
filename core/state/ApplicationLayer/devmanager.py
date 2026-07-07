@@ -1,6 +1,6 @@
 from core.state.ApplicationLayer.dev import DEVELOPER_MODE
 from core.state.basestatemanager import BaseStateManager
-from helper import log_state_transition
+from systemlogging import log_state_transition
 
 class DevManager(BaseStateManager):
     def __init__(self):

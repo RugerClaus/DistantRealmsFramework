@@ -1,5 +1,4 @@
-import random
-from core.game.entities.type import EntityType
+from core.application.entities.type import EntityType
 
 class EntityManager:
     def __init__(self, system):

@@ -8,7 +8,7 @@ import subprocess
 import requests
 import zipfile
 import shutil
-from helper import log_error, log_event
+from systemlogging import log_error, log_event
 from config import config
 from core.state.ApplicationLayer.NetworkLayer.Loading.state import FETCH_STATE
 from core.state.ApplicationLayer.NetworkLayer.Loading.statemanager import FetchStateManager

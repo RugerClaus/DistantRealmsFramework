@@ -1,6 +1,6 @@
 from core.state.ApplicationLayer.Menu.Pause.state import PAUSE_MENU_STATE
 from core.state.basestatemanager import BaseStateManager
-from helper import log_state_transition
+from systemlogging import log_state_transition
 
 class PauseMenuStateManager(BaseStateManager):
     def __init__(self):

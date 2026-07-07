@@ -2,9 +2,11 @@ import requests, config
 
 from core.network.leaderboard import Leaderboard
 
-from helper import *
+from systemlogging import log_error, log_event
 class User:
-    def __init__(self):
+    def __init__(self,system):
+        self.save = system.save
+        self.load = system.load
         self.scores = Leaderboard()
         self.score = None
         self.setusernameURL = config.config.get("API").get("USER_AUTH")
@@ -15,14 +17,14 @@ class User:
             log_error("Update Score url not set in config")
 
     def get_username(self):
-        username = read_constant_from_file('username')
+        username = self.load.read_constant('username')
         if username is not None:
             return username
         else:
             return None
 
     def get_high_score(self):
-        high_score = read_constant_from_file('high_score')
+        high_score = self.load.read_constant('high_score')
         if high_score is not None:
             return int(high_score)
         else:
@@ -35,7 +37,7 @@ class User:
             try:
                 response = requests.post(self.setusernameURL, json=data)
                 if response.status_code == 200:
-                    write_constant_to_file("high_score",0)
+                    self.save.write_constant("high_score",0)
 
                     log_event(f"Username added to global database. Status: {str(response.status_code)}; Response: {response.json()}")
                     response_data = response.json()
@@ -84,7 +86,7 @@ class User:
             if line.get("username") == username:
                 if int(line.get("score")) > 0:
                     if int(line.get("score")) > high_score:
-                        write_constant_to_file('high_score',line.get("score"))
+                        self.save.write_constant('high_score',line.get("score"))
                         self.score = line.get("score")
                     return int(line.get("score"))
                 else:

@@ -1,6 +1,6 @@
 from core.state.ApplicationLayer.Menu.GameOver.state import GAME_OVER_MENU_STATE
 from core.state.basestatemanager import BaseStateManager
-from helper import log_state_transition
+from systemlogging import log_state_transition
 
 class GameOverMenuStateManager(BaseStateManager):
     def __init__(self):

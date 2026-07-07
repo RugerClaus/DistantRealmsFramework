@@ -1,4 +1,4 @@
-from helper import log_error
+from systemlogging import log_error
 
 class BaseStateManager:
 

@@ -1,18 +1,41 @@
-from helper import *
+import os
+from systemlogging import log_event,log_error
 from core.application.save_schema import schema
+
 class Load():
     def __init__(self):
         self.game_save_path = "saves/gamedata/world.sav"
-        self.save_keys = ["WORLDSEED","PLAYERWORLDX","PLAYERWORLDY"]
         self.load_dict = {}
 
-    def read_environment_variable(self,envar_name): 
+    def read_envar(self,envar_name): 
         log_event(f"Reading contents in environment/{envar_name}")
-        return read_envar_from_file(envar_name) # returns a string
+        file_path = os.path.join('environment', envar_name)
+        
+        try:
+            if os.path.exists(file_path):
+                with open(file_path, 'r') as file:
+                    return file.read().strip()
+            else:
+                log_event(f"File {file_path} does not exist.")
+                return None
+        except Exception as e:
+            log_error(f"Error reading from file: {e}")
+            return None
     
     def read_constant(self,constant): 
         log_event(f"Reading contents in saves/constants/{constant}")
-        return read_constant_from_file(constant)
+        file_path = os.path.join('saves/constants', constant)
+    
+        try:
+            if os.path.exists(file_path):
+                with open(file_path, 'r') as file:
+                    return file.read().strip()
+            else:
+                log_event(f"File {file_path} does not exist.")
+                return None
+        except Exception as e:
+            log_error(f"Error reading from file: {e}")
+            return None
     
     def load_game_save(self):
         if os.path.exists(self.game_save_path):

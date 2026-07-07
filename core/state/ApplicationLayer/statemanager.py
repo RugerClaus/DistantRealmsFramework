@@ -1,6 +1,6 @@
 from core.state.ApplicationLayer.state import APPSTATE
 from core.state.basestatemanager import BaseStateManager
-from helper import log_state_transition
+from systemlogging import log_state_transition
 
 class StateManager(BaseStateManager):
     def __init__(self):

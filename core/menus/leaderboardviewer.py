@@ -1,16 +1,18 @@
 import threading
-from helper import *
+from systemlogging import log_error,log_event
 from core.ui.font import FontEngine
 from core.network.leaderboard import Leaderboard
 from core.state.ApplicationLayer.NetworkLayer.Loading.state import FETCH_STATE
 from core.state.ApplicationLayer.NetworkLayer.Loading.statemanager import FetchStateManager
 from core.network.user import User
+from core.loading.LoadingScreenManager import LoadingScreenManager
 class LeaderboardViewer():
     def __init__(self,system,state,root_callback):
         self.system = system
         self.system.input
         self.state = state
         self.root_callback = root_callback
+        self.loading = LoadingScreenManager(system)
         self.leaderboard = Leaderboard()
         self.font = FontEngine(50).font
         
@@ -20,7 +22,7 @@ class LeaderboardViewer():
 
         self.lock = threading.Lock()
 
-        self.user = User()
+        self.user = User(self.system)
 
     def start_fetch(self):
         if not self.fetch_manager.is_state(FETCH_STATE.IDLE):
@@ -63,7 +65,7 @@ class LeaderboardViewer():
                 log_error("Error fetching leaderboard data.")
                 self.fetch_manager.set_state(FETCH_STATE.IDLE)
             elif self.fetch_manager.is_state(FETCH_STATE.FETCHING):
-                draw_loading(self.font, self.system.window, "Loading Leaderboard...")
+                self.loading.draw("Fetching leaderboard data...")
             elif self.fetch_manager.is_state(FETCH_STATE.CANCELLED):
                 self.cached_data = None
                 self.fetch_manager.set_state(FETCH_STATE.IDLE)

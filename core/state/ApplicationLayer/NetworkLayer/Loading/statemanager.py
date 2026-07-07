@@ -1,6 +1,6 @@
 from core.state.ApplicationLayer.NetworkLayer.Loading.state import FETCH_STATE
 from core.state.basestatemanager import BaseStateManager
-from helper import log_state_transition
+from systemlogging import log_state_transition
 
 class FetchStateManager(BaseStateManager):
     def __init__(self):

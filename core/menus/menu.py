@@ -2,7 +2,7 @@ from config import config
 from core.menus.basemenu import BaseMenu
 from core.menus.usercreator import UserCreator
 from core.ui.button import Button
-from helper import *
+from helper import asset
 from core.state.ApplicationLayer.Audio.Music.state import MUSIC_STATE
 from core.state.ApplicationLayer.dev import DEVELOPER_MODE
 from core.state.ApplicationLayer.Menu.state import MENUSTATE
@@ -21,8 +21,8 @@ class Menu(BaseMenu):
         self.state = MenuStateManager()
         self.credits = Credits(system)
         self.user_creator = UserCreator(system)
-        self.username_exists = check_username()
-        self.recently_updated = check_recently_updated() # checks for if a file exists containing the recentlyupdated boolean
+        self.username_exists = self.check_username()
+        self.recently_updated = self.check_recently_updated() # checks for if a file exists containing the recentlyupdated boolean
         self.updater = Update()
         self.change_log = ChangeLog(system)
 
@@ -30,7 +30,7 @@ class Menu(BaseMenu):
         self.title_image = self.title_image_original
         self.title_rect = self.title_image.get_rect()
         
-        recently_updated_file = self.system.load.read_environment_variable('recentlyupdated')
+        recently_updated_file = self.system.load.read_envar('recentlyupdated')
         if self.state.is_state(MENUSTATE.ROOT):
             if self.recently_updated:
                 if recently_updated_file == "false":
@@ -48,6 +48,21 @@ class Menu(BaseMenu):
         self.create_buttons()
         self.rescale_assets()
         
+
+    def check_username(self):
+        opt_in = self.system.load.read_constant('username')
+        if opt_in is not None:
+            return True
+        else:
+            return False
+        
+    def check_recently_updated(self):
+        updated = self.system.load.read_envar('recentlyupdated')
+        if updated is not None:
+            return True
+        else:
+            return False
+            
 
     def rescale_assets(self):
         window_w, window_h = self.system.window.get_size()
@@ -160,9 +175,9 @@ class Menu(BaseMenu):
 
     def back_to_root_changelog(self):
         if self.system.control_state.is_state(DEVELOPER_MODE.ON):
-            self.system.save.write_environment_variable('recentlyupdated', 'true')
+            self.system.save.write_envar('recentlyupdated', 'true')
         else:
-            self.system.save.write_environment_variable('recentlyupdated', 'false')
+            self.system.save.write_envar('recentlyupdated', 'false')
         self.state.set_state(MENUSTATE.ROOT)
         self.create_buttons()
 
@@ -222,7 +237,7 @@ class Menu(BaseMenu):
         if self.system.sound.current_track is None and self.system.sound.music_state.is_state(MUSIC_STATE.ON):
             self.system.sound.play_music()
         
-        t = self.system.window.get_current_time() / 1000
+        t = self.system.time.get_current_time() / 1000
         pulse = (self.system.math.sin(t) + 1) / 2
         fade_color = (
             int(20 + (35 - 20) * pulse),
@@ -249,7 +264,7 @@ class Menu(BaseMenu):
             self.set_title("")
             self.draw_update_text()
             self.draw_username_text(self.system.load.read_constant("username"))
-            self.draw_score_text(f"{read_constant_from_file('high_score')}")
+            self.draw_score_text(f"{self.system.save.read_constant('high_score')}")
             self.system.window.blit(self.title_image, self.title_rect)
 
         if self.state.is_state(MENUSTATE.SETTINGS):

@@ -1,20 +1,19 @@
 import pygame
 
-from helper import get_colors,log_error,asset
+from systemlogging import log_error
+from helper import asset,get_colors
 from config import config
-from core.guts.time import Time
 
 class Window:
-    def __init__(self):
+    def __init__(self,system):
         pygame.init()
+        self.system = system
         self.default_width = 1200
         self.default_height = 800
         self.color = (255,0,0)
         self.width = self.default_width
         self.height = self.default_height
         self.fps = 60
-        self.time = Time()
-        self.get_current_time = self.time.get_current_time
         self.fullscreen = False
         self.set_mode(self.width,self.height,config.get("DISPLAY_MODE"))
         self.Rect = pygame.Rect
@@ -152,7 +151,7 @@ class Window:
         pygame.display.flip()
 
     def get_fps(self): #temporary while i refactor to prevent breakage
-        return self.time.get_fps()
+        return self.system.time.get_fps()
     
     def get_info(self):
         return f"""{pygame.display.Info()}\n,PYGAMEDRIVER: \n{pygame.display.get_driver()}

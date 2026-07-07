@@ -1,6 +1,6 @@
 from core.state.ApplicationLayer.Audio.Music.state import MUSIC_STATE
 from core.state.basestatemanager import BaseStateManager
-from helper import log_state_transition
+from systemlogging import log_state_transition
 
 class MusicStateManager(BaseStateManager):
     def __init__(self):

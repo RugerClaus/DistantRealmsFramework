@@ -1,19 +1,23 @@
 from core.ui.lefttext import LeftAlignedText
-from helper import log_error
+from systemlogging import log_error,log_event
 
 class ChangeLog(LeftAlignedText):
     def __init__(self, system):
         super().__init__(system,font_size=25)
         self.changelog_text = []
         self.max_char_count = 90
-        self.load_changelog_from_file("changelog.txt")
+        changelog_text = self.load_changelog_from_file("changelog.txt")
+        self.total_length = sum(len(line) for line in changelog_text) if changelog_text else 0  
+        log_event(f"Changelog loaded successfully. Total length: {self.total_length} characters.")
 
     def load_changelog_from_file(self, file_path):
         try:
             with open(file_path, "r") as f:
                 raw_lines = [line.strip() for line in f.readlines()]
+
                 for line in raw_lines:
                     self.changelog_text.extend(self._break_line_into_chunks(line))
+
         except FileNotFoundError:
             self.changelog_text = ["Changelog not found. Please email dev@snowblitz.net with your error.log, \n and event.log from /logs as well as a description of your issue"]
             log_error("Changelog file not found, please send your error and event log files in /logs")

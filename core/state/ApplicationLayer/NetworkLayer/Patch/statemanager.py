@@ -1,6 +1,6 @@
 from core.state.ApplicationLayer.NetworkLayer.Patch.state import PATCH_STATE
 from core.state.basestatemanager import BaseStateManager
-from helper import log_state_transition
+from systemlogging import log_state_transition
 
 class PatchStateManager(BaseStateManager):
     def __init__(self):

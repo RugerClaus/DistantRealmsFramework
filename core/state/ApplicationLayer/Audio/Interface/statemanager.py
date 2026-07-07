@@ -1,6 +1,6 @@
 from core.state.ApplicationLayer.Audio.Interface.state import INTERFACE_SFX_STATE
 from core.state.basestatemanager import BaseStateManager
-from helper import log_state_transition
+from systemlogging import log_state_transition
 
 class InterfaceSFXStateManager(BaseStateManager):
     def __init__(self):

@@ -2,7 +2,8 @@ import pygame
 import random
 import os
 from mutagen import File
-from helper import *
+from helper import audio_path
+from systemlogging import log_error,log_event
 
 from core.state.ApplicationLayer.state import APPSTATE
 
@@ -16,10 +17,11 @@ from core.state.ApplicationLayer.Audio.SFX.state import SYSTEM_SFX_STATE
 from core.state.ApplicationLayer.Audio.SFX.statemanager import SystemSFXStateManager
 
 class AudioEngine:
-    def __init__(self,app_state):
-        self.app_state = app_state
+    def __init__(self,system):
+        self.system = system
+        self.app_state = system.app_state
         default_volume = 0.3
-        create_volume_files(str(default_volume))
+        system.create_volume_files(str(default_volume))
         self.interface_sfx_state = InterfaceSFXStateManager()
         self.music_state = MusicStateManager()
         self.game_sfx_state = GameSFXStateManager()
@@ -40,8 +42,8 @@ class AudioEngine:
         self.music_tracks = {}
         self.sound_effects = {}
         self.active_sfx = {}
-        self.volume = float(read_constant_from_file('music_volume'))
-        self.sfx_volume = float(read_constant_from_file('sfx_volume'))
+        self.volume = float(self.system.load.read_constant('music_volume'))
+        self.sfx_volume = float(self.system.load.read_constant('sfx_volume'))
         self.music_queue = []
         self.current_track = None
 
@@ -207,24 +209,24 @@ class AudioEngine:
         if self.volume < 0.5:
             self.volume += 0.1
             self.volume = round(self.volume, 1)
-            write_constant_to_file('music_volume',str(self.volume))
+            self.system.save.write_constant('music_volume',str(self.volume))
             pygame.mixer.music.set_volume(self.volume)
     
     def volume_down(self):
         if self.volume > 0:
             self.volume -= 0.1
             self.volume = round(self.volume, 1)
-            write_constant_to_file('music_volume',str(self.volume))
+            self.system.save.write_constant('music_volume',str(self.volume))
             pygame.mixer.music.set_volume(self.volume)
 
     def sfx_volume_up(self):
         if self.sfx_volume < 0.5:
             self.sfx_volume += 0.1
             self.sfx_volume = round(self.sfx_volume, 1)
-            write_constant_to_file('sfx_volume',str(self.sfx_volume))
+            self.system.save.write_constant('sfx_volume',str(self.sfx_volume))
     
     def sfx_volume_down(self):
         if self.sfx_volume > 0:
             self.sfx_volume -= 0.1
             self.sfx_volume = round(self.sfx_volume, 1)
-            write_constant_to_file('sfx_volume',str(self.sfx_volume))
+            self.system.save.write_constant('sfx_volume',str(self.sfx_volume))

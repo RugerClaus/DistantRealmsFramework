@@ -1,6 +1,6 @@
 import requests
 from config import config
-from helper import log_error, log_event
+from systemlogging import log_error, log_event
 
 TIMEOUT_SECONDS = 5
 

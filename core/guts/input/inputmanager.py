@@ -6,14 +6,15 @@ from core.ui.font import FontEngine
 
 
 class InputManager:
-    def __init__(self, window):
+    def __init__(self, system):
+        self.system = system
         self.CommandModule = CommandModule()
         self.current_keys = set()
         self.released_keys = set()
         self.key_history = {}
-        self.surface = window.make_surface(window.get_width(), window.get_height(), True)
+        self.surface = system.window.make_surface(system.window.get_width(), system.window.get_height(), True)
         self.font = FontEngine("keypress").font
-        self.window = window
+        self.system = system
         self.last_key = None
         self.last_key_time = 0
         self.key_display_timeout = 1000
@@ -60,7 +61,7 @@ class InputManager:
             self.game_controls.set_controls(self.game_controls.move_left, self.game_controls.move_right, self.game_controls.move_up, move_down)
 
     def key_register(self,key):
-        now = self.window.get_current_time()
+        now = self.system.time.get_current_time()
         self.current_keys.add(key)
         self.key_history[key] = now
         self.last_key = key
@@ -94,13 +95,13 @@ class InputManager:
         return pygame.key.get_pressed()
 
     def rescale(self,w,h):
-        self.surface = self.window.make_surface(w,h,True)
+        self.surface = self.system.window.make_surface(w,h,True)
         self.draw_most_recent_keypress()
 
 
     def draw_most_recent_keypress(self):
         self.surface.fill((0, 0, 0, 0))  
-        now = self.window.get_current_time()
+        now = self.system.get_current_time()
 
         self.key_history = {k: t for k, t in self.key_history.items() if now - t < self.key_display_timeout}
 
@@ -116,7 +117,7 @@ class InputManager:
         else:
             self.last_key = None
 
-        self.window.blit(self.surface, (0, 0))
+        self.system.blit(self.surface, (0, 0))
 
     def is_pressed(self, key):
         return key in self.current_keys

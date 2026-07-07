@@ -25,3 +25,17 @@ Development version Alpha 0.1.0 - 2026-06-24
 - Application name is now in a local config file (this is when the developer runs setup.py)
 - Changed license to MIT. GPL just wasn't open enough for me.
 ===______=== removed unused deps
+
+Development version Alpha 0.2.0 - 2026-07-07
+-------------------------------------------------
+- Removed most helper functions from helper.py
+-- systems like reading and writing files are now in the save/load system exclusively
+- Removed logging functions from helper.py. They are now in systemlogging.py
+- Put time only on the system object and made sure everything obeys that rule
+- Passed the system object to core systems (Window,AudioEngine,InputManager)
+- Added network checks for all network related functions
+- Added a Network class and consumed it with the system object
+- Added a system telemetry.py in core/guts
+-- This keeps values like the network connectivity and maybe one day CPU speed, and things like that
+- Debug overlay now takes in values from dictionaries and displays them "key: value" on the next available space on the screen
+===______=== removed unused deps

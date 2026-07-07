@@ -1,6 +1,6 @@
 from core.state.ApplicationLayer.DevTools.Debug.state import DEBUG_OVERLAY_STATE
 from core.state.basestatemanager import BaseStateManager
-from helper import log_state_transition
+from systemlogging import log_state_transition
 
 class DebugStateManager(BaseStateManager):
     def __init__(self):

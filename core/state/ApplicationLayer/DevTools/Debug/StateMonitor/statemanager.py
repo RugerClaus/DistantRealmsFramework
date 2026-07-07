@@ -1,6 +1,6 @@
 from core.state.ApplicationLayer.DevTools.Debug.StateMonitor.state import MONITOR_STATE
 from core.state.basestatemanager import BaseStateManager
-from helper import log_state_transition
+from systemlogging import log_state_transition
 
 class StateMonitorStateManager(BaseStateManager):
     def __init__(self):

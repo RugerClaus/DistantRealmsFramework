@@ -1,6 +1,6 @@
 from core.state.ApplicationLayer.Loading.state import LOAD_SCREEN_STATE
 from core.state.basestatemanager import BaseStateManager
-from helper import log_state_transition
+from systemlogging import log_state_transition
 
 class LoadingStateManager(BaseStateManager):
     def __init__(self):

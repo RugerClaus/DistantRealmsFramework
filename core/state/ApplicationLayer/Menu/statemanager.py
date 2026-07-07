@@ -1,6 +1,6 @@
 from core.state.ApplicationLayer.Menu.state import MENUSTATE
 from core.state.basestatemanager import BaseStateManager
-from helper import log_state_transition
+from systemlogging import log_state_transition
 
 class MenuStateManager(BaseStateManager):
     def __init__(self):

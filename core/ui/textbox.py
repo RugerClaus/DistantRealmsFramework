@@ -1,7 +1,5 @@
 from core.ui.font import FontEngine
 
-from helper import *
-
 class TextBox:
     def __init__(self,system):
         self.system = system

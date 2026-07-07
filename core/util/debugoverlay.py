@@ -63,6 +63,14 @@ class DebugOverlay:
         opacity_surf = self.font_left.render(opacity_text, False, text_color)
         self.surface.blit(opacity_surf, (left_x, self.system.window.get_height() - opacity_surf.get_height() - 10))
 
+        for items in self.system.system_monitor.items():
+            key, value = items
+            if value is not None:
+                inspector_text = f"{key}: {value}"
+                inspector_surf = self.font_left.render(inspector_text, False, text_color)
+                self.surface.blit(inspector_surf, (left_x, left_y))
+                left_y += inspector_surf.get_height() * 1.2
+
         for items in self.system.runtime_inspector.items():
             key, value = items
             if value is not None:
