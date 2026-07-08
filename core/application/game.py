@@ -99,7 +99,7 @@ class GameInterface:
         self.system.save_telemetry = ""
         self.game_object.clean_up_states()
         self.game_object.reset()
-        self.system.clean_up_states([self.state.state])
+        self.system.clean_up_states([self.state.state,self.pause_menu.state.state])
         
 
     def quit(self):

@@ -3,7 +3,7 @@ from helper import *
 from core.state.ApplicationLayer.state import APPSTATE
 from core.state.ApplicationLayer.DevTools.Debug.state import DEBUG_OVERLAY_STATE
 from core.state.ApplicationLayer.dev import DEVELOPER_MODE
-from core.state.ApplicationLayer.Loading.state import LOAD_SCREEN_STATE
+from core.state.ApplicationLayer.BootSplash.state import BOOT_SPLASH_STATE
 from core.util.debugoverlay import DebugOverlay
 from core.menus.menu import Menu
 from core.loading.BootSplashManager import BootSplashManager
@@ -28,6 +28,7 @@ class App:
 
             if event.type == self.system.input.quit_event():
                 self.system.app_state.set_state(APPSTATE.QUIT)
+            
             
             if self.system.app_state.is_state(APPSTATE.MAIN_MENU):
                 
@@ -64,9 +65,11 @@ class App:
             if event.type == self.system.input.mouse_button_down() and event.button == 1:
                 if self.system.app_state.is_state(APPSTATE.LOADING):
                     self.system.app_state.set_state(APPSTATE.MAIN_MENU)
-                    self.loading.state.set_state(LOAD_SCREEN_STATE.NONE)
+                    self.loading.state.set_state(BOOT_SPLASH_STATE.NONE)
+                    self.system.clean_up_states([self.loading.state.state])
                 elif self.system.app_state.is_state(APPSTATE.MAIN_MENU):
-                    self.loading.state.set_state(LOAD_SCREEN_STATE.NONE)
+                    self.loading.state.set_state(BOOT_SPLASH_STATE.NONE)
+                    self.system.clean_up_states([self.loading.state.state])
                     self.menu.scale()
 
     def run(self):
@@ -98,5 +101,8 @@ class App:
             if self.system.control_state.is_state(DEVELOPER_MODE.ON):
                 pass
 
+            if self.loading.state.is_state(BOOT_SPLASH_STATE.NONE):
+                self.system.clean_up_states([self.loading.state.state])
+            
             self.system.time.timer()
             self.system.window.update()
