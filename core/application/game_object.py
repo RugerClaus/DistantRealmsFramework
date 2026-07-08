@@ -10,3 +10,14 @@ class GameObject:
 
     def resize(self):
         pass
+
+    def clean_up_states(self):
+        pass
+
+    def register_debug_telemetry(self):
+        # exmaple:
+        # self.system.runtime_inspector["seed"] = self.world.seed
+        pass
+
+    def reset(self):
+        pass

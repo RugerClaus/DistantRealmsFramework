@@ -20,14 +20,10 @@ class GameInterface:
             self.state.set_state(GAMESTATE.PLAYING)
 
     def send_debug_info_to_system(self):
-        # exmaple:
-        # self.system.runtime_inspector["seed"] = self.world.seed
-        pass
-    
+        self.game_object.register_debug_telemetry()
+
     def remove_debug_info_from_system(self):
-        # example: 
-        # self.system.runtime_inspector["seed"] = None
-        pass
+        self.system.runtime_inspector.clear()
         
     def handle_event(self, event):
 
@@ -91,13 +87,20 @@ class GameInterface:
             self.system.save_telemetry = "No Save File Found!" # message printed to main menu
             return None
 
+    def reset_game(self):
+        self.game_object.reset()
+        self.state.set_state(GAMESTATE.PLAYING)
+
     def update(self):
         pass
 
     def quit_to_menu(self):
         self.remove_debug_info_from_system()
         self.system.save_telemetry = ""
-        self.system.go_to_menu()
+        self.game_object.clean_up_states()
+        self.game_object.reset()
+        self.system.clean_up_states([self.state.state])
+        
 
     def quit(self):
-        self.system.app_state.set_state(APPSTATE.QUIT)
+        self.system.quit()

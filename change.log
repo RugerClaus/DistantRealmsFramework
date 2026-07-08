@@ -16,7 +16,7 @@ Development version Alpha 0.0.1a - 2026-05-03
 
 Development version Alpha 0.1.0 - 2026-06-24 
 -------------------------------------------------
-- Removed custom surface object to rely soley on pygame's main surface. 
+- Removed custom surface object to rely solely on pygame's main surface. 
 - Included unused experimental files
 - Added more pygame wrappers in Window.py 
 - Added a mesh loader
@@ -38,4 +38,6 @@ Development version Alpha 0.2.0 - 2026-07-07
 - Added a system telemetry.py in core/guts
 -- This keeps values like the network connectivity and maybe one day CPU speed, and things like that
 - Debug overlay now takes in values from dictionaries and displays them "key: value" on the next available space on the screen
+- Refactored how game is initialized, added lifecycle beginning and end to Game Interface and its children
+- Moved runtime inspector (game telemetry) handling to the Game Object, and deferred lifecycle to the GameInterface module
 ===______=== removed unused deps

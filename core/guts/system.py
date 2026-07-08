@@ -21,6 +21,7 @@ from core.state.ApplicationLayer.DevTools.Debug.StateMonitor.statemanager import
 from core.state.ApplicationLayer.state import APPSTATE
 from core.state.ApplicationLayer.DevTools.Debug.state import DEBUG_OVERLAY_STATE
 from core.state.ApplicationLayer.dev import DEVELOPER_MODE
+from core.state.ApplicationLayer.DevTools.Debug.StateMonitor.state import MONITOR_STATE
 
 class System():
     def __init__(self):
@@ -56,6 +57,8 @@ class System():
         else:
             self.system_monitor["network"] = "Not Connected"
 
+        self.application = None
+
     def control_state_toggle(self):
         if not self.control_state.is_state(DEVELOPER_MODE.ON):
             self.control_state.set_state(DEVELOPER_MODE.ON)
@@ -70,7 +73,14 @@ class System():
 
     def go_to_menu(self):
         self.app_state.set_state(APPSTATE.MAIN_MENU)
+        if self.application is not None:
+            self.application.quit_to_menu()
+            self.application = None
         self.sound.play_music()
+
+    def reset_application(self):
+        if self.application:
+            self.application.reset_game()
         
     def quit(self):
         self.app_state.set_state(APPSTATE.QUIT)
@@ -91,3 +101,24 @@ class System():
             log_event('SFX volume file creation: sfx_volume file created')
         else:
             log_event('SFX volume file creation: sfx_volume file exists')
+
+    def initialize_application(self):
+        from core.application.game import GameInterface
+        self.app_state.set_state(APPSTATE.GAME)
+        self.state_monitor_state.set_state(MONITOR_STATE.GAME)
+        self.application = GameInterface(self)
+        self.application.init()
+        
+
+    def clean_up_states(self, states):
+        collections = (
+            self.app_state.active_application_states,
+            self.app_state.active_system_states,
+            self.app_state.active_game_states,
+            self.app_state.all_active_states,
+        )
+
+        for state in states:
+            for collection in collections:
+                if state in collection:
+                    collection.remove(state)

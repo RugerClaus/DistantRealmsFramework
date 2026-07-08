@@ -5,7 +5,6 @@ from core.state.ApplicationLayer.DevTools.Debug.state import DEBUG_OVERLAY_STATE
 from core.state.ApplicationLayer.dev import DEVELOPER_MODE
 from core.state.ApplicationLayer.Loading.state import LOAD_SCREEN_STATE
 from core.util.debugoverlay import DebugOverlay
-from core.application.game import GameInterface
 from core.menus.menu import Menu
 from core.loading.BootSplashManager import BootSplashManager
 
@@ -13,8 +12,7 @@ class App:
     def __init__(self,system):
 
         self.system = system
-        self.game = GameInterface(system)
-        self.menu = Menu(system,self.game)
+        self.menu = Menu(system)
         self.loading = BootSplashManager(system)
         self.debug_overlay = DebugOverlay(system,self.loading)
     
@@ -38,7 +36,7 @@ class App:
                 self.system.sound.stop_sfx("splash2")
 
             elif self.system.app_state.is_state(APPSTATE.GAME):
-                self.game.handle_event(event)
+                self.system.application.handle_event(event)
             
             if self.system.overlay_state.is_state(DEBUG_OVERLAY_STATE.ON):
                 self.debug_overlay.handle_event(event)
@@ -54,7 +52,10 @@ class App:
 
             if event.type == self.system.input.keydown():
                 if self.system.input.get_key_name(event.key) == "f11":
-                    self.system.window.toggle_fullscreen()
+                    if self.system.application is not None:
+                        print("Application Running")
+                    else:
+                        print("Application is not initialized")
                 elif self.system.input.get_key_name(event.key) == "u":
                     print(str(self.system.window.get_info()))
                 if self.system.app_state.is_state(APPSTATE.LOADING):
@@ -81,8 +82,12 @@ class App:
                 self.menu.update()
                 self.menu.draw()
             elif self.system.app_state.is_state(APPSTATE.GAME):
-                self.game.update()
-                self.game.draw()
+                if self.system.application is not None:
+
+                    self.system.application.update()
+                    self.system.application.draw()
+                else:
+                    pass
             elif self.system.app_state.is_state(APPSTATE.QUIT):
                 self.system.window.quit()
                 sys.exit()

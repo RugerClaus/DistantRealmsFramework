@@ -83,34 +83,25 @@ class DebugOverlay:
         right_y = 10
 
         if self.system.state_monitor_state.is_state(MONITOR_STATE.SYSTEM):
-            for state in self.system.app_state.get_global_active_system_states():
-                appstate_text = f"{state}"
-                appstate_surf = self.font_right.render(appstate_text, False, text_color)
-                self.surface.blit(appstate_surf, (right_x - appstate_surf.get_width(), right_y))
-                right_y += appstate_surf.get_height() * 1.2
-                
+            states = self.system.app_state.get_global_active_system_states()
+            font = self.font_right
+
         elif self.system.state_monitor_state.is_state(MONITOR_STATE.APPLICATION):
-            for state in self.system.app_state.get_global_active_application_states():
-                appstate_text = f"{state}"
-                appstate_surf = self.font_right.render(appstate_text, False, text_color)
-                self.surface.blit(appstate_surf, (right_x - appstate_surf.get_width(), right_y))
-                right_y += appstate_surf.get_height() * 1.2
+            states = self.system.app_state.get_global_active_application_states()
+            font = self.font_right
 
         elif self.system.state_monitor_state.is_state(MONITOR_STATE.GAME):
-            for state in self.system.app_state.get_global_active_game_states():
-                appstate_text = f"{state}"
-                appstate_surf = self.font_right.render(appstate_text, False, text_color)
-                self.surface.blit(appstate_surf, (right_x - appstate_surf.get_width(), right_y))
-                right_y += appstate_surf.get_height() * 1.2
-        
-        elif self.system.state_monitor_state.is_state(MONITOR_STATE.ALL):
-            for state in self.system.app_state.get_all_global_active_states():
-                appstate_text = f"{state}"
-                appstate_surf = self.font_right_all.render(appstate_text, False, text_color)
-                self.surface.blit(appstate_surf, (right_x - appstate_surf.get_width(), right_y))
-                right_y += appstate_surf.get_height() * 1.2
-        
+            states = self.system.app_state.get_global_active_game_states()
+            font = self.font_right
 
+        else:
+            states = self.system.app_state.get_all_global_active_states()
+            font = self.font_right_all
+
+        for state in states:
+            surf = font.render(str(state), False, text_color)
+            self.surface.blit(surf, (right_x - surf.get_width(), right_y))
+            right_y += surf.get_height() * 1.2
 
         if self.system.control_state.is_state(DEVELOPER_MODE.ON):
             padding = 10

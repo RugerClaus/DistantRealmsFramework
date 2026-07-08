@@ -16,7 +16,7 @@ def main():
 
     if args.dev:
         system.control_state.set_state(DEVELOPER_MODE.ON)
-        app.game.init()
+        system.initialize_application()
     app.run()
 
 if __name__ == "__main__":

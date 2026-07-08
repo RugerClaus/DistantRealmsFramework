@@ -10,3 +10,5 @@ Development version Alpha 0.2.0 - 2026-07-07
 - Added a system telemetry.py in core/guts
 -- This keeps values like the network connectivity and maybe one day CPU speed, and things like that
 - Debug overlay now takes in values from dictionaries and displays them "key: value" on the next available space on the screen
+- Refactored how game is initialized, added lifecycle beginning and end to Game Interface and its children
+- Moved runtime inspector (game telemetry) handling to the Game Object, and deferred lifecycle to the GameInterface module

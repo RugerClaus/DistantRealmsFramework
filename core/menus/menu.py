@@ -14,9 +14,8 @@ from core.state.ApplicationLayer.NetworkLayer.Update.state import UPDATE_STATE
 from core.menus.changelog import ChangeLog
 
 class Menu(BaseMenu):
-    def __init__(self,system, game):
+    def __init__(self,system):
         self.system = system
-        self.game = game
         super().__init__(system)
         self.state = MenuStateManager()
         self.credits = Credits(system)
@@ -85,7 +84,7 @@ class Menu(BaseMenu):
         if self.state.is_state(MENUSTATE.ROOT) and self.updater.state.is_state(UPDATE_STATE.CURRENT):
             self.buttons = [
                 Button(self.system.sound, self.system.window, "Application", center_x, start_y, btn_width, btn_height,
-                    (255, 255, 255), self.button_action_true_color, self.game.init),
+                    (255, 255, 255), self.button_action_true_color, self.system.initialize_application),
                 Button(self.system.sound, self.system.window, "Sprite Editor", center_x, start_y + spacing, btn_width, btn_height,
                     (255, 255, 255), self.button_action_true_color, None,False),
                 Button(self.system.sound, self.system.window, "3D Editor", center_x, start_y + spacing * 2, btn_width, btn_height,
@@ -100,7 +99,7 @@ class Menu(BaseMenu):
         if self.state.is_state(MENUSTATE.ROOT) and self.updater.state.is_state(UPDATE_STATE.AVAILABLE):
             self.buttons = [
                 Button(self.system.sound, self.system.window, "Application", center_x, start_y, btn_width, btn_height,
-                    (255, 255, 255), self.button_action_true_color, self.game.init),
+                    (255, 255, 255), self.button_action_true_color, self.system.initialize_application),
                 Button(self.system.sound, self.system.window, "Sprite Editor", center_x, start_y + spacing, btn_width, btn_height,
                     (255, 255, 255), self.button_action_true_color, None,False),
                 Button(self.system.sound, self.system.window, "3D Editor", center_x, start_y + spacing, btn_width, btn_height,
