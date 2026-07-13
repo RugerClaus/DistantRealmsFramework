@@ -2,7 +2,7 @@ from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
 from core.state.basestatemanager import BaseStateManager
 from systemlogging import log_state_transition
 
-class DevManager(BaseStateManager):
+class DeveloperModeStateManager(BaseStateManager):
     def __init__(self):
 
         allowed_transitions = {

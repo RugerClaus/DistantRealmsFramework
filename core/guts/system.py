@@ -19,7 +19,7 @@ from core.guts.telemetry import system_monitor
 # state systems
 from core.state.RuntimeLayer.statemanager import RuntimeStateManager
 from core.state.RuntimeLayer.DevTools.Debug.statemanager import DebugStateManager
-from core.state.RuntimeLayer.DevTools.DeveloperMode.statemanager import DevManager
+from core.state.RuntimeLayer.DevTools.DeveloperMode.statemanager import DeveloperModeStateManager
 from core.state.RuntimeLayer.DevTools.StateMonitor.statemanager import StateMonitorStateManager
 
 from core.state.RuntimeLayer.state import RUNTIME_STATE
@@ -35,7 +35,7 @@ class System():
 
         self.runtime_state = RuntimeStateManager()
         self.overlay_state = DebugStateManager()
-        self.control_state = DevManager()
+        self.control_state = DeveloperModeStateManager()
         self.state_monitor_state = StateMonitorStateManager()
 
         self.time = Time()
