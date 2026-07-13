@@ -231,8 +231,6 @@ class Menu(BaseMenu):
                 self.submit_username()
         if self.state.is_state(MENUSTATE.CHANGELOG):
             self.change_log.handle_event(event)
-        if self.state.is_state(MENUSTATE.LOGIN):
-            self.login_page.handle_event(event)
 
     def scale(self):
         self.rescale_assets()

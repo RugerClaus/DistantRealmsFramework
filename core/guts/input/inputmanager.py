@@ -48,6 +48,9 @@ class InputManager:
     def quit_event(self):
         return pygame.QUIT
 
+    def mouse_scroll_event(self):
+        return pygame.MOUSEWHEEL
+
     def set_game_controls(self,move_left=None, move_right=None, move_up=None, move_down=None):
         if move_left is not None and move_right is not None:
             self.game_controls.set_controls(move_left, move_right, move_up, move_down)
