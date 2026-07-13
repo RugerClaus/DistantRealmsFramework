@@ -1,3 +1,6 @@
 system_monitor ={
-    "network": None
+    "network": None,
+    "ClientConnected": None,
+    "clientAppPassword": None,
+    "OS": None
 }

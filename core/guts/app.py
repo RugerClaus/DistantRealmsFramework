@@ -14,7 +14,7 @@ class App:
         self.system = system
         self.menu = Menu(system)
         self.loading = BootSplashManager(system)
-        self.debug_overlay = DebugOverlay(system,self.loading)
+        self.debug_overlay = DebugOverlay(system)
     
     def handle_events(self):
         for event in self.system.input.input_event():

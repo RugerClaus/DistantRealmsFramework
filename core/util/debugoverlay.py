@@ -3,9 +3,8 @@ from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
 from core.state.RuntimeLayer.DevTools.StateMonitor.state import MONITOR_STATE
 
 class DebugOverlay:
-    def __init__(self,system,loading):
+    def __init__(self,system):
         self.system = system
-        self.loading = loading
         self.surface = system.window.draw_overlay((0, 0, 0), 128)
         self.rect = self.surface.get_rect()
         self.font_left = FontEngine("UI").font
