@@ -46,7 +46,9 @@ class Save():
 
         log_event(f"Saved CONSTANT value: '{value}' to: saves/constants/{constant}!")
 
-    def write_game_save(self, data):
+    def write_save(self, data, file=None):
+        if file:
+            self.game_save_path = file
         with open(self.game_save_path, "w") as f:
             for file_key, mapped in self.save_schema.items():
                 internal_key = mapped[0]

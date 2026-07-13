@@ -1,7 +1,7 @@
-from core.state.ApplicationLayer.state import APPSTATE
-from core.state.ApplicationLayer.BootSplash.state import BOOT_SPLASH_STATE
-from core.state.ApplicationLayer.BootSplash.statemanager import BootSplashStateManager
-from core.state.ApplicationLayer.Audio.SFX.state import SYSTEM_SFX_STATE
+from core.state.RuntimeLayer.state import RUNTIME_STATE
+from core.state.RuntimeLayer.BootSplash.state import BOOT_SPLASH_STATE
+from core.state.RuntimeLayer.BootSplash.statemanager import BootSplashStateManager
+from core.state.RuntimeLayer.Audio.SFX.state import SYSTEM_SFX_STATE
 from core.application.entities.entitymanager import EntityManager
 from helper import asset
 
@@ -29,8 +29,8 @@ class BootSplashManager:
 
     def update(self):
         if self.state.is_state(BOOT_SPLASH_STATE.NONE):
-            self.system.app_state.set_state(APPSTATE.MAIN_MENU)
-        if not self.system.app_state.is_state(APPSTATE.LOADING):
+            self.system.runtime_state.set_state(RUNTIME_STATE.MAIN_MENU)
+        if not self.system.runtime_state.is_state(RUNTIME_STATE.LOADING):
 
             self.system.sound.system_sfx_state.set_state(SYSTEM_SFX_STATE.OFF)
         

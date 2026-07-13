@@ -1,8 +1,8 @@
 from core.menus.basemenu import BaseMenu
 from core.ui.button import Button
-from core.state.ApplicationLayer.Menu.Pause.state import PAUSE_MENU_STATE
-from core.state.ApplicationLayer.Menu.Pause.statemanager import PauseMenuStateManager
-from core.state.GameLayer.state import GAMESTATE
+from core.state.RuntimeLayer.Menu.Pause.state import PAUSE_MENU_STATE
+from core.state.RuntimeLayer.Menu.Pause.statemanager import PauseMenuStateManager
+from core.state.ApplicationLayer.state import GAMESTATE
 
 class Pause(BaseMenu):
     def __init__(self, system, game, resume_callback):

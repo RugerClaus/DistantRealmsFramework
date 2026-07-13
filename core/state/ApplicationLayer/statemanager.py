@@ -1,20 +1,18 @@
-from core.state.ApplicationLayer.state import APPSTATE
-from core.state.basestatemanager import BaseStateManager
 from systemlogging import log_state_transition
+from core.state.ApplicationLayer.state import GAMESTATE
+from core.state.basestatemanager import BaseStateManager
 
-class StateManager(BaseStateManager):
+class GameStateManager(BaseStateManager):
     def __init__(self):
-
         allowed_transitions = {
-            APPSTATE.LOADING: [APPSTATE.MAIN_MENU,APPSTATE.GAME,APPSTATE.QUIT],
-            APPSTATE.MAIN_MENU: [APPSTATE.GAME,APPSTATE.QUIT],
-            APPSTATE.GAME: [APPSTATE.MAIN_MENU,APPSTATE.QUIT]
+            GAMESTATE.PLAYING: [GAMESTATE.PAUSED,GAMESTATE.NONE],
+            GAMESTATE.PAUSED: [GAMESTATE.PLAYING],
+            GAMESTATE.NONE: [GAMESTATE.PLAYING]
         }
-        
         super().__init__(
-                initial_state=APPSTATE.LOADING,
-                allowed_transitions=allowed_transitions,
-                log_fn=lambda old, new, state_type: log_state_transition(old, new, state_type),
-                state_name="APPSTATE",
-                type="APPLICATION"
-            )
+            initial_state=GAMESTATE.NONE,
+            allowed_transitions=allowed_transitions,
+            log_fn=lambda old, new, state_type: log_state_transition(old, new, state_type),
+            state_name="GAMESTATE",
+            type="APPLICATION"
+        )

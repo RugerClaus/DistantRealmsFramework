@@ -1,7 +1,7 @@
 from core.ui.font import FontEngine
-from core.state.ApplicationLayer.Audio.Interface.state import INTERFACE_SFX_STATE
-from core.state.ApplicationLayer.Audio.Music.state import MUSIC_STATE
-from core.state.ApplicationLayer.Audio.Game.state import GAME_SFX_STATE
+from core.state.RuntimeLayer.Audio.Interface.state import INTERFACE_SFX_STATE
+from core.state.RuntimeLayer.Audio.Music.state import MUSIC_STATE
+from core.state.RuntimeLayer.Audio.Application.state import APP_SFX_STATE
 
 from helper import log_error
 class BaseMenu:
@@ -28,7 +28,7 @@ class BaseMenu:
                 elif button.text.startswith("SFX Vol:") and self.system.sound is not None:
                     button.set_new_text(f"SFX Vol: {int(self.system.sound.sfx_volume*10)}")
                 elif button.text.startswith("Game SFX:") and self.system.sound is not None:
-                    button.set_new_text(f"Game SFX: {'On' if self.system.sound.game_sfx_state.is_state(GAME_SFX_STATE.ON) else 'Off'}")
+                    button.set_new_text(f"Game SFX: {'On' if self.system.sound.game_sfx_state.is_state(APP_SFX_STATE.ON) else 'Off'}")
 
     def set_title(self,text):
         if text == None:
@@ -112,11 +112,11 @@ class BaseMenu:
             return
         
     def toggle_game_sfx(self):
-        if not self.system.sound.game_sfx_state.is_state(GAME_SFX_STATE.NONE):
-            if not self.system.sound.game_sfx_state.is_state(GAME_SFX_STATE.ON):
-                self.system.sound.game_sfx_state.set_state(GAME_SFX_STATE.ON)
+        if not self.system.sound.game_sfx_state.is_state(APP_SFX_STATE.NONE):
+            if not self.system.sound.game_sfx_state.is_state(APP_SFX_STATE.ON):
+                self.system.sound.game_sfx_state.set_state(APP_SFX_STATE.ON)
             else:
-                self.system.sound.game_sfx_state.set_state(GAME_SFX_STATE.OFF)
+                self.system.sound.game_sfx_state.set_state(APP_SFX_STATE.OFF)
             self.update_toggle_buttons()
         else:
             log_error("No audio device found",f"{self.system.sound.game_sfx_state.get_state()}: unable to enable button sound")

@@ -4,7 +4,8 @@ import zipfile
 import shutil
 import subprocess
 import time
-from helper import log_event, log_error,write_envar_to_file
+from helper import write_envar_to_file
+from systemlogging import log_event, log_error
 
 if getattr(sys, 'frozen', False):
     ROOT_DIR = os.path.dirname(sys.executable)

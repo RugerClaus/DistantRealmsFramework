@@ -1,0 +1,9 @@
+from config import config
+
+API = config.get("API", {})
+
+REGISTER = API.get("REGISTRATION_URL")
+LOGIN = API.get("LOGIN_URL")
+LEADERBOARD = API.get("LEADERBOARD")
+UPDATE_SCORE = API.get("UPDATE_SCORE")
+CREATE_SESSION = API.get("CREATE_SESSION")

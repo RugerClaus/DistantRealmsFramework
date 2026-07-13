@@ -1,14 +1,5 @@
-Development version Alpha 0.2.0 - 2026-07-07
--------------------------------------------------
-- Removed most helper functions from helper.py
--- systems like reading and writing files are now in the save/load system exclusively
-- Removed logging functions from helper.py. They are now in systemlogging.py
-- Put time only on the system object and made sure everything obeys that rule
-- Passed the system object to core systems (Window,AudioEngine,InputManager)
-- Added network checks for all network related functions
-- Added a Network class and consumed it with the system object
-- Added a system telemetry.py in core/guts
--- This keeps values like the network connectivity and maybe one day CPU speed, and things like that
-- Debug overlay now takes in values from dictionaries and displays them "key: value" on the next available space on the screen
-- Refactored how game is initialized, added lifecycle beginning and end to Game Interface and its children
-- Moved runtime inspector (game telemetry) handling to the Game Object, and deferred lifecycle to the GameInterface module
+Development version Alpha 0.3.0 - 2026-07-07
+- Upgraded network system.
+- Added networking to core/applicatio
+- Revamped UI and added a UI editor/Menu creator tool
+- Renamed a ton of state systems in preparation for the Application State Tree Creator

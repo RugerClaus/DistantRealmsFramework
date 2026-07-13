@@ -5,37 +5,37 @@ from mutagen import File
 from helper import audio_path
 from systemlogging import log_error,log_event
 
-from core.state.ApplicationLayer.state import APPSTATE
+from core.state.RuntimeLayer.state import RUNTIME_STATE
 
-from core.state.ApplicationLayer.Audio.Interface.state import INTERFACE_SFX_STATE
-from core.state.ApplicationLayer.Audio.Interface.statemanager import InterfaceSFXStateManager
-from core.state.ApplicationLayer.Audio.Music.state import MUSIC_STATE
-from core.state.ApplicationLayer.Audio.Music.statemanager import MusicStateManager
-from core.state.ApplicationLayer.Audio.Game.state import GAME_SFX_STATE
-from core.state.ApplicationLayer.Audio.Game.statemanager import GameSFXStateManager
-from core.state.ApplicationLayer.Audio.SFX.state import SYSTEM_SFX_STATE
-from core.state.ApplicationLayer.Audio.SFX.statemanager import SystemSFXStateManager
+from core.state.RuntimeLayer.Audio.Interface.state import INTERFACE_SFX_STATE
+from core.state.RuntimeLayer.Audio.Interface.statemanager import InterfaceSFXStateManager
+from core.state.RuntimeLayer.Audio.Music.state import MUSIC_STATE
+from core.state.RuntimeLayer.Audio.Music.statemanager import MusicStateManager
+from core.state.RuntimeLayer.Audio.Application.state import APP_SFX_STATE
+from core.state.RuntimeLayer.Audio.Application.statemanager import AppSFXStateManager
+from core.state.RuntimeLayer.Audio.SFX.state import SYSTEM_SFX_STATE
+from core.state.RuntimeLayer.Audio.SFX.statemanager import SystemSFXStateManager
 
 class AudioEngine:
     def __init__(self,system):
         self.system = system
-        self.app_state = system.app_state
+        self.runtime_state = system.runtime_state
         default_volume = 0.3
         system.create_volume_files(str(default_volume))
         self.interface_sfx_state = InterfaceSFXStateManager()
         self.music_state = MusicStateManager()
-        self.game_sfx_state = GameSFXStateManager()
+        self.game_sfx_state = AppSFXStateManager()
         self.system_sfx_state = SystemSFXStateManager()
         sound_on = self.initialize_audio()
         if sound_on:
             self.interface_sfx_state.set_state(INTERFACE_SFX_STATE.ON)
             self.music_state.set_state(MUSIC_STATE.ON)
-            self.game_sfx_state.set_state(GAME_SFX_STATE.ON)
+            self.game_sfx_state.set_state(APP_SFX_STATE.ON)
             self.system_sfx_state.set_state(SYSTEM_SFX_STATE.ON)
         else:
             self.interface_sfx_state.set_state(INTERFACE_SFX_STATE.OFF)
             self.music_state.set_state(MUSIC_STATE.OFF)
-            self.game_sfx_state.set_state(GAME_SFX_STATE.OFF)
+            self.game_sfx_state.set_state(APP_SFX_STATE.OFF)
             self.system_sfx_state.set_state(SYSTEM_SFX_STATE.OFF)
             pygame.mixer.stop()
 
@@ -99,7 +99,7 @@ class AudioEngine:
                 self.menu_track = track_path
     
     def play_sfx(self, effect_name):
-        if self.game_sfx_state.is_state(GAME_SFX_STATE.ON):
+        if self.game_sfx_state.is_state(APP_SFX_STATE.ON):
             if effect_name in self.sound_effects:
                 sound_effect = self.sound_effects[effect_name]
                 sound_effect.set_volume(self.sfx_volume)
@@ -107,7 +107,7 @@ class AudioEngine:
                 self.active_sfx[effect_name] = sound_effect
             else:
                 log_error(f"Sound effect '{effect_name}' not found.")
-        elif self.game_sfx_state.is_state(GAME_SFX_STATE.NONE):
+        elif self.game_sfx_state.is_state(APP_SFX_STATE.NONE):
             log_error("Missing sound device", "AudioEngine: cannot set sound device")
     
         else:
@@ -168,7 +168,7 @@ class AudioEngine:
         self.active_sfx.clear()
 
     def play_music(self,mode=None):
-        if self.app_state.is_state(APPSTATE.GAME):
+        if self.runtime_state.is_state(RUNTIME_STATE.APPLICATION):
             if not self.music_queue:
                 self.music_queue = list(self.music_tracks.keys())
                 random.shuffle(self.music_queue)
@@ -178,7 +178,7 @@ class AudioEngine:
             pygame.mixer.music.set_volume(self.volume)
             pygame.mixer.music.play()
 
-        elif self.app_state.is_state(APPSTATE.MAIN_MENU):
+        elif self.runtime_state.is_state(RUNTIME_STATE.MAIN_MENU):
             pygame.mixer.music.load(self.menu_track)
             self.current_track = "LoFiSi - JumpyJuggernaut"
             pygame.mixer.music.set_volume(self.volume)

@@ -1,11 +1,7 @@
 #!/bin/bash
 set -e
 
-<<<<<<< HEAD
 APP_NAME="MyApp"
-=======
-APP_NAME=$(cat saves/constants/n)
->>>>>>> e4a72e9 (first minor update)
 MAIN="main.py"
 UPDATER_MAIN="updater.py"
 UPDATER_NAME="updater"
@@ -68,7 +64,7 @@ function build_main() {
     --add-data "$ASSETS_PATH_WIN;assets" \
     --add-data "$LOGS_PATH_WIN;logs" \
     --add-data "$SAVES_PATH_WIN;saves" \
-    --add-data "$ENVIRONMENT_PATH_WIN/environment:environment" \
+    --add-data "$ENVIRONMENT_PATH_WIN;environment" \
     --distpath "$TMP_DIST" \
     --workpath "$WORK_ROOT/windows" \
     --specpath "$SPEC_ROOT/windows"

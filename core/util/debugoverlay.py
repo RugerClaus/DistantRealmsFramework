@@ -1,6 +1,6 @@
 from core.ui.font import FontEngine
-from core.state.ApplicationLayer.dev import DEVELOPER_MODE
-from core.state.ApplicationLayer.DevTools.Debug.StateMonitor.state import MONITOR_STATE
+from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
+from core.state.RuntimeLayer.DevTools.StateMonitor.state import MONITOR_STATE
 
 class DebugOverlay:
     def __init__(self,system,loading):
@@ -28,10 +28,10 @@ class DebugOverlay:
         command = self.system.input.handle_event(event)
         if command == "monitor_system_states":
             self.system.state_monitor_state.set_state(MONITOR_STATE.SYSTEM)
+        elif command == "monitor_runtime_states":
+            self.system.state_monitor_state.set_state(MONITOR_STATE.RUNTIME)
         elif command == "monitor_application_states":
             self.system.state_monitor_state.set_state(MONITOR_STATE.APPLICATION)
-        elif command == "monitor_game_states":
-            self.system.state_monitor_state.set_state(MONITOR_STATE.GAME)
         elif command == "monitor_all_states":
             self.system.state_monitor_state.set_state(MONITOR_STATE.ALL)
         elif command == "raise_opacity":
@@ -71,7 +71,7 @@ class DebugOverlay:
                 self.surface.blit(inspector_surf, (left_x, left_y))
                 left_y += inspector_surf.get_height() * 1.2
 
-        for items in self.system.runtime_inspector.items():
+        for items in self.system.app_inspector.items():
             key, value = items
             if value is not None:
                 inspector_text = f"{key}: {value}"
@@ -83,19 +83,19 @@ class DebugOverlay:
         right_y = 10
 
         if self.system.state_monitor_state.is_state(MONITOR_STATE.SYSTEM):
-            states = self.system.app_state.get_global_active_system_states()
+            states = self.system.runtime_state.get_global_active_system_states()
+            font = self.font_right
+
+        elif self.system.state_monitor_state.is_state(MONITOR_STATE.RUNTIME):
+            states = self.system.runtime_state.get_global_active_runtime_states()
             font = self.font_right
 
         elif self.system.state_monitor_state.is_state(MONITOR_STATE.APPLICATION):
-            states = self.system.app_state.get_global_active_application_states()
-            font = self.font_right
-
-        elif self.system.state_monitor_state.is_state(MONITOR_STATE.GAME):
-            states = self.system.app_state.get_global_active_game_states()
+            states = self.system.runtime_state.get_global_active_application_states()
             font = self.font_right
 
         else:
-            states = self.system.app_state.get_all_global_active_states()
+            states = self.system.runtime_state.get_all_global_active_states()
             font = self.font_right_all
 
         for state in states:

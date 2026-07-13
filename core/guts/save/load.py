@@ -37,7 +37,9 @@ class Load():
             log_error(f"Error reading from file: {e}")
             return None
     
-    def load_game_save(self):
+    def load_save(self,file=None):
+        if file:
+            self.game_save_path = file
         if os.path.exists(self.game_save_path):
             with open(self.game_save_path, "r") as f:
                 for line in f:

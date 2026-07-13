@@ -1,5 +1,5 @@
-from core.state.ApplicationLayer.Loading.statemanager import LoadingStateManager
-from core.state.ApplicationLayer.Loading.state import LOAD_SCREEN_STATE
+from core.state.RuntimeLayer.Loading.statemanager import LoadingStateManager
+from core.state.RuntimeLayer.Loading.state import LOAD_SCREEN_STATE
 from core.ui.font import FontEngine
 
 

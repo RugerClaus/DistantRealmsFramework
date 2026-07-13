@@ -74,3 +74,6 @@ class Keys:
     
     def backtick(self):
         return pygame.K_BACKQUOTE
+    
+    def backspace_key(self):
+        return pygame.K_BACKSPACE
