@@ -37,7 +37,7 @@ F8 + 2: Show all global active APPLICATION states
 F8 + 3: Show all global active GAME states
 F8 + 4: Show all global active states
 
-Press F9 to display the debug overlay. This shows the current track, framerate, and the state tree for all active states, including APPSTATE and GAMESTATE.
+Press F9 to display the debug overlay. This shows the current track, framerate, and the state tree for all active states, including RUNTIME_STATE and GAMESTATE.
 
 Press F2 to enter developer mode. This will eventually allow opening a developer console and modifying game variables, including executing Python code.
 
@@ -66,7 +66,7 @@ The core runtime backbone is in core/state, based on basestatemanager.py.
 
 You will often see patterns like:
 
-self.system.app_state.set_state(APPSTATE.MAIN_MENU)
+self.system.app_state.set_state(RUNTIME_STATE.MAIN_MENU)
 
 States are defined as enums. Each statemanager.py defines allowed transitions via a dictionary.
 
@@ -74,7 +74,7 @@ State Manager Concepts
 
 Each state manager inherits from BaseStateManager and requires:
 
-initial_state: starting state (e.g., APPSTATE.LOADING)
+initial_state: starting state (e.g., RUNTIME_STATE.LOADING)
 allowed_transitions: dictionary of valid transitions
 log_fn: callback for logging transitions
 state_name: string name of the state type
@@ -96,7 +96,7 @@ Example State Enum
 ```
 from enum import Enum, auto
 
-class APPSTATE(Enum):
+class RUNTIME_STATE(Enum):
     LOADING = auto()
     MAIN_MENU = auto()
     GAME = auto()
@@ -104,23 +104,23 @@ class APPSTATE(Enum):
 ```
 Example State Manager
 ```
-from core.state.ApplicationLayer.state import APPSTATE
+from core.state.ApplicationLayer.state import RUNTIME_STATE
 from core.state.basestatemanager import BaseStateManager
 from helper import log_state_transition
 
 class StateManager(BaseStateManager):
     def __init__(self):
         allowed_transitions = {
-            APPSTATE.LOADING: [APPSTATE.MAIN_MENU, APPSTATE.QUIT],
-            APPSTATE.MAIN_MENU: [APPSTATE.GAME, APPSTATE.QUIT],
-            APPSTATE.GAME: [APPSTATE.MAIN_MENU, APPSTATE.QUIT]
+            RUNTIME_STATE.LOADING: [RUNTIME_STATE.MAIN_MENU, RUNTIME_STATE.QUIT],
+            RUNTIME_STATE.MAIN_MENU: [RUNTIME_STATE.GAME, RUNTIME_STATE.QUIT],
+            RUNTIME_STATE.GAME: [RUNTIME_STATE.MAIN_MENU, RUNTIME_STATE.QUIT]
         }
 
         super().__init__(
-            initial_state=APPSTATE.LOADING,
+            initial_state=RUNTIME_STATE.LOADING,
             allowed_transitions=allowed_transitions,
             log_fn=lambda old, new, state_type: log_state_transition(old, new, state_type),
-            state_name="APPSTATE",
+            state_name="RUNTIME_STATE",
             type="APPLICATION"
         )
 ```

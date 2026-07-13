@@ -229,6 +229,10 @@ class Menu(BaseMenu):
             keys = self.system.input.get_pressed_keys()
             if keys[self.system.input.keys.return_key()]:
                 self.submit_username()
+        if self.state.is_state(MENUSTATE.CHANGELOG):
+            self.change_log.handle_event(event)
+        if self.state.is_state(MENUSTATE.LOGIN):
+            self.login_page.handle_event(event)
 
     def scale(self):
         self.rescale_assets()

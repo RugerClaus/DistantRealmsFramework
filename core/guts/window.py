@@ -1,21 +1,20 @@
 import pygame
-
 from systemlogging import log_error
-from helper import asset,get_colors
+from helper import get_colors,asset
 from config import config
 
 class Window:
     def __init__(self,system):
         pygame.init()
         self.system = system
-        self.default_width = 1200
-        self.default_height = 800
+        self.default_width = 1600
+        self.default_height = 900
         self.color = (255,0,0)
-        self.width = self.default_width
-        self.height = self.default_height
+        self.width = None
+        self.height = None
         self.fps = 60
         self.fullscreen = False
-        self.set_mode(self.width,self.height,config.get("DISPLAY_MODE"))
+        self.set_mode(self.width,self.height)
         self.Rect = pygame.Rect
         
         
@@ -24,19 +23,9 @@ class Window:
         return pygame.mask.from_surface(surface)
 
     def set_mode(self,width=None,height=None,mode=None):
-        if width is None and height is None:
-            self.screen = pygame.display.set_mode((self.width,self.height),pygame.FULLSCREEN if self.fullscreen else pygame.RESIZABLE)
-        elif width is not None and height is None:
-            self.screen = pygame.display.set_mode((width,self.height),pygame.FULLSCREEN if self.fullscreen else pygame.RESIZABLE)
-        elif width is None and height is not None:
-            self.screen = pygame.display.set_mode((self.width,height),pygame.FULLSCREEN if self.fullscreen else pygame.RESIZABLE)
-        else:
-            self.screen = pygame.display.set_mode((width,height),pygame.FULLSCREEN if self.fullscreen else pygame.RESIZABLE)
-        if mode == "OPENGL":
-            self.mode = mode
-            self.screen = pygame.display.set_mode((self.width,self.height),pygame.FULLSCREEN if self.fullscreen else pygame.RESIZABLE|pygame.OPENGL|pygame.SCALED)
+        self.screen = pygame.display.set_mode((width if width is not None else self.default_width,height if height is not None else self.default_height),pygame.RESIZABLE)
+        
         pygame.display.set_caption(f"{config['TITLE']} {config['VERSION']}")
-
         icon = self.load_image(asset("linux_icon"))
         pygame.display.set_icon(icon)
         

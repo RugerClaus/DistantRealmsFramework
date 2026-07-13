@@ -3,3 +3,5 @@ Development version Alpha 0.3.0 - 2026-07-07
 - Added networking to core/applicatio
 - Revamped UI and added a UI editor/Menu creator tool
 - Renamed a ton of state systems in preparation for the Application State Tree Creator
+- Added scrollable text with scrollbars
+- Fixed window not resizing

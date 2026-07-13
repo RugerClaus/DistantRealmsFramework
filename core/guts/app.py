@@ -19,7 +19,7 @@ class App:
     def handle_events(self):
         for event in self.system.input.input_event():
             if event.type == self.system.input.video_resize_event():
-                self.system.window.set_mode()
+                self.system.window.set_mode(event.w,event.h)
                 self.debug_overlay.scale()
                 if self.system.runtime_state.is_state(RUNTIME_STATE.LOADING):
                     self.loading.rescale_assets()

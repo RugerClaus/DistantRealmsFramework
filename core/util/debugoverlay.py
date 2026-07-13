@@ -3,14 +3,16 @@ from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
 from core.state.RuntimeLayer.DevTools.StateMonitor.state import MONITOR_STATE
 
 class DebugOverlay:
-    def __init__(self,system):
+    def __init__(self, system):
         self.system = system
         self.surface = system.window.draw_overlay((0, 0, 0), 128)
         self.rect = self.surface.get_rect()
+
         self.font_left = FontEngine("UI").font
         self.font_right = FontEngine("debug_state").font
         self.font_right_all = FontEngine("debug_all_state").font
         self.devmodefont = FontEngine(20).font
+
         self.opacity = 0
 
     def create_options(self):
@@ -20,66 +22,159 @@ class DebugOverlay:
         self.surface = self.system.window.draw_overlay((0, 0, 0), 128)
         self.rect = self.surface.get_rect()
 
-    def handle_event(self,event):
+    def normalized_to_pixel(self, x, y):
+        return (
+            int(x * self.surface.get_width()),
+            int(y * self.surface.get_height())
+        )
+
+    def handle_event(self, event):
         if event.type == self.system.input.video_resize_event():
             self.scale()
 
         command = self.system.input.handle_event(event)
+
         if command == "monitor_system_states":
             self.system.state_monitor_state.set_state(MONITOR_STATE.SYSTEM)
+
         elif command == "monitor_runtime_states":
             self.system.state_monitor_state.set_state(MONITOR_STATE.RUNTIME)
+
         elif command == "monitor_application_states":
             self.system.state_monitor_state.set_state(MONITOR_STATE.APPLICATION)
+
         elif command == "monitor_all_states":
             self.system.state_monitor_state.set_state(MONITOR_STATE.ALL)
+
         elif command == "raise_opacity":
             self.opacity = min(255, self.opacity + 32)
+
         elif command == "lower_opacity":
             self.opacity = max(0, self.opacity - 32)
 
     def draw(self):
         text_color = (255, 255, 255)
-        self.surface.fill((0, 0, 0,self.opacity))
-        surface_width = self.surface.get_width()
-        
-        left_x = 10
-        left_y = 10
+
+        self.surface.fill((0, 0, 0, self.opacity))
+
+        width = self.surface.get_width()
+        height = self.surface.get_height()
+
+        left_margin = 0.01
+        top_margin = 0.01
+        right_margin = 0.01
+        bottom_margin = 0.01
+
+        line_spacing = 0.012
+
+        left_x, left_y = self.normalized_to_pixel(
+            left_margin,
+            top_margin
+        )
+
+        line_height = self.font_left.get_height()
 
         fps_text = f"FPS: {round(self.system.window.get_fps())}"
-        fps_surf = self.font_left.render(fps_text, False, text_color)
-        self.surface.blit(fps_surf, (left_x, left_y))
-        left_y += fps_surf.get_height() * 1.2
+        fps_surf = self.font_left.render(
+            fps_text,
+            False,
+            text_color
+        )
 
-        stripped_title = self.system.sound.current_track.rsplit('.', 1)[0] if self.system.sound.current_track else None
+        self.surface.blit(
+            fps_surf,
+            (left_x, left_y)
+        )
+
+        left_y += int(line_height + height * line_spacing)
+
+        stripped_title = (
+            self.system.sound.current_track.rsplit('.', 1)[0]
+            if self.system.sound.current_track
+            else None
+        )
+
         song_text = f"Song: {stripped_title or 'None'}"
-        
-        song_surf = self.font_left.render(song_text, False, text_color)
-        self.surface.blit(song_surf, (left_x, left_y))
-        left_y += song_surf.get_height() * 1.2
+
+        song_surf = self.font_left.render(
+            song_text,
+            False,
+            text_color
+        )
+
+        self.surface.blit(
+            song_surf,
+            (left_x, left_y)
+        )
+
+        left_y += int(line_height + height * line_spacing)
 
         opacity_text = f"Overlay Opacity: {self.opacity}"
-        opacity_surf = self.font_left.render(opacity_text, False, text_color)
-        self.surface.blit(opacity_surf, (left_x, self.system.window.get_height() - opacity_surf.get_height() - 10))
 
-        for items in self.system.system_monitor.items():
-            key, value = items
-            if value is not None:
-                inspector_text = f"{key}: {value}"
-                inspector_surf = self.font_left.render(inspector_text, False, text_color)
-                self.surface.blit(inspector_surf, (left_x, left_y))
-                left_y += inspector_surf.get_height() * 1.2
+        opacity_surf = self.font_left.render(
+            opacity_text,
+            False,
+            text_color
+        )
 
-        for items in self.system.app_inspector.items():
-            key, value = items
-            if value is not None:
-                inspector_text = f"{key}: {value}"
-                inspector_surf = self.font_left.render(inspector_text, False, text_color)
-                self.surface.blit(inspector_surf, (left_x, left_y))
-                left_y += inspector_surf.get_height() * 1.2
+        opacity_x, opacity_y = self.normalized_to_pixel(
+            left_margin,
+            1.0 - bottom_margin
+        )
 
-        right_x = surface_width - 10
-        right_y = 10
+        self.surface.blit(
+            opacity_surf,
+            (
+                opacity_x,
+                opacity_y - opacity_surf.get_height()
+            )
+        )
+
+        for key, value in self.system.system_monitor.items():
+
+            if value is None:
+                continue
+
+            inspector_text = f"{key}: {value}"
+
+            inspector_surf = self.font_left.render(
+                inspector_text,
+                False,
+                text_color
+            )
+
+            self.surface.blit(
+                inspector_surf,
+                (left_x, left_y)
+            )
+
+            left_y += int(line_height + height * line_spacing)
+
+        for key, value in self.system.app_inspector.items():
+
+            if value is None:
+                continue
+
+            inspector_text = f"{key}: {value}"
+
+            inspector_surf = self.font_left.render(
+                inspector_text,
+                False,
+                text_color
+            )
+
+            self.surface.blit(
+                inspector_surf,
+                (left_x, left_y)
+            )
+
+            left_y += int(line_height + height * line_spacing)
+
+        right_x, right_y = self.normalized_to_pixel(
+            1.0 - right_margin,
+            top_margin
+        )
+
 
         if self.system.state_monitor_state.is_state(MONITOR_STATE.SYSTEM):
             states = self.system.runtime_state.get_global_active_system_states()
@@ -97,32 +192,76 @@ class DebugOverlay:
             states = self.system.runtime_state.get_all_global_active_states()
             font = self.font_right_all
 
+
         for state in states:
-            surf = font.render(str(state), False, text_color)
-            self.surface.blit(surf, (right_x - surf.get_width(), right_y))
-            right_y += surf.get_height() * 1.2
+
+            surf = font.render(
+                str(state),
+                False,
+                text_color
+            )
+
+            self.surface.blit(
+                surf,
+                (
+                    right_x - surf.get_width(),
+                    right_y
+                )
+            )
+
+            right_y += int(
+                surf.get_height() +
+                height * line_spacing
+            )
 
         if self.system.control_state.is_state(DEVELOPER_MODE.ON):
-            padding = 10
-            devmode_warning_text = "WARNING: DEVELOPER MODE ENABLED"
-            devmode_warning_surf = self.devmodefont.render(devmode_warning_text, False, text_color)
+
+            padding = int(width * 0.01)
+
+            warning_text = "WARNING: DEVELOPER MODE ENABLED"
+
+            warning_surf = self.devmodefont.render(
+                warning_text,
+                False,
+                text_color
+            )
+
             background = self.system.window.make_surface(
-                devmode_warning_surf.get_width() + padding,
-                devmode_warning_surf.get_height() + padding,
+                warning_surf.get_width() + padding,
+                warning_surf.get_height() + padding,
                 True
             )
-            background.fill((255, 0, 0,128))
-            text_rect = devmode_warning_surf.get_rect(
+
+            background.fill((255, 0, 0, 128))
+
+            text_rect = warning_surf.get_rect(
                 center=background.get_rect().center
             )
-            background.blit(devmode_warning_surf, text_rect)
-            background_rect = background.get_rect(
-                bottomright=(self.system.window.get_width(), self.system.window.get_height())
+
+            background.blit(
+                warning_surf,
+                text_rect
             )
-            self.surface.blit(background, background_rect)
 
-        self.system.window.blit(self.surface, self.rect)
+            bottom_right = self.normalized_to_pixel(
+                1.0,
+                1.0
+            )
 
+            background_rect = background.get_rect(
+                bottomright=bottom_right
+            )
+
+            self.surface.blit(
+                background,
+                background_rect
+            )
+
+
+        self.system.window.blit(
+            self.surface,
+            self.rect
+        )
 
     def update(self):
         pass

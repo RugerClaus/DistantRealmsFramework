@@ -101,7 +101,7 @@ class InputManager:
 
     def draw_most_recent_keypress(self):
         self.surface.fill((0, 0, 0, 0))  
-        now = self.system.get_current_time()
+        now = self.system.time.get_current_time()
 
         self.key_history = {k: t for k, t in self.key_history.items() if now - t < self.key_display_timeout}
 
@@ -117,7 +117,7 @@ class InputManager:
         else:
             self.last_key = None
 
-        self.system.blit(self.surface, (0, 0))
+        self.system.window.blit(self.surface, (0, 0))
 
     def is_pressed(self, key):
         return key in self.current_keys
