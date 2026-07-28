@@ -8,7 +8,7 @@
         "id": "title",
         "asset": "title",
         "position": [0.5, 0.2],
-        "scale": 1.0
+        "scale": 0.8
     },
 
     {
@@ -24,35 +24,31 @@
         "id": "button2",
         "text": "Application",
         "position": [0.5, 0.45],
-        "width": 0.277,
-        "height": 70,
+        "font_size": 35,
         "action": "initialize_application"
     },
     {
         "type": "button",
         "id": "button3",
         "text": "Changelog",
-        "position": [0.5, 0.55],
-        "width": 0.277,
-        "height": 70,
+        "position": [0.5, 0.52],
+        "font_size": 35,
         "action": "open_changelog"
     },
     {
         "type": "button",
         "id": "button4",
         "text": "Settings",
-        "position": [0.5, 0.75],
-        "width": 0.277,
-        "height": 70,
+        "position": [0.5, 0.59],
+        "font_size": 35,
         "action": "open_settings"
     },
     {
         "type": "button",
         "id": "button5",
         "text": "Quit",
-        "position": [0.5, 0.85],
-        "width": 0.277,
-        "height": 70,
+        "position": [0.5, 0.66],
+        "font_size": 35,
         "action": "quit"
     },
     {
@@ -60,8 +56,7 @@
         "id": "credits",
         "text": "Credits",
         "position": [0.875, 0.9],
-        "width": 200,
-        "height": 70,
+        "font_size": 35,
         "action": "open_credits"
     }
 ]

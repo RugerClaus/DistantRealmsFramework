@@ -24,6 +24,7 @@
             "type": "button",
             "id": "changelog_back",
             "text": "Back",
+            "font_size": 35,
             "position": [0.85, 0.9],
             "action": "main_menu"
         }

@@ -30,8 +30,6 @@ class Button(UIElement):
         self.system = system
         self.id = id
         super().__init__(position)
-        if font < 50:
-            font = 50
         self.font = FontEngine(font).font
         self.text = str(text)
         self.type = WIDGET.BUTTON

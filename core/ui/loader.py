@@ -84,7 +84,7 @@ class UILoader:
         elif element_type == "button":
             action = data.get("action")
             callback = self.actions.execute if action else None
-            return Button(self.system, element_id, data.get("font_size", 40), data.get("text", ""), tuple(data.get("position", [0, 0])), lambda: callback(action) if callback else None)
+            return Button(self.system, element_id, data.get("font_size"), data.get("text", ""), tuple(data.get("position", [0, 0])), lambda: callback(action) if callback else None)
 
         elif element_type == "query":
             return Query(self.system, element_id, data.get("text", ""))
