@@ -12,11 +12,11 @@
     },
 
     {
-        "type": "label",
+        "type": "header",
         "id": "button1",
         "text": "Default Main Menu",
-        "position": [0.5, 0.37],
-        "align": "center"
+        "font_size": 60,
+        "position": [0.5, 0.3]
     },
 
     {
@@ -31,17 +31,26 @@
     {
         "type": "button",
         "id": "button3",
+        "text": "Changelog",
+        "position": [0.5, 0.55],
+        "width": 0.277,
+        "height": 70,
+        "action": "open_changelog"
+    },
+    {
+        "type": "button",
+        "id": "button4",
         "text": "Settings",
-        "position": [0.5, 0.69],
+        "position": [0.5, 0.75],
         "width": 0.277,
         "height": 70,
         "action": "open_settings"
     },
     {
         "type": "button",
-        "id": "quit",
+        "id": "button5",
         "text": "Quit",
-        "position": [0.5, 0.77],
+        "position": [0.5, 0.85],
         "width": 0.277,
         "height": 70,
         "action": "quit"

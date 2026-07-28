@@ -8,6 +8,7 @@ from core.ui.widgets.query import Query
 from core.ui.widgets.textbox import TextBox
 from core.ui.widgets.button import Button
 from core.ui.widgets.image import Image
+from core.ui.widgets.header import Header
 from core.ui.widgets.scrollabletext import ScrollableText
 from core.ui.widgets.centertext import CenterText
 
@@ -15,6 +16,8 @@ class UILoader:
     def __init__(self, system, actions):
         self.system = system
         self.actions = actions
+        self.menu = None
+        self.form = None
 
     def load(self, filename):
         with open(filename, "r") as file:
@@ -24,21 +27,23 @@ class UILoader:
             return self.load_form(data)
         elif data["type"] == "menu":
             return self.load_menu(data)
+        
 
         raise ValueError(f"Unknown UI type: {data['type']}")
 
     def load_menu(self, data):
-        menu = Menu(self.system)
+        self.menu = Menu(self.system)
 
         for element_data in data["elements"]:
             element = self.create_element(element_data)
-            menu.add_child(element)
+            self.menu.add_child(element)
 
-        menu.on_load()
-        return menu
+        self.menu.on_load()
+        self.current_view = data["name"]
+        return self.menu
 
     def load_form(self, data):
-        form = Form(self.system)
+        self.form = Form(self.system)
         elements = {}
 
         for definition in data.get("elements", []):
@@ -46,14 +51,20 @@ class UILoader:
             elements[definition["id"]] = element
 
             if "field" in definition:
-                form.add_field(definition["field"], element)
+                self.form.add_field(definition["field"], element)
             else:
-                form.add_child(element)
+                self.form.add_child(element)
 
         if "error_element" in data:
-            form.set_error_element(elements[data["error_element"]])
+            self.form.set_error_element(elements[data["error_element"]])
+        self.current_view = data["name"]
+        return self.form
 
-        return form
+    def scale(self):
+        if self.menu:
+            self.menu.scale()
+        if self.form:
+            self.form.scale()
 
     def create_element(self, data):
         element_type = data["type"]
@@ -80,6 +91,9 @@ class UILoader:
 
         elif element_type == "image":
             return Image(self.system, element_id, data.get("asset"), tuple(data.get("position", [0.5, 0.5])), data.get("scale", [1.0, 1.0]))
+
+        elif element_type == "header":
+                    return Header(self.system, element_id,data.get("text"),data.get("font_size"), tuple(data.get("position", [0.5, 0.5])))
 
         elif element_type == "scrollable_text":
             element = ScrollableText(

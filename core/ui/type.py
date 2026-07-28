@@ -9,6 +9,7 @@ class WIDGET(Enum):
     IMAGE = auto()
     SCROLLABLETEXT = auto()
     CENTERTEXT = auto()
+    HEADER = auto()
 
 class COMPOSABLE(Enum):
     FORM = auto()

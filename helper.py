@@ -1,4 +1,5 @@
 from systemlogging import log_error
+import math
 
 def asset(asset):
     if asset == "title":
@@ -17,8 +18,6 @@ def asset(asset):
         return "assets/images/main/multiplierupgrade.png"
     elif asset == "clock":
         return "assets/images/main/clock.png"
-    log_error(f"Unknown asset: {asset}")
-    return None
 
 def get_colors(color):
     if color == "red":
@@ -51,3 +50,8 @@ from core.guts.persistence.save import Save
 save = Save()
 def write_envar_to_file(filename,value):
     save.write_constant(filename,value)
+
+def sine(current_time):
+    t = current_time / 1000
+    pulse = (math.sin(t) + 1) / 2
+    return pulse

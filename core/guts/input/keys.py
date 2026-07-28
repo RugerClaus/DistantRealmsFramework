@@ -32,6 +32,12 @@ class Keys:
 
     def seven_key(self):
         return pygame.K_7
+
+    def F1_key(self):
+        return pygame.K_F1
+
+    def F2_key(self):
+        return pygame.K_F2
     
     def F3_key(self):
         return pygame.K_F3

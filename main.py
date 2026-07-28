@@ -21,6 +21,5 @@ def main():
         system.initialize_application()
     runtime.run()
 
-
 if __name__ == "__main__":
     main()

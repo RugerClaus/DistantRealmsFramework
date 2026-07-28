@@ -50,3 +50,12 @@ Development version Alpha 0.3.0 - 2026-07-08
 - Renamed a ton of state systems in preparation for the Application State Tree Creator
 - Added scrollable text with scrollbars
 - Fixed window not resizing
+
+Development version Alpha 0.4.0 - 2026-07-28
+------------------------------------------------
+- Renamed App to Runtime in core/guts/app.py, now core/guts/runtime.py
+- Changed RUNTIME_STATE.LOADING to SPLASH to be more specific about what it is. Splash screens will be first class views
+- Removed core/menus entirely
+- Removed core/state/RuntimeLayer/Menu/*
+- Majorly refactored entire UI system to be data based (JSON). UI elements now come from core/application/enginepersistence/menus and forms
+- UIs can be hot reloaded and modified during runtime

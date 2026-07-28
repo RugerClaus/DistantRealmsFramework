@@ -44,9 +44,7 @@ class System():
         self.system_monitor = system_monitor # this is an observer
 
         self.persistence = Persistence(self)
-        self.save = self.persistence.save
-        self.load = self.persistence.load
-        self.save.save_schema = self.save_schema
+        self.persistence.save.save_schema = self.save_schema
 
         self.updater = Update()
         self.network = Network()

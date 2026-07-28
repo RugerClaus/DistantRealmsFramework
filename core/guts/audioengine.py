@@ -45,8 +45,8 @@ class AudioEngine:
         self.music_tracks = {}
         self.sound_effects = {}
         self.active_sfx = {}
-        self.volume = float(self.system.load.read_constant('music_volume'))
-        self.sfx_volume = float(self.system.load.read_constant('sfx_volume'))
+        self.volume = float(self.system.persistence.load.read_constant('music_volume'))
+        self.sfx_volume = float(self.system.persistence.load.read_constant('sfx_volume'))
         self.music_queue = []
         self.current_track = None
 
@@ -58,13 +58,13 @@ class AudioEngine:
                 os.makedirs(f'{file_path}')
             
             if not os.path.exists(f"{file_path}/music_volume"):
-                self.system.save.write_constant('music_volume',f'{default_volume}')
+                self.system.persistence.save.write_constant('music_volume',f'{default_volume}')
                 log_event('Music volume file creation: music_volume file created')
             else:
                 log_event('Music volume file creation: music_volume file exists')
             
             if not os.path.exists(f"{file_path}/sfx_volume"):
-                self.system.save.write_constant('sfx_volume',f'{default_volume}')
+                self.system.persistence.save.write_constant('sfx_volume',f'{default_volume}')
                 log_event('SFX volume file creation: sfx_volume file created')
             else:
                 log_event('SFX volume file creation: sfx_volume file exists')
@@ -260,7 +260,7 @@ class AudioEngine:
         if self.volume < 0.5:
             self.volume += 0.1
             self.volume = round(self.volume, 1)
-            self.system.save.write_constant('music_volume', str(self.volume))
+            self.system.persistence.save.write_constant('music_volume', str(self.volume))
 
             if self.audio_available:
                 pygame.mixer.music.set_volume(self.volume)
@@ -269,7 +269,7 @@ class AudioEngine:
         if self.volume > 0:
             self.volume -= 0.1
             self.volume = round(self.volume, 1)
-            self.system.save.write_constant('music_volume', str(self.volume))
+            self.system.persistence.save.write_constant('music_volume', str(self.volume))
 
             if self.audio_available:
                 pygame.mixer.music.set_volume(self.volume)
@@ -278,10 +278,10 @@ class AudioEngine:
         if self.sfx_volume < 0.5:
             self.sfx_volume += 0.1
             self.sfx_volume = round(self.sfx_volume, 1)
-            self.system.save.write_constant('sfx_volume', str(self.sfx_volume))
+            self.system.persistence.save.write_constant('sfx_volume', str(self.sfx_volume))
 
     def sfx_volume_down(self):
         if self.sfx_volume > 0:
             self.sfx_volume -= 0.1
             self.sfx_volume = round(self.sfx_volume, 1)
-            self.system.save.write_constant('sfx_volume', str(self.sfx_volume))
+            self.system.persistence.save.write_constant('sfx_volume', str(self.sfx_volume))

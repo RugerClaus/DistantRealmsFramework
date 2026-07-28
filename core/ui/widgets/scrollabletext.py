@@ -199,95 +199,41 @@ class ScrollableText(UIElement):
 
     def draw(self):
 
-        x, y = self.normalized_to_pixel(
-            *self.anchor
-        )
+        x, y = self.normalized_to_pixel(*self.anchor)
 
-        self.surface.fill(
-            (0, 0, 0, 0)
-        )
-
+        self.surface.fill((0, 0, 0, 0))
 
         line_height = self.font.get_height()
 
-        spacing = int(
-            self.system.window.get_height()
-            * self.line_spacing
-        )
+        spacing = int(self.system.window.get_height() * self.line_spacing)
 
 
-        visible = self.lines[
-            self.scroll_offset:
-            self.scroll_offset + self.visible_lines()
-        ]
+        visible = self.lines[self.scroll_offset:self.scroll_offset + self.visible_lines()]
 
 
         for index, columns in enumerate(visible):
 
-            draw_y = (
-                line_height // 2
-                +
-                index * (
-                    line_height + spacing
-                )
-            )
+            draw_y = line_height // 2 + index * (line_height + spacing)
 
 
             for text, normalized_x, color in columns:
-
                 color = self.resolve_color(color)
+                surf = self.font.render(text,True,color)
 
-                surf = self.font.render(
-                    text,
-                    True,
-                    color
-                )
+                x_pos, _ = self.normalized_to_pixel(normalized_x,0)
 
-
-                x_pos, _ = self.normalized_to_pixel(
-                    normalized_x,
-                    0
-                )
-
-
-                relative_x = (
-                    x_pos
-                    -
-                    self.normalized_to_pixel(
-                        self.anchor[0],
-                        0
-                    )[0]
-                )
-
+                relative_x = x_pos - self.normalized_to_pixel(self.anchor[0],0)[0]
 
                 if self.align == "center":
-
-                    rect = surf.get_rect(
-                        center=(
-                            relative_x,
-                            draw_y
-                        )
-                    )
+                    rect = surf.get_rect(center=(relative_x,draw_y))
 
                 elif self.align == "right":
-
-                    rect = surf.get_rect(
-                        right=relative_x,
-                        centery=draw_y
-                    )
+                    rect = surf.get_rect(right=relative_x,centery=draw_y)
 
                 else:
+                    rect = surf.get_rect(left=relative_x,centery=draw_y)
 
-                    rect = surf.get_rect(
-                        left=relative_x,
-                        centery=draw_y
-                    )
-
-
-                self.surface.blit(
-                    surf,
-                    rect
-                )
+                self.surface.blit(surf,rect)
 
         if self.show_scrollbar:
             self.draw_scrollbar()

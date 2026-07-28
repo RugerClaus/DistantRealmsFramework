@@ -1,11 +1,14 @@
 {
     "type": "menu",
+    "name": "CREDITS",
+
     "elements": [
         {
-            "type": "query",
-            "id": "credits_query",
+            "type": "header",
+            "id": "credits_header",
             "text": "CREDITS",
-            "position": [0.5, 0.12]
+            "position": [0.5, 0.1],
+            "font_size": 100
         },
         {
             "type": "center_text",

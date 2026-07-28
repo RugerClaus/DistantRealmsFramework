@@ -71,17 +71,17 @@ class Authentication:
 
         data = response["data"]
 
-        self.system.save.write_constant(
+        self.system.persistence.save.write_constant(
             "username",
             username
         )
 
-        self.system.save.write_constant(
+        self.system.persistence.save.write_constant(
             "clientAppPassword",
             data["clientAppPassword"]
         )
 
-        self.system.save.write_constant(
+        self.system.persistence.save.write_constant(
             "clientID",
             data["clientID"]
         )
@@ -96,9 +96,9 @@ class Authentication:
 
     def auto_login(self):
 
-        username = self.system.load.read_constant("username")
-        client_app_password = self.system.load.read_constant("clientAppPassword")
-        client_id = self.system.load.read_constant("clientID")
+        username = self.system.persistence.load.read_constant("username")
+        client_app_password = self.system.persistence.load.read_constant("clientAppPassword")
+        client_id = self.system.persistence.load.read_constant("clientID")
 
         if not username or not client_app_password or not client_id:
             return {
@@ -124,7 +124,7 @@ class Authentication:
         return response
 
     def log_out(self):
-        self.system.save.clear("clientID")
-        self.system.save.clear("clientAppPassword")
+        self.system.persistence.save.clear("clientID")
+        self.system.persistence.save.clear("clientAppPassword")
         self.system.user.username = "Player"
         self.system.login_state.set_state(LOGIN_STATE.LOGGED_OUT)

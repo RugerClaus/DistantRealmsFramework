@@ -7,11 +7,11 @@ class User:
     @property
     def username(self):
 
-        username = self.system.load.read_constant("username")
+        username = self.system.persistence.load.read_constant("username")
 
         if username is None:
             username = "Player"
-            self.system.save.write_constant(
+            self.system.persistence.save.write_constant(
                 "username",
                 username
             )
@@ -21,7 +21,7 @@ class User:
     @username.setter
     def username(self,value):
         username = value
-        self.system.save.write_constant(
+        self.system.persistence.save.write_constant(
             "username",
             username
         )

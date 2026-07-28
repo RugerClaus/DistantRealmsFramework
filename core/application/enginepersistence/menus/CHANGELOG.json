@@ -1,10 +1,14 @@
 {
     "type": "menu",
+    "name": "CHANGELOG",
+
     "elements": [
         {
-            "type": "query",
+            "type": "header",
+            "id": "changelog_header",
             "text": "CHANGELOG",
-            "position": [0.5, 0.12]
+            "position": [0.5, 0.1],
+            "font_size": 100
         },
         {
             "type": "scrollable_text",
@@ -18,9 +22,10 @@
         },
         {
             "type": "button",
+            "id": "changelog_back",
             "text": "Back",
             "position": [0.85, 0.9],
-            "action": "back"
+            "action": "main_menu"
         }
     ]
 }

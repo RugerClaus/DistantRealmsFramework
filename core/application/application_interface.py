@@ -1,4 +1,5 @@
 from core.state.RuntimeLayer.state import RUNTIME_STATE
+from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
 from core.application.application_object import Application_Object
 from core.ui.loader import UILoader
 from core.ui.actionmanager import UIActionManager
@@ -27,7 +28,12 @@ class AppInterface:
 
         if event.type == self.system.input.video_resize_event():
             self.game_object.resize()
-            self.active_ui.scale()
+            self.ui.scale()
+
+        if self.system.control_state.is_state(DEVELOPER_MODE.ON):
+            if event.type == self.system.input.keydown():
+                if event.key == self.system.input.keys.F1_key():
+                    self.system.ui_controller.show(self.ui.current_view)
 
     def draw(self):
         self.system.ui_controller.draw()
