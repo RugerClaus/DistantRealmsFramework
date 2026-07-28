@@ -41,7 +41,7 @@ class System():
         self.time = Time()
 
         self.save_schema = schema
-        self.system_monitor = system_monitor
+        self.system_monitor = system_monitor # this is an observer
 
         self.persistence = Persistence(self)
         self.save = self.persistence.save
@@ -69,7 +69,7 @@ class System():
         else:
             self.system_monitor["network"] = "Not Connected"
     
-        self.system_monitor["OS"] = config.get("OSV")
+        self.system_monitor["OS"] = config.get("OSV") 
 
         self.application = None
 
@@ -110,8 +110,6 @@ class System():
         self.application = AppInterface(self)
         self.ui_controller = UIController(self,self.application.ui)
         self.application.init()
-        
-        
 
     def clean_up_states(self, states):
         collections = (

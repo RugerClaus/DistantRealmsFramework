@@ -11,6 +11,5 @@ class UIActionManager:
         if name not in self.actions:
             log_error(f"Unknown UI action: {name}","core.guts.UI.UIActionManager")
             return None
-            
-
+        
         return self.actions[name]()

@@ -166,7 +166,6 @@ class Button(UIElement):
         if changed and self.state.is_state(BUTTON_STATE.HOVER):
             self.system.sound.play_ui_sfx("button_hover")
 
-
     def draw(self):
         self.renderer.draw(self)
 
@@ -185,7 +184,11 @@ class Button(UIElement):
                 else:
                     log_warning(f'interface sfx is disabled.{self.system.sound.interface_sfx_state.get_state()}')
                 self.state.set_state(BUTTON_STATE.PRESS)
+                self.clean_up_states()
                 self.action()
                 return True
             if not self.action:
                 self.action = None
+
+    def clean_up_states(self):
+        self.system.clean_up_states([self.state.state])
