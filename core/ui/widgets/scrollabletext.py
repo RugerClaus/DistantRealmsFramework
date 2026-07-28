@@ -1,25 +1,32 @@
 from core.ui.font import FontEngine
+from core.ui.element import UIElement
+from core.ui.type import WIDGET
 
-
-class ScrollableText:
+class ScrollableText(UIElement):
 
     def __init__(
         self,
         system,
+        id,
         font_size=40,
         anchor=(0.5, 0.5),
         width=0.8,
         height=0.6,
         align="left",
-        line_spacing=0.01
+        line_spacing=0.01,
+        source=None
     ):
+        super().__init__(position=anchor)
         self.system = system
-
+        self.id = id
+        self.type = WIDGET.SCROLLABLETEXT
         self.font = FontEngine(font_size).font
 
         self.anchor = anchor
         self.width = width
         self.height = height
+
+        self.max_char_count = 90
 
         self.align = align
         self.line_spacing = line_spacing
@@ -34,7 +41,59 @@ class ScrollableText:
         self.scrollbar_width = 6
         self.scrollbar_color = (120,120,120)
         self.scrollbar_track_color = (40,40,40)
+        if source:
+            self.load_source(source)
 
+    def load_source(self, filename):
+        try:
+            with open(filename, "r") as file:
+                lines = [line.rstrip("\n") for line in file]
+
+            self.set_text(self.wrap_lines(lines))
+
+        except FileNotFoundError:
+            self.set_text([
+                [(
+                    "Unable to load text.",
+                    0.05,
+                    (255, 255, 255)
+                )]
+            ])
+
+    def wrap_lines(self, lines):
+        wrapped = []
+
+        for line in lines:
+            words = line.split(" ")
+            current_line = ""
+
+            for word in words:
+                if len(current_line) + len(word) + 1 > self.max_char_count:
+                    wrapped.append([
+                        (
+                            current_line,
+                            0.05,
+                            (255, 255, 255)
+                        )
+                    ])
+
+                    current_line = word
+                else:
+                    if current_line:
+                        current_line += " " + word
+                    else:
+                        current_line = word
+
+            if current_line:
+                wrapped.append([
+                    (
+                        current_line,
+                        0.05,
+                        (255, 255, 255)
+                    )
+                ])
+
+        return wrapped
 
     def scale(self):
 
@@ -93,6 +152,9 @@ class ScrollableText:
 
         self.scroll_offset = 0
 
+    def handle_event(self, event):
+        if event.type == self.system.input.mouse_scroll_event():
+            self.scroll(-event.y)
 
     def scroll(self, amount):
 

@@ -1,0 +1,59 @@
+{
+"type": "menu",
+"name": "MAIN",
+
+"elements": [
+    {
+        "type": "image",
+        "id": "title",
+        "asset": "title",
+        "position": [0.5, 0.2],
+        "scale": 1.0
+    },
+
+    {
+        "type": "label",
+        "id": "button1",
+        "text": "Default Main Menu",
+        "position": [0.5, 0.37],
+        "align": "center"
+    },
+
+    {
+        "type": "button",
+        "id": "button2",
+        "text": "Application",
+        "position": [0.5, 0.45],
+        "width": 0.277,
+        "height": 70,
+        "action": "initialize_application"
+    },
+    {
+        "type": "button",
+        "id": "button3",
+        "text": "Settings",
+        "position": [0.5, 0.69],
+        "width": 0.277,
+        "height": 70,
+        "action": "open_settings"
+    },
+    {
+        "type": "button",
+        "id": "quit",
+        "text": "Quit",
+        "position": [0.5, 0.77],
+        "width": 0.277,
+        "height": 70,
+        "action": "quit"
+    },
+    {
+        "type": "button",
+        "id": "credits",
+        "text": "Credits",
+        "position": [0.875, 0.9],
+        "width": 200,
+        "height": 70,
+        "action": "open_credits"
+    }
+]
+}

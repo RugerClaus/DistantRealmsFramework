@@ -17,17 +17,11 @@ class User:
             )
 
         return username
-
-    @property
-    def high_score(self):
-
-        score = self.system.load.read_constant("high_score")
-
-        if score is None:
-            score = 0
-            self.system.save.write_constant(
-                "high_score",
-                score
-            )
-
-        return int(score)
+    
+    @username.setter
+    def username(self,value):
+        username = value
+        self.system.save.write_constant(
+            "username",
+            username
+        )

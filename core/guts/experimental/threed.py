@@ -2,7 +2,7 @@ from core.util.experimental.math3d import rotate_x, rotate_y, rotate_z, Vec3, fa
 from core.util.experimental.model import load_mesh,Model
 from core.util.triangle import Triangle
 from core.application.camera import Camera
-from core.util.experimental.colors import *
+from core.util.colors import *
 
 
 

@@ -1,8 +1,9 @@
 import os
-from systemlogging import log_event,log_error
+from systemlogging import log_event,log_error,log_warning
+from core.application.save_schema import schema
 
 class Save():
-    def __init__(self,schema):
+    def __init__(self):
         self.game_save_path = "saves/gamedata/world.sav"
         self.save_schema = schema
 
@@ -58,3 +59,22 @@ class Save():
 
                 value = data[internal_key]
                 f.write(f"{file_key}={value}\n")
+
+
+    def clear(self,constant):
+            log_event(f"Clearing Constant: saves/constants/{constant}")
+    
+            constants_dir = 'saves/constants'
+        
+            if not os.path.exists(constants_dir):
+                log_warning(f"Constant: {constant} does not exist")
+                return
+    
+            file_path = os.path.join(constants_dir, constant)
+            
+            try:
+                with open(file_path, 'w') as file:
+                    file.write(str(""))
+                log_event(f"Constant '{constant}' cleared.")
+            except Exception as e:
+                log_error(f"Error clearing file: {e}")

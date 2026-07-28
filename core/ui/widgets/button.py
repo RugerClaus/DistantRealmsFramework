@@ -4,7 +4,8 @@ from core.state.RuntimeLayer.UI.Button.state import BUTTON_STATE
 from core.state.RuntimeLayer.Audio.Interface.state import INTERFACE_SFX_STATE
 from core.ui.font import FontEngine
 from core.ui.render.button import ButtonRenderer
-
+from core.ui.element import UIElement
+from core.ui.type import WIDGET
 
 class Style:
     def __init__(
@@ -24,13 +25,16 @@ class Style:
         self.text_color = text_color
 
 
-class Button:
-    def __init__(self,system,font,text,position,action=None,active=True,styles=None):
+class Button(UIElement):
+    def __init__(self,system,id,font,text,position,action=None,active=True,styles=None):
         self.system = system
+        self.id = id
+        super().__init__(position)
         if font < 50:
             font = 50
         self.font = FontEngine(font).font
         self.text = str(text)
+        self.type = WIDGET.BUTTON
         hover_background = (60,60,60)
         idle_background = (40,40,40)
 
@@ -168,6 +172,7 @@ class Button:
 
 
     def set_text(self, text):
+        print(f"Changing '{self.text}' -> '{text}'")
         self.text = str(text)
         self.scale()
 

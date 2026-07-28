@@ -17,6 +17,8 @@ def asset(asset):
         return "assets/images/main/multiplierupgrade.png"
     elif asset == "clock":
         return "assets/images/main/clock.png"
+    log_error(f"Unknown asset: {asset}")
+    return None
 
 def get_colors(color):
     if color == "red":
@@ -45,7 +47,7 @@ def audio_path(type):
         log_error("Can't find audio path!")
         return None
 
-from core.guts.save.save import Save
-save = Save({})
+from core.guts.persistence.save import Save
+save = Save()
 def write_envar_to_file(filename,value):
     save.write_constant(filename,value)

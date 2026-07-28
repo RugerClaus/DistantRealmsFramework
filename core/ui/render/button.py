@@ -17,7 +17,8 @@ class ButtonRenderer:
                 button.surface,
                 style.background,
                 button.surface.get_rect(),
-                border_radius=style.border_radius
+                border_radius=style.border_radius,
+                object="Button"
             )
 
 
@@ -28,7 +29,8 @@ class ButtonRenderer:
                 style.border,
                 button.surface.get_rect(),
                 width=style.border_width,
-                border_radius=style.border_radius
+                border_radius=style.border_radius,
+                object="Button"
             )
 
 

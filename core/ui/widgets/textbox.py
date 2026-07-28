@@ -1,12 +1,15 @@
+from core.ui.type import WIDGET
+from core.ui.element import UIElement
 from core.ui.font import FontEngine
+from core.util.colors import red,white,black
 
-class TextBox:
-    def __init__(self,system,x_ratio,y_ratio,is_active=False):
+class TextBox(UIElement):
+    def __init__(self,system,id,position,is_active=False):
+        super().__init__(focusable=True,position=position)
         self.system = system
+        self.id = id
         self.font = FontEngine(30).font
-        self.x_ratio = x_ratio
-        self.y_ratio = y_ratio
-        self.background_color = (0,0,0)
+        self.background_color = black
         self.scale()
         self.string = None
         self.box = []
@@ -18,7 +21,14 @@ class TextBox:
         self.cursor_visible = True
 
         self.is_active = is_active
-        self.type = "input"
+        self.type = WIDGET.TEXTBOX
+        self.loaded = False
+
+    def error_back(self):
+        self.background_color = red
+
+    def clear_error(self):
+        self.background_color = black
 
     def handle_event(self, event):
         if self.is_active:
@@ -48,11 +58,7 @@ class TextBox:
             return self.cursor if self.cursor_visible else ""
 
     def scale(self):
-        ww = self.system.window.get_width()
-        wh = self.system.window.get_height()
-
-        x = int(ww * self.x_ratio)
-        y = int(wh * self.y_ratio)
+        x,y = self.get_screen_position()
 
         self.bounding_box = self.system.window.make_surface(275, 100)
         self.bounding_box_rect = self.bounding_box.get_rect(
@@ -66,7 +72,7 @@ class TextBox:
             center=self.bounding_box_rect.center
         )
 
-        self.text_box.fill((255,255,255))
+        self.text_box.fill(white)
 
     def add_key_to_box(self,key):
         if len(self.box) < 21:
@@ -89,13 +95,16 @@ class TextBox:
         if len(self.box) > 0:
             self.box.pop(-1)
 
+    def update(self):
+        pass
+
     def draw(self):
         if self.is_password:
             text = "*" * len(self.box)
         else:
             text = ''.join(self.box)
 
-        surf = self.font.render(text, False, (0,0,0))
+        surf = self.font.render(text, False, black)
         rect = surf.get_rect(center=self.text_box_rect.center)
         self.bounding_box.fill((self.background_color))
         self.system.window.blit(self.bounding_box,self.bounding_box_rect)
@@ -103,7 +112,7 @@ class TextBox:
         self.system.window.blit(surf,rect)
 
         if self.draw_cursor():
-            cursor_surf = self.font.render("|", False, (0,0,0))
+            cursor_surf = self.font.render("|", False, black)
             cursor_rect = cursor_surf.get_rect()
             cursor_rect.midleft = (rect.right, rect.centery)
             self.system.window.blit(cursor_surf, cursor_rect)

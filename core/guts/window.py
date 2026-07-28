@@ -16,8 +16,6 @@ class Window:
         self.fullscreen = False
         self.set_mode(self.width,self.height)
         self.Rect = pygame.Rect
-        
-        
 
     def mask(self,surface):
         return pygame.mask.from_surface(surface)
@@ -86,7 +84,7 @@ class Window:
 
     def draw_circle(self,surface,color,center,radius,object=None):
         if not isinstance(surface,pygame.Surface):
-            log_error(f"surface must be a Surface",object)
+            log_error(f"circle surface must be a Surface",object)
         elif not isinstance(color,tuple) or len(color) != 3:
             log_error(f"color must be a tuple: (r,g,b); found: value: {str(color)} type: {str(type(color))}",object)
         elif not isinstance(center,tuple) or len(center) != 2:
@@ -98,13 +96,13 @@ class Window:
 
     def draw_rect(self, surface, color, rect, width=0, border_radius=None, object=None):
         if not isinstance(surface, pygame.Surface):
-            log_error(f"surface must be a Surface", object)
+            log_error(f"rect surface must be a Surface", object)
             return
         elif not isinstance(color,tuple):
             log_error("color must be a tuple",object)
 
         elif not isinstance(rect,pygame.Rect):
-            log_error("rect must be a pygame.Rect") # this will change once I create my own solution for rects
+            log_error("rect must be a pygame.Rect")
             
         if border_radius:
             pygame.draw.rect(surface, color, rect, width, border_radius)

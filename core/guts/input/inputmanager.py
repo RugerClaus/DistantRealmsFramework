@@ -12,26 +12,13 @@ class InputManager:
         self.current_keys = set()
         self.released_keys = set()
         self.key_history = {}
-        self.surface = system.window.make_surface(system.window.get_width(), system.window.get_height(), True)
+        self.surface = self.system.window.make_surface(self.system.window.get_width(), self.system.window.get_height(), True)
         self.font = FontEngine("keypress").font
-        self.system = system
         self.last_key = None
         self.last_key_time = 0
         self.key_display_timeout = 1000
         self.keys = Keys()
         self.game_controls = Controls()
-
-    def get_current_left_control(self):
-        return self.get_key_name(self.game_controls.move_left).capitalize()
-    
-    def get_current_right_control(self):
-        return self.get_key_name(self.game_controls.move_right).capitalize()
-    
-    def get_current_up_control(self):
-        return self.get_key_name(self.game_controls.move_up).capitalize()
-    
-    def get_current_down_control(self):
-        return self.get_key_name(self.game_controls.move_down).capitalize()
 
     def video_resize_event(self):
         return pygame.VIDEORESIZE
@@ -47,21 +34,13 @@ class InputManager:
 
     def quit_event(self):
         return pygame.QUIT
-
+    
     def mouse_scroll_event(self):
         return pygame.MOUSEWHEEL
-
-    def set_game_controls(self,move_left=None, move_right=None, move_up=None, move_down=None):
-        if move_left is not None and move_right is not None:
-            self.game_controls.set_controls(move_left, move_right, move_up, move_down)
-        elif move_left is not None:
-            self.game_controls.set_controls(move_left, self.game_controls.move_right, self.game_controls.move_up, self.game_controls.move_down)
-        elif move_right is not None:
-            self.game_controls.set_controls(self.game_controls.move_left, move_right, self.game_controls.move_up, self.game_controls.move_down)
-        elif move_up is not None:
-            self.game_controls.set_controls(self.game_controls.move_left, self.game_controls.move_right, move_up, self.game_controls.move_down)
-        elif move_down is not None:
-            self.game_controls.set_controls(self.game_controls.move_left, self.game_controls.move_right, self.game_controls.move_up, move_down)
+    
+    def reset_mouse_input(self):
+        pygame.event.clear(pygame.MOUSEBUTTONDOWN)
+        pygame.event.clear(pygame.MOUSEBUTTONUP)
 
     def key_register(self,key):
         now = self.system.time.get_current_time()
@@ -72,11 +51,11 @@ class InputManager:
 
     def handle_event(self, event,needskeys=False):
         
-        if needskeys: # returns the key that was pressed. Good for UI input
+        if needskeys:
             if event.type == pygame.KEYDOWN:
                 self.key_register(event.key)
                 return event.key
-        else: # returns a command based on the internal input stream service. for handling application wide functionality
+        else:
             if event.type == pygame.KEYDOWN:
                 self.key_register(event.key)
                 command = self.CommandModule.update(event)
@@ -130,3 +109,9 @@ class InputManager:
 
     def clear_released(self):
         self.released_keys.clear()
+
+    def window_focus_gained(self):
+        return pygame.WINDOWFOCUSGAINED
+    
+    def window_focus_lost(self):
+        return pygame.WINDOWFOCUSLOST

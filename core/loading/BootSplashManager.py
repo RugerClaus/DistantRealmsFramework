@@ -30,7 +30,7 @@ class BootSplashManager:
     def update(self):
         if self.state.is_state(BOOT_SPLASH_STATE.NONE):
             self.system.runtime_state.set_state(RUNTIME_STATE.MAIN_MENU)
-        if not self.system.runtime_state.is_state(RUNTIME_STATE.LOADING):
+        if not self.system.runtime_state.is_state(RUNTIME_STATE.SPLASH):
 
             self.system.sound.system_sfx_state.set_state(SYSTEM_SFX_STATE.OFF)
         
@@ -46,8 +46,6 @@ class BootSplashManager:
             if not self.splash_two_sfx_played:
                 self.system.sound.play_sfx("splash2")
                 self.splash_two_sfx_played = True
-        
-        # time to make you think because many parts of this codebase are not only insecure, but too neat
                 
         el = current_time - self.splash_two_start_time
         du = 9300
@@ -61,6 +59,7 @@ class BootSplashManager:
 
         if el >= du:
             self.state.set_state(BOOT_SPLASH_STATE.NONE)
+            self.system.initialize_application()
 
     def draw(self):
         current_time = self.system.time.get_current_time()

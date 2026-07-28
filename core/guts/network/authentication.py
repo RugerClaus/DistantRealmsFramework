@@ -1,18 +1,12 @@
 from core.application.network.endpoints import LOGIN,REGISTER
 from core.guts.network.system_endpoints import API_KEY,VERSION
-
+from core.state.RuntimeLayer.NetworkLayer.Login.state import LOGIN_STATE
 
 class Authentication:
 
     def __init__(self, system):
         self.system = system
         self.network = system.network
-
-        print("REGISTER ENDPOINT:", REGISTER)
-        print("LOGIN ENDPOINT:", LOGIN)
-        print("API_KEY:", API_KEY)
-        print("VERSION:", VERSION)
-
 
     def register(self, username, password):
 
@@ -26,11 +20,8 @@ class Authentication:
             }
         )
 
-        print("REGISTER RESPONSE:", response)
-
         if not response.get("success"):
             return response
-
         data = response.get("data", {})
 
         if "clientAppPassword" not in data:
@@ -54,7 +45,7 @@ class Authentication:
             "clientID",
             data["clientID"]
         )
-
+        self.system.login_state.set_state(LOGIN_STATE.LOGGED_IN)
         return {
             "success": True
         }
@@ -62,6 +53,7 @@ class Authentication:
     def login(self, username, password):
 
         client_id = self.system.load.read_constant("clientID")
+        
 
         response = self.network.post(
             LOGIN,
@@ -83,10 +75,6 @@ class Authentication:
             "username",
             username
         )
-        self.system.save.write_constant(
-            "high_score",
-            data["score"]
-        )
 
         self.system.save.write_constant(
             "clientAppPassword",
@@ -99,7 +87,7 @@ class Authentication:
         )
 
         self.system.system_monitor["ClientConnected"] = True
-
+        self.system.login_state.set_state(LOGIN_STATE.LOGGED_IN)
         return {
             "success": True,
             "data": data
@@ -126,9 +114,17 @@ class Authentication:
                 "key": API_KEY,
                 "client_version": VERSION
             }
-        )
+        )           
 
         if response["success"]:
+            data = response["data"]
+            self.system.login_state.set_state(LOGIN_STATE.LOGGED_IN)
             self.system.system_monitor["ClientConnected"] = True
 
         return response
+
+    def log_out(self):
+        self.system.save.clear("clientID")
+        self.system.save.clear("clientAppPassword")
+        self.system.user.username = "Player"
+        self.system.login_state.set_state(LOGIN_STATE.LOGGED_OUT)

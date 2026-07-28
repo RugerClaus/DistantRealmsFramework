@@ -1,4 +1,5 @@
 import requests
+from config import config
 
 from systemlogging import log_error
 
@@ -10,7 +11,7 @@ class Network:
 
     def check_network_status(self):
         try:
-            response = requests.get("https://snowblitz.net", timeout=5)
+            response = requests.get(config.get("NSTATURL"), timeout=5)
             if response.status_code is not None:
                 return True
             else:

@@ -41,3 +41,12 @@ Development version Alpha 0.2.0 - 2026-07-07
 - Refactored how game is initialized, added lifecycle beginning and end to Game Interface and its children
 - Moved runtime inspector (game telemetry) handling to the Game Object, and deferred lifecycle to the GameInterface module
 ===______=== removed unused deps
+
+Development version Alpha 0.3.0 - 2026-07-08
+------------------------------------------------
+- Upgraded network system.
+- Added networking to core/applicatio
+- Revamped UI and added a UI editor/Menu creator tool
+- Renamed a ton of state systems in preparation for the Application State Tree Creator
+- Added scrollable text with scrollbars
+- Fixed window not resizing

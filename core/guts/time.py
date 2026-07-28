@@ -1,7 +1,8 @@
+import time
 import pygame
 class Time:
     def __init__(self):
-        self.time = pygame.time #private to keep things clean at least that's what i will intend
+        self.time = pygame.time
         self.clock = pygame.time.Clock()
         self.fps = 60
 
@@ -17,3 +18,6 @@ class Time:
     def delta_time(self):
         ms = self.timer()
         return ms / 1000.0
+    
+    def sleep(self,ms):
+        time.sleep(ms)

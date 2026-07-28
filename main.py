@@ -1,5 +1,5 @@
 import argparse
-from core.guts.app import App
+from core.guts.runtime import Runtime
 from core.guts.system import System
 from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
 
@@ -12,14 +12,14 @@ def main():
     args = parser.parse_args()
 
     system = System()
-    app = App(system)
+    runtime = Runtime(system)
 
     if args.dev:
         system.control_state.set_state(DEVELOPER_MODE.ON)
     elif args.devg:
         system.control_state.set_state(DEVELOPER_MODE.ON)
         system.initialize_application()
-    app.run()
+    runtime.run()
 
 
 if __name__ == "__main__":
