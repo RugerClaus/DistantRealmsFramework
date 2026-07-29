@@ -101,6 +101,8 @@ class AppInterface:
 
     def update(self):
         self.ui_controller.update()
+        if self.app_object:
+            self.app_object.update()
 
     def quit_to_menu(self):
         self.remove_debug_info_from_system()
