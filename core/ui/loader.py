@@ -11,13 +11,15 @@ from core.ui.widgets.image import Image
 from core.ui.widgets.header import Header
 from core.ui.widgets.scrollabletext import ScrollableText
 from core.ui.widgets.centertext import CenterText
-
+from core.ui.widgets.select import Select
 class UILoader:
     def __init__(self, system, actions):
         self.system = system
         self.actions = actions
         self.menu = None
         self.form = None
+        self.current_form = None
+        self.current_menu = None
 
     def load(self, filename):
         with open(filename, "r") as file:
@@ -39,7 +41,8 @@ class UILoader:
             self.menu.add_child(element)
 
         self.menu.on_load()
-        self.current_view = data["name"]
+        self.current_menu = data["name"]
+        self.current_view = "menu"
         return self.menu
 
     def load_form(self, data):
@@ -57,7 +60,8 @@ class UILoader:
 
         if "error_element" in data:
             self.form.set_error_element(elements[data["error_element"]])
-        self.current_view = data["name"]
+        self.current_form = data["name"]
+        self.current_view = "form"
         return self.form
 
     def scale(self):
@@ -116,6 +120,13 @@ class UILoader:
                 font_size=data.get("font_size", 40),
                 position=tuple(data.get("position", [0.5, 0.5])),
                 text=data.get("text", "")
+            )
+        elif element_type == "select":
+            return Select(
+                self.system,
+                element_id,
+                tuple(data.get("position", [0, 0])),
+                data.get("options")
             )
 
         log_error(f"Unknown UI element type: {element_type}")

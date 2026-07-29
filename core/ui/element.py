@@ -17,3 +17,6 @@ class UIElement:
             int(ww * self.position[0]),
             int(wh * self.position[1])
         )
+
+    def contains_point(self,position):
+        pass

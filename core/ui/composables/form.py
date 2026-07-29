@@ -1,3 +1,5 @@
+from systemlogging import log_error
+
 from core.ui.element import UIElement
 from core.ui.type import COMPOSABLE
 from core.ui.UIManager import UIManager
@@ -15,7 +17,6 @@ class Form(UIElement):
         self.ui = UIManager(system)
 
         self.type = COMPOSABLE.FORM
-
         self.loaded = False
 
     def add_child(self, element):
@@ -27,12 +28,18 @@ class Form(UIElement):
         self.add_child(element)
 
     def get_field(self, name):
+        if name not in self.fields:
+            log_error(
+                f"Form field not found: '{name}'",
+                "core.ui.composables.form.Form"
+            )
+            return None
+
         return self.fields[name]
 
     def set_error_element(self, element):
         self.error_element = element
         self.add_child(element)
-
 
     def set_error(self, message, color=None):
         if self.error_element:
@@ -41,7 +48,6 @@ class Form(UIElement):
     def clear_error(self):
         if self.error_element:
             self.error_element.set_text("")
-
 
     def handle_event(self, event):
         self.ui.handle_event(event)
@@ -59,4 +65,7 @@ class Form(UIElement):
         self.ui.update()
 
     def submit(self):
-        pass
+        return {
+            name: element.get_return_string()
+            for name, element in self.fields.items()
+        }

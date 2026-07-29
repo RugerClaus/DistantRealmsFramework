@@ -81,7 +81,7 @@ class Window:
 
     def draw_polygon(self,surface,color,points):
         pygame.draw.polygon(surface,color,points)
-
+        
     def draw_circle(self,surface,color,center,radius,object=None):
         if not isinstance(surface,pygame.Surface):
             log_error(f"circle surface must be a Surface",object)

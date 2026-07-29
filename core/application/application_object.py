@@ -1,12 +1,14 @@
+
+
 class Application_Object:
-    def __init__(self,system): # why is init the constructor. I get it initializes the class, but I would like to be free to call init/whatever form in my programs
-        self.system = system
+    def __init__(self,app_interface):
+        self.app_interface = app_interface
 
     def update(self):
-        self.system.time.get_delta()
+        pass
 
     def draw(self):
-        self.system.window.fill((0,0,0))
+        self.app_interface.system.window.fill((0,0,0))
 
     def resize(self):
         pass

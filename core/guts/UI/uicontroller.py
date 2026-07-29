@@ -5,12 +5,20 @@ class UIController:
         self.active_ui = None
         self.active_name = None
 
-    def show(self, name):
+    def show_menu(self, name):
         ui_file = self.system.persistence.get_menu(name)
-
         if not ui_file.exists():
             self.active_ui = None
-            self.active_name = None
+            return False
+
+        self.active_ui = self.loader.load(ui_file)
+        self.active_name = name
+        return True
+
+    def show_form(self, name):
+        ui_file = self.system.persistence.get_form(name)
+        if not ui_file.exists():
+            self.active_ui = None
             return False
 
         self.active_ui = self.loader.load(ui_file)
@@ -36,3 +44,6 @@ class UIController:
     def scale(self):
         if self.active_ui:
             self.active_ui.scale()
+
+    def get_active_ui(self):
+        return self.active_ui

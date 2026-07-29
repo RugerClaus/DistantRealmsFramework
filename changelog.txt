@@ -5,3 +5,4 @@ Development version Alpha 0.4.0 - 2026-07-28
 - Removed core/state/RuntimeLayer/Menu/*
 - Majorly refactored entire UI system to be data based (JSON). UI elements now come from core/application/enginepersistence/menus and forms
 - UIs can be hot reloaded and modified during runtime
+- The contained application itself can be reloaded at any time.

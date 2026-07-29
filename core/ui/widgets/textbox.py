@@ -31,17 +31,28 @@ class TextBox(UIElement):
         self.background_color = black
 
     def handle_event(self, event):
-        if self.is_active:
-            key = self.system.input.handle_event(event, True)
-            if key is not None:
-                self.add_key_to_box(key)
-
-                if event.key == self.system.input.keys.backspace_key():
-                    if len(self.box) > 0:
-                        self.delete_key()
-
         if event.type == self.system.input.video_resize_event():
             self.scale()
+            return
+
+        if not self.is_active:
+            return
+
+        if event.type != self.system.input.keydown():
+            return
+
+        if event.key == self.system.input.keys.backspace_key():
+            self.delete_key()
+            return
+
+        if event.key == self.system.input.keys.enter_key():
+            return
+
+        if event.unicode and event.unicode.isprintable():
+            self.add_key_to_box(event.unicode)
+
+    def contains_point(self, position):
+        return self.bounding_box_rect.collidepoint(position)
 
     def set_active(self, state):
         self.is_active = state
@@ -74,26 +85,20 @@ class TextBox(UIElement):
 
         self.text_box.fill(white)
 
-    def add_key_to_box(self,key):
-        if len(self.box) < 21:
-            current_key = self.system.input.get_key_name(key)
-            allowed_keys = "asdfghjklzxcvbnmqwertyuiopASDFGHJKLZXCVBNMQWERTYUIOP123456789"
+    def add_key_to_box(self, character):
+        if len(self.box) >= 21:
+            return
 
-            if current_key in allowed_keys:
-                self.box.append(current_key)
-
-            if current_key == 'space':
-                self.box.append(" ")
-
-            self.cursor_visible = True
-            self.cursor_timer = self.system.time.get_current_time()
+        self.box.append(character)
+        self.cursor_visible = True
+        self.cursor_timer = self.system.time.get_current_time()
     
     def get_return_string(self):
         return ''.join(self.box).strip()
 
     def delete_key(self):
-        if len(self.box) > 0:
-            self.box.pop(-1)
+        if self.box:
+            self.box.pop()
 
     def update(self):
         pass
