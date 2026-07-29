@@ -24,6 +24,10 @@ class UIController:
         self.active_ui = self.loader.load(ui_file)
         self.active_name = name
         return True
+    
+    def clear(self):
+        self.active_ui = None
+        self.active_name = None
 
     def reload(self):
         if self.active_name:
