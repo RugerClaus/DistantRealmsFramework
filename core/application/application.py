@@ -1,6 +1,6 @@
 
 
-class Application_Object:
+class Application:
     def __init__(self,app_interface):
         self.app_interface = app_interface
 

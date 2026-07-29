@@ -2,7 +2,7 @@ from core.state.ApplicationLayer.state import APP_STATE
 from core.state.ApplicationLayer.statemanager import AppStateManager
 from core.state.RuntimeLayer.state import RUNTIME_STATE
 from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
-from core.application.application_object import Application_Object
+from core.application.application import Application
 from core.ui.loader import UILoader
 from core.ui.actionmanager import UIActionManager
 from core.application.action_register import ActionRegistrar
@@ -31,11 +31,11 @@ class AppInterface:
 
     def reload_application(self):
         import importlib
-        from core.application import application_object
+        from core.application import application
 
-        importlib.reload(application_object)
+        importlib.reload(application)
 
-        self.app_object = application_object.Application_Object(self)
+        self.app_object = application.Application(self)
             
     def send_debug_info_to_system(self):
         self.app_object.register_debug_telemetry()
@@ -91,7 +91,7 @@ class AppInterface:
 
         self.system.runtime_state.set_state(RUNTIME_STATE.APPLICATION)
 
-        self.app_object = Application_Object(self)
+        self.app_object = Application(self)
 
         # Now app_object exists.
         self.action_registrar.register()
@@ -109,7 +109,7 @@ class AppInterface:
         self.system.save_telemetry = ""
         self.app_object.clean_up_states()
         self.app_object.reset()
-        self.system.clean_up_states([self.state.state,self.pause_menu.state.state])
+        self.system.clean_up_states([self.state.state])
 
     def quit(self):
         self.system.quit()
