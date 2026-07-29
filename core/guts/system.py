@@ -11,7 +11,6 @@ from core.guts.network.update import Update
 from core.guts.network.network import Network
 from core.guts.network.authentication import Authentication
 from core.guts.user import User
-from core.guts.UI.uicontroller import UIController
 from core.application.app_inspector import app_inspector
 from core.application.save_schema import schema
 from core.guts.telemetry import system_monitor
@@ -26,7 +25,6 @@ from core.state.RuntimeLayer.state import RUNTIME_STATE
 from core.state.RuntimeLayer.DevTools.Debug.state import DEBUG_OVERLAY_STATE
 from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
 from core.state.RuntimeLayer.DevTools.StateMonitor.state import MONITOR_STATE
-
 class System():
     def __init__(self):
 
@@ -87,13 +85,6 @@ class System():
         else:
             self.overlay_state.set_state(DEBUG_OVERLAY_STATE.OFF)
 
-    def go_to_menu(self):
-        self.runtime_state.set_state(RUNTIME_STATE.MAIN_MENU)
-        if self.application is not None:
-            self.application.quit_to_menu()
-            self.application = None
-        self.sound.play_music()
-
     def reset_application(self):
         if self.application:
             self.application.reset_game()
@@ -106,7 +97,6 @@ class System():
         self.runtime_state.set_state(RUNTIME_STATE.APPLICATION)
         self.state_monitor_state.set_state(MONITOR_STATE.APPLICATION)
         self.application = AppInterface(self)
-        self.ui_controller = UIController(self,self.application.ui)
         self.application.init()
 
     def clean_up_states(self, states):

@@ -1,6 +1,5 @@
 from enum import Enum,auto
 
-class GAMESTATE(Enum):
-    PAUSED = auto()
-    PLAYING = auto()
-    NONE = auto()
+class APP_STATE(Enum):
+    NOT_LOADED = auto()
+    LOADED = auto()
