@@ -1,4 +1,4 @@
-
+from core.util.colors import *
 
 class Application:
     def __init__(self,app_interface):
@@ -11,7 +11,7 @@ class Application:
         pass
 
     def draw(self):
-        self.app_interface.system.window.fill((0,0,0))
+        self.app_interface.system.window.fill((black))
 
     def resize(self):
         pass
