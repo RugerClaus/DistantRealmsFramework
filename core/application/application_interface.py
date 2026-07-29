@@ -63,7 +63,8 @@ class AppInterface:
                 self.reload_application()
                 print("Reloading Application...")
         if self.app_object:
-            self.app_object.handle_event(event)
+            if self.state.is_state(APP_STATE.RUNNING):
+                self.app_object.handle_event(event)
 
     def draw(self):
         if self.app_object:
@@ -102,8 +103,9 @@ class AppInterface:
 
     def update(self):
         self.ui_controller.update()
-        if self.app_object:
-            self.app_object.update()
+        if self.state.is_state(APP_STATE.RUNNING):
+            if self.app_object:
+                self.app_object.update()
 
     def quit_to_menu(self):
         self.remove_debug_info_from_system()
