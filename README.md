@@ -56,9 +56,7 @@ Using the Framework
 This section is a work in progress. For now, see:
 https://github.com/RugerClaus/SnowBlitzProduction
 
-Most work happens in core/game.
-
-Start in game.py — you can structure things however you like.
+Work happens in core/application.
 
 State System Overview
 
