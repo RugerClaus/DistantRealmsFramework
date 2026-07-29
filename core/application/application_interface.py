@@ -51,17 +51,19 @@ class AppInterface:
             self.ui.scale()
 
         if self.system.control_state.is_state(DEVELOPER_MODE.ON):
-            if event.type == self.system.input.keydown():
-                if event.key == self.system.input.keys.F1_key():
-                    if self.ui.current_view == "form":
-                        self.ui_controller.show_form(self.ui.current_form)
-                    elif self.ui.current_view == "menu":
-                        self.ui_controller.show_menu(self.ui.current_menu)
-                    self.reload_actions()
-
-                if event.key == self.system.input.keys.F2_key():
-                    self.reload_application()
-                    print("reloading app")
+            command = self.system.input.handle_event(event)
+            if command == "reload_ui":
+                if self.ui.current_view == "form":
+                    self.ui_controller.show_form(self.ui.current_form)
+                elif self.ui.current_view == "menu":
+                    self.ui_controller.show_menu(self.ui.current_menu)
+                self.reload_actions()
+                print("Reloading User Interface...")
+            elif command == "reload_application":
+                self.reload_application()
+                print("Reloading Application...")
+        if self.app_object:
+            self.app_object.handle_event(event)
 
     def draw(self):
         if self.app_object:
@@ -93,7 +95,6 @@ class AppInterface:
 
         self.app_object = Application(self)
 
-        # Now app_object exists.
         self.action_registrar.register()
 
     def reset_game(self):
