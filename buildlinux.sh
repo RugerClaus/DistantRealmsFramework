@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-APP_NAME="MyApp"
+APP_NAME="Distant Relams Editor"
 MAIN="main.py"
 UPDATER_MAIN="updater.py"
 UPDATER_NAME="updater"
@@ -13,14 +13,21 @@ SPEC_ROOT="$ROOT/specs"
 
 function copy_assets() {
   TARGET="$1"
+
+  echo "ROOT=$ROOT"
+  echo "TARGET=$TARGET"
+
+  echo "Engine persistence source:"
+  find "$ROOT/enginepersistence" -type f
+
   cp -r "$ROOT/assets" "$TARGET"
   cp -r "$ROOT/logs" "$TARGET"
   cp -r "$ROOT/saves" "$TARGET"
   cp -r "$ROOT/environment" "$TARGET"
-  cp "$ROOT/changelog.txt" "$TARGET"
-  cp "$ROOT/README.md" "$TARGET"
-  cp "$ROOT/LICENSE" "$TARGET"
-  cp "$ROOT/instructions.md" "$TARGET"
+  cp -r "$ROOT/enginepersistence" "$TARGET"
+
+  echo "After copy:"
+  find "$TARGET/enginepersistence" -type f
 }
 
 function cleanup_internal() {
