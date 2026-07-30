@@ -26,3 +26,6 @@ class Application:
 
     def reset(self):
         pass
+
+    def init(self):
+        pass

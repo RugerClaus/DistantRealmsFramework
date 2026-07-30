@@ -3,6 +3,7 @@ from systemlogging import log_error
 
 from core.ui.composables.form import Form
 from core.ui.composables.menu import Menu
+
 from core.ui.widgets.label import Label
 from core.ui.widgets.query import Query
 from core.ui.widgets.textbox import TextBox
@@ -12,41 +13,38 @@ from core.ui.widgets.header import Header
 from core.ui.widgets.scrollabletext import ScrollableText
 from core.ui.widgets.centertext import CenterText
 from core.ui.widgets.select import Select
+
+
 class UILoader:
     def __init__(self, system, actions):
         self.system = system
         self.actions = actions
-        self.menu = None
-        self.form = None
-        self.current_form = None
-        self.current_menu = None
 
     def load(self, filename):
         with open(filename, "r") as file:
             data = json.load(file)
 
-        if data["type"] == "form":
-            return self.load_form(data)
-        elif data["type"] == "menu":
-            return self.load_menu(data)
-        
+        ui_type = data["type"]
 
-        raise ValueError(f"Unknown UI type: {data['type']}")
+        if ui_type == "menu":
+            ui = Menu(self.system)
+            self._build_menu(ui, data)
 
-    def load_menu(self, data):
-        self.menu = Menu(self.system)
+        elif ui_type == "form":
+            ui = Form(self.system)
+            self._build_form(ui, data)
 
-        for element_data in data["elements"]:
-            element = self.create_element(element_data)
-            self.menu.add_child(element)
+        else:
+            raise ValueError(f"Unknown UI type: {ui_type}")
 
-        self.menu.on_load()
-        self.current_menu = data["name"]
-        self.current_view = "menu"
-        return self.menu
+        ui.on_load()
+        return ui, data["name"], data["type"]
 
-    def load_form(self, data):
-        self.form = Form(self.system)
+    def _build_menu(self, menu, data):
+        for definition in data.get("elements", []):
+            menu.add_child(self.create_element(definition))
+
+    def _build_form(self, form, data):
         elements = {}
 
         for definition in data.get("elements", []):
@@ -54,50 +52,72 @@ class UILoader:
             elements[definition["id"]] = element
 
             if "field" in definition:
-                self.form.add_field(definition["field"], element)
+                form.add_field(definition["field"], element)
             else:
-                self.form.add_child(element)
+                form.add_child(element)
 
         if "error_element" in data:
-            self.form.set_error_element(elements[data["error_element"]])
-        self.current_form = data["name"]
-        self.current_view = "form"
-        return self.form
-
-    def scale(self):
-        if self.menu:
-            self.menu.scale()
-        if self.form:
-            self.form.scale()
+            form.set_error_element(elements[data["error_element"]])
 
     def create_element(self, data):
         element_type = data["type"]
         element_id = data.get("id")
 
         if element_type == "label":
-            return Label(self.system, element_id, data.get("text", ""), tuple(data.get("position", [0, 0])))
+            return Label(
+                self.system,
+                element_id,
+                data.get("text", ""),
+                tuple(data.get("position", [0, 0]))
+            )
 
         elif element_type == "textbox":
-            element = TextBox(self.system, element_id, tuple(data.get("position", [0, 0])))
+            element = TextBox(
+                self.system,
+                element_id,
+                tuple(data.get("position", [0, 0]))
+            )
 
-            if data.get("password", False):
-                element.is_password = True
-
+            element.is_password = data.get("password", False)
             return element
 
         elif element_type == "button":
             action = data.get("action")
             callback = self.actions.execute if action else None
-            return Button(self.system, element_id, data.get("font_size"), data.get("text", ""), tuple(data.get("position", [0, 0])), lambda: callback(action) if callback else None)
+
+            return Button(
+                self.system,
+                element_id,
+                data.get("font_size"),
+                data.get("text", ""),
+                tuple(data.get("position", [0, 0])),
+                lambda: callback(action) if callback else None
+            )
 
         elif element_type == "query":
-            return Query(self.system, element_id, data.get("text", ""))
+            return Query(
+                self.system,
+                element_id,
+                data.get("text", "")
+            )
 
         elif element_type == "image":
-            return Image(self.system, element_id, data.get("asset"), tuple(data.get("position", [0.5, 0.5])), data.get("scale", [1.0, 1.0]))
+            return Image(
+                self.system,
+                element_id,
+                data.get("asset"),
+                tuple(data.get("position", [0.5, 0.5])),
+                data.get("scale", [1.0, 1.0])
+            )
 
         elif element_type == "header":
-                    return Header(self.system, element_id,data.get("text"),data.get("font_size"), tuple(data.get("position", [0.5, 0.5])))
+            return Header(
+                self.system,
+                element_id,
+                data.get("text"),
+                data.get("font_size"),
+                tuple(data.get("position", [0.5, 0.5]))
+            )
 
         elif element_type == "scrollable_text":
             element = ScrollableText(
@@ -108,7 +128,7 @@ class UILoader:
                 width=data.get("width", 0.8),
                 height=data.get("height", 0.6),
                 align=data.get("align", "left"),
-                line_spacing=data.get("line_spacing", 0.01)
+                line_spacing=data.get("line_spacing", 0.01),
             )
             element.load_source(data.get("text"))
             return element
@@ -121,6 +141,7 @@ class UILoader:
                 position=tuple(data.get("position", [0.5, 0.5])),
                 text=data.get("text", "")
             )
+
         elif element_type == "select":
             return Select(
                 self.system,

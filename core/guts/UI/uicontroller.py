@@ -5,33 +5,25 @@ class UIController:
         self.active_ui = None
         self.active_name = None
 
-    def show_menu(self, name):
+    def show_ui(self, name):
         ui_file = self.system.persistence.get_menu(name)
         if not ui_file.exists():
-            self.active_ui = None
-            return False
+            ui_file = self.system.persistence.get_form(name)
+            if not ui_file.exists():
+                self.clear()
+                return False
 
-        self.active_ui = self.loader.load(ui_file)
+        self.active_ui = self.active_ui, self.active_name, self.active_type = self.loader.load(ui_file)
         self.active_name = name
         return True
 
-    def show_form(self, name):
-        ui_file = self.system.persistence.get_form(name)
-        if not ui_file.exists():
-            self.active_ui = None
-            return False
-
-        self.active_ui = self.loader.load(ui_file)
-        self.active_name = name
-        return True
-    
     def clear(self):
         self.active_ui = None
         self.active_name = None
 
     def reload(self):
         if self.active_name:
-            self.show(self.active_name)
+            self.show_ui(self.active_name)
 
     def handle_event(self, event):
         if self.active_ui:
