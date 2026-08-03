@@ -2,7 +2,6 @@ from core.state.ApplicationLayer.state import APP_STATE
 from core.state.ApplicationLayer.statemanager import AppStateManager
 from core.state.RuntimeLayer.state import RUNTIME_STATE
 from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
-from core.application.application import Application
 from core.ui.loader import UILoader
 from core.ui.actionmanager import UIActionManager
 from core.application.action_register import ActionRegistrar
@@ -109,9 +108,8 @@ class AppInterface:
             self.ui_controller.show_ui("MAIN")
             self.system.sound.play_music("LoFiSi")
         self.system.runtime_state.set_state(RUNTIME_STATE.APPLICATION)
-        self.app_object = Application(self)
+        self.reload_application()
         self.action_registrar.register()
-        self.app_object.init()
 
     def reset_game(self):
         self.app_object.reset()
