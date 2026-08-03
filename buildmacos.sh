@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-APP_NAME="MyApp"
+APP_NAME="My App"
 MAIN="main.py"
 UPDATER_MAIN="updater.py"
 UPDATER_NAME="updater"
@@ -17,7 +17,16 @@ function copy_assets() {
   cp -R "$ROOT/logs" "$TARGET"
   cp -R "$ROOT/saves" "$TARGET"
   cp -R "$ROOT/environment" "$TARGET"
+  cp -R "$ROOT/enginepersistence" "$TARGET"
   cp "$ROOT/changelog.txt" "$TARGET"
+
+  cp "$ROOT/changelog.txt" "$TARGET"
+  cp "$ROOT/README.md" "$TARGET"
+  cp "$ROOT/LICENSE" "$TARGET"
+  cp "$ROOT/instructions.md" "$TARGET"
+
+  echo "Setting build environment to production mode..." 
+  echo "false" > "$TARGET/environment/dev"
 }
 
 function build_main() {

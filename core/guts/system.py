@@ -1,5 +1,4 @@
-import math,random,os
-from systemlogging import log_event
+import math,random
 from config import config
 # core systems
 from core.guts.input.inputmanager import InputManager

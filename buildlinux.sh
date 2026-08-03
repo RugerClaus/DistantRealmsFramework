@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-APP_NAME="Distant Relams Editor"
+APP_NAME="My App"
 MAIN="main.py"
 UPDATER_MAIN="updater.py"
 UPDATER_NAME="updater"
@@ -25,9 +25,14 @@ function copy_assets() {
   cp -r "$ROOT/saves" "$TARGET"
   cp -r "$ROOT/environment" "$TARGET"
   cp -r "$ROOT/enginepersistence" "$TARGET"
+  
+  cp "$ROOT/changelog.txt" "$TARGET"
+  cp "$ROOT/README.md" "$TARGET"
+  cp "$ROOT/LICENSE" "$TARGET"
+  cp "$ROOT/instructions.md" "$TARGET"
 
-  echo "After copy:"
-  find "$TARGET/enginepersistence" -type f
+  echo "Setting build environment to production mode..." 
+  echo "false" > "$TARGET/environment/dev"
 }
 
 function cleanup_internal() {

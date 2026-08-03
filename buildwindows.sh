@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-APP_NAME="MyApp"
+APP_NAME="My App"
 MAIN="main.py"
 UPDATER_MAIN="updater.py"
 UPDATER_NAME="updater"
@@ -25,6 +25,7 @@ ASSETS_PATH_WIN=$(convert_to_windows_path "$ASSETS_PATH")
 LOGS_PATH_WIN=$(convert_to_windows_path "$LOGS_PATH")
 SAVES_PATH_WIN=$(convert_to_windows_path "$SAVES_PATH")
 ENVIRONMENT_PATH_WIN=$(convert_to_windows_path "$ENVIRONMENT_PATH")
+ENGINE_PERSISTENCE_PATH_WIN=$(convert_to_windows_path "$ROOT/enginepersistence")
 
 function copy_assets() {
   TARGET="$1"
@@ -32,9 +33,15 @@ function copy_assets() {
   cp -r "$LOGS_PATH" "$TARGET"
   cp -r "$SAVES_PATH" "$TARGET"
   cp -r "$ENVIRONMENT_PATH" "$TARGET"
-  cp  "changelog.txt" "$TARGET"
-  cp  "README.md" "$TARGET"
-  cp  "instructions.md" "$TARGET"
+  cp -r "$ROOT/enginepersistence" "$TARGET"
+
+  cp "$ROOT/changelog.txt" "$TARGET"
+  cp "$ROOT/README.md" "$TARGET"
+  cp "$ROOT/LICENSE" "$TARGET"
+  cp "$ROOT/instructions.md" "$TARGET"
+
+  echo "Setting build environment to production mode..." 
+  echo "false" > "$TARGET/environment/dev"
 }
 
 function cleanup_internal() {

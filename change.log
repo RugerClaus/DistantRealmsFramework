@@ -51,7 +51,7 @@ Development version Alpha 0.3.0 - 2026-07-08
 - Added scrollable text with scrollbars
 - Fixed window not resizing
 
-Development version Alpha 0.4.0 - 2026-07-28
+Development version Alpha 0.4.0 - 2026-08-03
 ------------------------------------------------
 - Renamed App to Runtime in core/guts/app.py, now core/guts/runtime.py
 - Changed RUNTIME_STATE.LOADING to SPLASH to be more specific about what it is. Splash screens will be first class views
@@ -59,3 +59,6 @@ Development version Alpha 0.4.0 - 2026-07-28
 - Removed core/state/RuntimeLayer/Menu/*
 - Majorly refactored entire UI system to be data based (JSON). UI elements now come from core/application/enginepersistence/menus and forms
 - UIs can be hot reloaded and modified during runtime
+- The contained application itself can be reloaded at any time.
+- Established final boundary between the framework, the editor, and other applications developed using the framework + editor
+- Updated build system to accomodate UI files for exported applications
