@@ -39,9 +39,6 @@ function copy_assets() {
   cp "$ROOT/README.md" "$TARGET"
   cp "$ROOT/LICENSE" "$TARGET"
   cp "$ROOT/instructions.md" "$TARGET"
-
-  echo "Setting build environment to production mode..." 
-  echo "false" > "$TARGET/environment/dev"
 }
 
 function cleanup_internal() {
