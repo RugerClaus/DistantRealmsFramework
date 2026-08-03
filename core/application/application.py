@@ -4,7 +4,7 @@ class Application:
     def __init__(self,app_interface):
         self.app_interface = app_interface
 
-    def handle_event(self,event):
+    def handle_event(self,event,command=None):
         pass
 
     def update(self):

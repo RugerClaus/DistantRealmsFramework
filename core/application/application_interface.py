@@ -80,7 +80,7 @@ class AppInterface:
                 print("Reloading Application...")
         if self.app_object:
             if self.state.is_state(APP_STATE.RUNNING):
-                self.app_object.handle_event(event)
+                self.app_object.handle_event(event,command)
 
     def draw(self):
         if self.app_object:
