@@ -65,7 +65,7 @@ class AppInterface:
         
     def handle_event(self, event):
         self.ui_controller.handle_event(event)
-
+        command = None
         if event.type == self.system.input.video_resize_event():
             self.app_object.resize()
             self.ui_controller.scale()
