@@ -1,16 +1,29 @@
 from core.ui.type import WIDGET
 from core.ui.element import UIElement
 from core.ui.font import FontEngine
-from core.util.colors import red,white,black
+from core.util.colors import red, white, black
+
 
 class TextBox(UIElement):
-    def __init__(self,system,id,position,is_active=False):
-        super().__init__(focusable=True,position=position)
+    def __init__(self, system, id, position, dimensions=(0.1432,0.0926),font_size=30,is_active=False):
+        super().__init__(focusable=True, position=position)
+
         self.system = system
         self.id = id
-        self.font = FontEngine(30).font
+
+        self.font = FontEngine(font_size).font
+
         self.background_color = black
+
+        # Normalized dimensions
+        self.width, self.height = dimensions
+
+        # Inner text area as a fraction of the textbox
+        self.text_width = 0.9091
+        self.text_height = 0.5
+
         self.scale()
+
         self.string = None
         self.box = []
         self.is_password = False
@@ -63,22 +76,42 @@ class TextBox(UIElement):
         if self.is_active:
             now = self.system.time.get_current_time()
 
-            if now - self.cursor_timer  >= self.cursor_interval:
+            if now - self.cursor_timer >= self.cursor_interval:
                 self.cursor_visible = not self.cursor_visible
                 self.cursor_timer = now
+
             return self.cursor if self.cursor_visible else ""
 
     def scale(self):
-        x,y = self.get_screen_position()
+        x, y = self.get_screen_position()
 
-        self.bounding_box = self.system.window.make_surface(275, 100)
+        ww = self.system.window.get_width()
+        wh = self.system.window.get_height()
+
+        # Resolve normalized dimensions into pixels
+        width = int(ww * self.width)
+        height = int(wh * self.height)
+
+        self.bounding_box = self.system.window.make_surface(
+            width,
+            height
+        )
+
         self.bounding_box_rect = self.bounding_box.get_rect(
             center=(x, y)
         )
 
-        self.bounding_box.fill((self.background_color))
+        self.bounding_box.fill(self.background_color)
 
-        self.text_box = self.system.window.make_surface(250,50)
+        # Resolve inner textbox dimensions relative to outer box
+        text_width = int(width * self.text_width)
+        text_height = int(height * self.text_height)
+
+        self.text_box = self.system.window.make_surface(
+            text_width,
+            text_height
+        )
+
         self.text_box_rect = self.text_box.get_rect(
             center=self.bounding_box_rect.center
         )
@@ -92,7 +125,7 @@ class TextBox(UIElement):
         self.box.append(character)
         self.cursor_visible = True
         self.cursor_timer = self.system.time.get_current_time()
-    
+
     def get_return_string(self):
         return ''.join(self.box).strip()
 
@@ -111,13 +144,27 @@ class TextBox(UIElement):
 
         surf = self.font.render(text, False, black)
         rect = surf.get_rect(center=self.text_box_rect.center)
-        self.bounding_box.fill((self.background_color))
-        self.system.window.blit(self.bounding_box,self.bounding_box_rect)
-        self.system.window.blit(self.text_box,self.text_box_rect)
-        self.system.window.blit(surf,rect)
+
+        self.bounding_box.fill(self.background_color)
+
+        self.system.window.blit(
+            self.bounding_box,
+            self.bounding_box_rect
+        )
+
+        self.system.window.blit(
+            self.text_box,
+            self.text_box_rect
+        )
+
+        self.system.window.blit(surf, rect)
 
         if self.draw_cursor():
             cursor_surf = self.font.render("|", False, black)
             cursor_rect = cursor_surf.get_rect()
             cursor_rect.midleft = (rect.right, rect.centery)
-            self.system.window.blit(cursor_surf, cursor_rect)
+
+            self.system.window.blit(
+                cursor_surf,
+                cursor_rect
+            )

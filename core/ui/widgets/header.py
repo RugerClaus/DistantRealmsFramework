@@ -3,7 +3,7 @@ from core.ui.element import UIElement
 from core.ui.font import FontEngine
 from core.util.colors import white
 class Header(UIElement):
-    def __init__(self, system, id, text, font_size=60, position=(0.5, 0.1)):
+    def __init__(self, system, id, text, font_size=60, position=(0.5, 0.1),color=white):
         super().__init__(position=position)
         self.system = system
         self.id = id
@@ -11,8 +11,7 @@ class Header(UIElement):
         self.text = text
         self.font = FontEngine(font_size).font
         self.x_ratio, self.y_ratio = position
-        self.default_color = white
-        self.color = self.default_color
+        self.color = color
         self.scale()
 
     def set_text(self, text,color = None):

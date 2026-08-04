@@ -1,6 +1,6 @@
 import pygame
 from systemlogging import log_error
-from helper import get_colors,asset
+from helper import asset
 from config import config
 
 class Window:
@@ -55,7 +55,7 @@ class Window:
 
     def fill(self, color,alpha=None):
         if isinstance(color, str):
-            color = get_colors(color.lower())
+            color = color
         elif isinstance(color, tuple) and len(color) == 3:
             color = color
             alpha = alpha if alpha is not None else 255

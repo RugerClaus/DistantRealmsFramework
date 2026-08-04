@@ -30,6 +30,9 @@ class Keys:
     def q_key(self):
         return pygame.K_q
 
+    def t_key(self):
+        return pygame.K_t
+
     def seven_key(self):
         return pygame.K_7
 

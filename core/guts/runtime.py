@@ -1,5 +1,5 @@
 import sys
-from helper import *
+from core.util.colors import black
 from core.state.RuntimeLayer.state import RUNTIME_STATE
 from core.state.RuntimeLayer.DevTools.Debug.state import DEBUG_OVERLAY_STATE
 from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
@@ -67,7 +67,7 @@ class Runtime:
 
     def run(self):
         while not self.system.runtime_state.is_state(RUNTIME_STATE.QUIT):
-            self.system.window.fill(get_colors('black'))
+            self.system.window.fill(black)
             self.handle_events()
 
             if self.system.runtime_state.is_state(RUNTIME_STATE.SPLASH):

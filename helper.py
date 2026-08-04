@@ -18,23 +18,6 @@ def asset(asset):
         return "assets/images/main/multiplierupgrade.png"
     elif asset == "clock":
         return "assets/images/main/clock.png"
-
-def get_colors(color):
-    if color == "red":
-        return (255,0,0)
-    elif color  == "green":
-        return (0,255,0)
-    elif color == "blue":
-        return (0,0,255)
-    elif color == "purple":
-        return (128,0,128)
-    elif color == "black":
-        return (0,0,0)
-    elif color == "white":
-        return (255,255,255)
-    else:
-        log_error("Can't find color!")
-        return (128,128,128)
     
 def audio_path(type):
     type = type.lower()

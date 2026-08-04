@@ -68,14 +68,19 @@ class UILoader:
                 self.system,
                 element_id,
                 data.get("text", ""),
-                tuple(data.get("position", [0, 0]))
+                tuple(data.get("position", [0, 0])),
+                font_size=data.get("font_size", 30),
+                color=tuple(data.get("color", [255, 255, 255]))
             )
 
         elif element_type == "textbox":
             element = TextBox(
                 self.system,
                 element_id,
-                tuple(data.get("position", [0, 0]))
+                tuple(data.get("position", [0, 0])),
+                tuple(data.get("dimensions", [0.1432, 0.0926])),
+                font_size=data.get("font_size", 30),
+                is_active=data.get("active", False)
             )
 
             element.is_password = data.get("password", False)
@@ -116,7 +121,8 @@ class UILoader:
                 element_id,
                 data.get("text"),
                 data.get("font_size"),
-                tuple(data.get("position", [0.5, 0.5]))
+                tuple(data.get("position", [0.5, 0.5])),
+                color=tuple(data.get("color", [255, 255, 255]))
             )
 
         elif element_type == "scrollable_text":
