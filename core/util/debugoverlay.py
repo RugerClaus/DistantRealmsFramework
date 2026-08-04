@@ -26,11 +26,9 @@ class DebugOverlay:
     def normalized_to_pixel(self, x, y):
         return (int(x * self.surface.get_width()), int(y * self.surface.get_height()))
 
-    def handle_event(self, event):
+    def handle_event(self, event,command=None):
         if event.type == self.system.input.video_resize_event():
             self.scale()
-
-        command = self.system.input.handle_event(event)
 
         if command == "monitor_system_states":
             self.system.state_monitor_state.set_state(MONITOR_STATE.SYSTEM)

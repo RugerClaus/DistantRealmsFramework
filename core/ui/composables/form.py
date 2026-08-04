@@ -19,6 +19,13 @@ class Form(UIElement):
         self.type = COMPOSABLE.FORM
         self.loaded = False
 
+    def get_element(self, element_id):
+        for element in self.children:
+            if element.id == element_id:
+                return element
+
+        return None
+
     def add_child(self, element):
         self.children.append(element)
         self.ui.add(element)

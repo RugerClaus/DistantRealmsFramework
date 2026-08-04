@@ -26,6 +26,12 @@ class InputManager:
     def mouse_button_down(self):
         return pygame.MOUSEBUTTONDOWN
     
+    def mouse_button_up(self):
+        return pygame.MOUSEBUTTONUP
+
+    def mouse_motion(self):
+        return pygame.MOUSEMOTION
+    
     def get_mouse_pos(self):
         return pygame.mouse.get_pos()
     

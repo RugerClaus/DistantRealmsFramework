@@ -5,7 +5,7 @@ from core.util.colors import red, white, black
 
 
 class TextBox(UIElement):
-    def __init__(self, system, id, position, dimensions=(0.1432,0.0926),font_size=30,is_active=False):
+    def __init__(self, system, id, position, dimensions=(0.1432,0.0926),font_size=30,is_active=False,text=None):
         super().__init__(focusable=True, position=position)
 
         self.system = system
@@ -24,8 +24,7 @@ class TextBox(UIElement):
 
         self.scale()
 
-        self.string = None
-        self.box = []
+        self.box = list(str(text)) if text is not None else []
         self.is_password = False
 
         self.cursor_interval = 500
@@ -42,6 +41,9 @@ class TextBox(UIElement):
 
     def clear_error(self):
         self.background_color = black
+
+    def set_text(self, text):
+        self.box = list(str(text)[:21])
 
     def handle_event(self, event):
         if event.type == self.system.input.video_resize_event():
@@ -103,9 +105,11 @@ class TextBox(UIElement):
 
         self.bounding_box.fill(self.background_color)
 
-        # Resolve inner textbox dimensions relative to outer box
-        text_width = int(width * self.text_width)
-        text_height = int(height * self.text_height)
+        # Thin 2-pixel border
+        border = 2
+
+        text_width = max(1, width - border * 2)
+        text_height = max(1, height - border * 2)
 
         self.text_box = self.system.window.make_surface(
             text_width,

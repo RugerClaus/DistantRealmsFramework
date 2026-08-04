@@ -96,7 +96,8 @@ class UILoader:
                 data.get("font_size"),
                 data.get("text", ""),
                 tuple(data.get("position", [0, 0])),
-                lambda: callback(action) if callback else None
+                lambda: callback(action) if callback else None,
+                styles=data.get("styles")
             )
 
         elif element_type == "query":

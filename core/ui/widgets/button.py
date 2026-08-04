@@ -56,54 +56,69 @@ class Button(UIElement):
 
         self.x_ratio, self.y_ratio = position
 
+        self.styles = {
+            BUTTON_STATE.IDLE: Style(
+                background=idle_background,
+                border=(255,255,255),
+                border_width=2,
+                border_radius=8
+            ),
+
+            BUTTON_STATE.HOVER: Style(
+                background=hover_background,
+                border=(200,20,20),
+                border_width=3,
+                border_radius=8
+            ),
+
+            BUTTON_STATE.PRESS: Style(
+                background=(20,20,20),
+                border=(255,255,255),
+                border_width=2,
+                border_radius=8
+            ),
+
+            BUTTON_STATE.DISABLE: Style(
+                background=(20,20,20),
+                border=(100,100,100),
+                border_width=2,
+                border_radius=8,
+                text_color=(100,100,100)
+            ),
+
+            BUTTON_STATE.FOCUSED: Style(
+                background=(40,40,40),
+                border=(0,255,255),
+                border_width=3,
+                border_radius=8
+            )
+        }
         if isinstance(styles, dict):
-            self.styles = styles
-        else:
-            self.styles = {
-                BUTTON_STATE.IDLE: Style(
-                    background=idle_background,
-                    border=(255,255,255),
-                    border_width=2,
-                    border_radius=8
-                ),
-
-                BUTTON_STATE.HOVER: Style(
-                    background=hover_background,
-                    border=(200,20,20),
-                    border_width=3,
-                    border_radius=8
-                ),
-
-                BUTTON_STATE.PRESS: Style(
-                    background=(20,20,20),
-                    border=(255,255,255),
-                    border_width=2,
-                    border_radius=8
-                ),
-
-                BUTTON_STATE.DISABLE: Style(
-                    background=(20,20,20),
-                    border=(100,100,100),
-                    border_width=2,
-                    border_radius=8,
-                    text_color=(100,100,100)
-                ),
-
-                BUTTON_STATE.FOCUSED: Style(
-                    background=(40,40,40),
-                    border=(0,255,255),
-                    border_width=3,
-                    border_radius=8
-                )
-            }
+            self.styles = self.load_styles(styles)
 
         self.surface = None
         self.rect = None
         self.text_surface = None
         self.text_rect = None
-
         self.scale()
 
+
+    def load_styles(self, data):
+        styles = {}
+
+        for state_name, style_data in data.items():
+            state = BUTTON_STATE[state_name.upper()]
+
+            styles[state] = Style(
+                background=tuple(style_data["background"]),
+                border=tuple(style_data["border"]),
+                border_width=style_data["border_width"],
+                border_radius=style_data["border_radius"],
+                padding=style_data["padding"],
+                text_color=tuple(style_data["text_color"])
+            )
+
+        return styles
 
     def scale(self):
 

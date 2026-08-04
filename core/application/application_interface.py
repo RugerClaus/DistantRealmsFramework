@@ -63,9 +63,9 @@ class AppInterface:
     def remove_debug_info_from_system(self):
         self.system.app_inspector.clear()
         
-    def handle_event(self, event):
+    def handle_event(self, event,command=None):
         self.ui_controller.handle_event(event)
-        command = None
+        
         if event.type == self.system.input.video_resize_event():
             self.app_object.resize()
             self.ui_controller.scale()

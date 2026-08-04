@@ -15,7 +15,9 @@ class Runtime:
         self.debug_overlay = DebugOverlay(system)
     
     def handle_events(self):
+        
         for event in self.system.input.input_event():
+            command = self.system.input.handle_event(event)
             if event.type == self.system.input.video_resize_event():
                 self.system.window.set_mode(event.w,event.h)
                 self.debug_overlay.scale()
@@ -29,14 +31,14 @@ class Runtime:
             
             elif self.system.runtime_state.is_state(RUNTIME_STATE.APPLICATION):
                 if self.system.application is not None:
-                    self.system.application.handle_event(event)
+                    self.system.application.handle_event(event,command)
 
             if self.system.overlay_state.is_state(DEBUG_OVERLAY_STATE.ON):
-                self.debug_overlay.handle_event(event)
+                self.debug_overlay.handle_event(event,command)
 
             self.system.sound.handle_music_event(event)
 
-            command = self.system.input.handle_event(event)
+            
             if command == "debug":
                 self.system.overlay_state_toggle()
             
@@ -44,13 +46,6 @@ class Runtime:
                 self.system.control_state_toggle()
 
             if event.type == self.system.input.keydown():
-                if self.system.input.get_key_name(event.key) == "f11":
-                    if self.system.application is not None:
-                        print("Application Running")
-                    else:
-                        print("Application is not initialized")
-                elif self.system.input.get_key_name(event.key) == "u":
-                    print(str(self.system.window.get_info()))
                 if self.system.runtime_state.is_state(RUNTIME_STATE.SPLASH):
                     if self.system.input.get_key_name(event.key) == "space" or self.system.input.get_key_name(event.key) == "return" or self.system.input.get_key_name(event.key) == "escape":
                         self.system.sound.stop_all_sfx()

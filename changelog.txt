@@ -1,1 +1,4 @@
 Development version Alpha 0.5.0 - 2026-08-XX
+- Textboxes no longer have a big fat border
+- All UI elements using normals
+- Added more customizability to multiple widgets

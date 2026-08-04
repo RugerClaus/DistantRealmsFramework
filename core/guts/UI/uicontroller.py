@@ -5,6 +5,12 @@ class UIController:
         self.active_ui = None
         self.active_name = None
 
+    def get_element(self, element_id):
+        if not self.active_ui:
+            return None
+
+        return self.active_ui.get_element(element_id)
+
     def show_ui(self, name):
         ui_file = self.system.persistence.get_menu(name)
         if not ui_file.exists():
