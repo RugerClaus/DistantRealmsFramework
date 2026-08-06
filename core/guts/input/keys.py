@@ -72,6 +72,9 @@ class Keys:
     def F12_key(self):
         return pygame.K_F12
 
+    def l_ctrl_key(self):
+        return pygame.K_LCTRL
+
     def up_arrow_key(self):
         return pygame.K_UP
 

@@ -71,7 +71,6 @@ class AppInterface:
             self.ui_controller.scale()
 
         if self.system.control_state.is_state(DEVELOPER_MODE.ON):
-            command = self.system.input.handle_event(event)
             if command == "reload_ui":
                 self.reload_actions()
                 print("Reloading User Interface...")
@@ -105,7 +104,7 @@ class AppInterface:
     def init(self):
         main_menu = self.system.persistence.get_menu("MAIN")
         if main_menu.exists():
-            self.ui_controller.show_ui("MAIN")
+            self.ui_controller.show_ui("testmenu")
             self.system.sound.play_music("LoFiSi")
         self.system.runtime_state.set_state(RUNTIME_STATE.APPLICATION)
         self.reload_application()

@@ -123,14 +123,6 @@ class Button(UIElement):
                 text_color=tuple(style_data["text_color"]) if "text_color" in style_data else current.text_color
             )
 
-        for state, style in styles.items():
-            print(
-                state,
-                "bg:", style.background,
-                "border:", style.border,
-                "width:", style.border_width
-            ) 
-
         return styles
 
     def scale(self):
