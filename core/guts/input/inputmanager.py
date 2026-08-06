@@ -8,7 +8,7 @@ from core.ui.font import FontEngine
 class InputManager:
     def __init__(self, system):
         self.system = system
-        self.CommandModule = CommandModule()
+        self.CommandModule = CommandModule(self)
         self.current_keys = set()
         self.released_keys = set()
         self.key_history = {}
