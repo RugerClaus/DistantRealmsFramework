@@ -104,19 +104,32 @@ class Button(UIElement):
 
 
     def load_styles(self, data):
-        styles = {}
+        styles = self.styles.copy()
 
         for state_name, style_data in data.items():
             state = BUTTON_STATE[state_name.upper()]
 
+            if state not in styles:
+                styles[state] = Style()
+
+            current = styles[state]
+
             styles[state] = Style(
-                background=tuple(style_data["background"]),
-                border=tuple(style_data["border"]),
-                border_width=style_data["border_width"],
-                border_radius=style_data["border_radius"],
-                padding=style_data["padding"],
-                text_color=tuple(style_data["text_color"])
+                background=tuple(style_data["background"]) if "background" in style_data else current.background,
+                border=tuple(style_data["border"]) if "border" in style_data else current.border,
+                border_width=style_data["border_width"] if "border_width" in style_data else current.border_width,
+                border_radius=style_data["border_radius"] if "border_radius" in style_data else current.border_radius,
+                padding=style_data["padding"] if "padding" in style_data else current.padding,
+                text_color=tuple(style_data["text_color"]) if "text_color" in style_data else current.text_color
             )
+
+        for state, style in styles.items():
+            print(
+                state,
+                "bg:", style.background,
+                "border:", style.border,
+                "width:", style.border_width
+            ) 
 
         return styles
 
@@ -133,11 +146,13 @@ class Button(UIElement):
         self.width = (
             self.text_surface.get_width()
             + current_style.padding * 2
+            + current_style.border_width * 2
         )
 
         self.height = (
             self.text_surface.get_height()
             + current_style.padding * 2
+            + current_style.border_width * 2
         )
 
 
