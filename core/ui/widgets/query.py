@@ -18,6 +18,7 @@ class Query(UIElement):
     def set_text(self, text,color = None):
         self.text = text
         self.color = color if color else self.default_color
+        self.scale()
 
     def scale(self):
         x,y = self.get_screen_position()

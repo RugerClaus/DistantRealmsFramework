@@ -3,7 +3,7 @@ from core.ui.element import UIElement
 from core.ui.type import WIDGET
 
 class CenterText(UIElement):
-    def __init__(self,system,id,font_size,position,text):
+    def __init__(self,system,id,position,text,font_size=30):
         self.system = system
         self.id = id
         self.font = FontEngine(font_size).font

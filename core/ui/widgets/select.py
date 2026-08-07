@@ -5,12 +5,12 @@ from core.util.colors import red, white, black
 
 
 class Select(UIElement):
-    def __init__(self, system, id, position, options, is_active=False):
+    def __init__(self, system, id, position,options,font_size=30, is_active=False):
         super().__init__(focusable=True, position=position)
 
         self.system = system
         self.id = id
-        self.font = FontEngine(30).font
+        self.font = FontEngine(font_size).font
 
         self.background_color = white
         self.options = options or []

@@ -26,11 +26,11 @@ class Style:
 
 
 class Button(UIElement):
-    def __init__(self,system,id,font,text,position,action=None,active=True,styles=None):
+    def __init__(self,system,id,text,position,font_size=30,action=None,active=True,styles=None):
         self.system = system
         self.id = id
         super().__init__(position)
-        self.font = FontEngine(font).font
+        self.font = FontEngine(font_size).font
         self.text = str(text)
         self.type = WIDGET.BUTTON
         hover_background = (60,60,60)

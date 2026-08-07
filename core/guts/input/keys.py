@@ -153,6 +153,9 @@ class Keys:
     def F12_key(self):
         return pygame.K_F12
 
+    def delete_key(self):
+        return pygame.K_DELETE
+
     def l_ctrl_key(self):
         return pygame.K_LCTRL
 

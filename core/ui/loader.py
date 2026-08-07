@@ -93,11 +93,12 @@ class UILoader:
             return Button(
                 self.system,
                 element_id,
-                data.get("font_size"),
                 data.get("text", ""),
                 tuple(data.get("position", [0, 0])),
-                lambda: callback(action) if callback else None,
+                font_size=data.get("font_size",30),
+                action=lambda: callback(action) if callback else None,
                 styles=data.get("styles")
+                
             )
 
         elif element_type == "query":
@@ -130,7 +131,7 @@ class UILoader:
             element = ScrollableText(
                 self.system,
                 element_id,
-                font_size=data.get("font_size", 40),
+                font_size=data.get("font_size", 30),
                 anchor=tuple(data.get("position", [0.5, 0.5])),
                 width=data.get("width", 0.8),
                 height=data.get("height", 0.6),
@@ -144,7 +145,7 @@ class UILoader:
             return CenterText(
                 self.system,
                 element_id,
-                font_size=data.get("font_size", 40),
+                font_size=data.get("font_size", 30),
                 position=tuple(data.get("position", [0.5, 0.5])),
                 text=data.get("text", "")
             )
@@ -154,7 +155,8 @@ class UILoader:
                 self.system,
                 element_id,
                 tuple(data.get("position", [0, 0])),
-                data.get("options")
+                data.get("options"),
+                font_size=data.get("font_size",30)
             )
 
         log_error(f"Unknown UI element type: {element_type}")
