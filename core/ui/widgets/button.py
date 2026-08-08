@@ -125,7 +125,11 @@ class Button(UIElement):
 
         return styles
 
-    def scale(self):
+    def scale(self, preserve_position=False):
+
+        old_center = self.rect.center if (
+            preserve_position and self.rect is not None
+        ) else None
 
         current_style = self.styles[self.state.state]
 
@@ -147,23 +151,25 @@ class Button(UIElement):
             + current_style.border_width * 2
         )
 
-
         self.surface = self.system.window.make_surface(
             self.width,
             self.height,
             True
         )
 
+        if old_center is not None:
+            center = old_center
+        else:
+            ww = self.system.window.get_width()
+            wh = self.system.window.get_height()
 
-        ww = self.system.window.get_width()
-        wh = self.system.window.get_height()
-
-        x = int(ww * self.x_ratio)
-        y = int(wh * self.y_ratio)
-
+            center = (
+                int(ww * self.x_ratio),
+                int(wh * self.y_ratio)
+            )
 
         self.rect = self.surface.get_rect(
-            center=(x,y)
+            center=center
         )
 
         self.text_rect = self.text_surface.get_rect(
@@ -182,9 +188,12 @@ class Button(UIElement):
         else:
             changed = self.state.set_state(BUTTON_STATE.IDLE)
 
+        if changed:
+            self.scale(preserve_position=True)
 
         if changed and self.state.is_state(BUTTON_STATE.HOVER):
             self.system.sound.play_ui_sfx("button_hover")
+
 
     def draw(self, target=None):
         self.renderer.draw(self, target)
