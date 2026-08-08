@@ -12,7 +12,6 @@ WORK_ROOT="$ROOT/build"
 SPEC_ROOT="$ROOT/specs"
 
 ASSETS_PATH="$ROOT/assets"
-LOGS_PATH="$ROOT/logs"
 SAVES_PATH="$ROOT/saves"
 ENVIRONMENT_PATH="$ROOT/environment"
 
@@ -22,7 +21,6 @@ convert_to_windows_path() {
 }
 
 ASSETS_PATH_WIN=$(convert_to_windows_path "$ASSETS_PATH")
-LOGS_PATH_WIN=$(convert_to_windows_path "$LOGS_PATH")
 SAVES_PATH_WIN=$(convert_to_windows_path "$SAVES_PATH")
 ENVIRONMENT_PATH_WIN=$(convert_to_windows_path "$ENVIRONMENT_PATH")
 ENGINE_PERSISTENCE_PATH_WIN=$(convert_to_windows_path "$ROOT/enginepersistence")
@@ -30,7 +28,7 @@ ENGINE_PERSISTENCE_PATH_WIN=$(convert_to_windows_path "$ROOT/enginepersistence")
 function copy_assets() {
   TARGET="$1"
   cp -r "$ASSETS_PATH" "$TARGET"
-  cp -r "$LOGS_PATH" "$TARGET"
+  mkdir "$TARGET/logs"
   cp -r "$SAVES_PATH" "$TARGET"
   cp -r "$ENVIRONMENT_PATH" "$TARGET"
   cp -r "$ROOT/enginepersistence" "$TARGET"
@@ -47,7 +45,6 @@ function cleanup_internal() {
   if [ -d "$INTERNAL_DIR" ]; then
     echo "Cleaning up _internal directory..."
     rm -rf "$INTERNAL_DIR/assets"
-    rm -rf "$INTERNAL_DIR/logs"
     rm -rf "$INTERNAL_DIR/saves"
     rm -rf "$INTERNAL_DIR/environment"
   fi
@@ -66,7 +63,6 @@ function build_main() {
     --clean \
     --name "$APP_NAME" \
     --add-data "$ASSETS_PATH_WIN;assets" \
-    --add-data "$LOGS_PATH_WIN;logs" \
     --add-data "$SAVES_PATH_WIN;saves" \
     --add-data "$ENVIRONMENT_PATH_WIN;environment" \
     --distpath "$TMP_DIST" \

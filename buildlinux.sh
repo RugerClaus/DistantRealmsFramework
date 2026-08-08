@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-APP_NAME="My App"
+APP_NAME="Distant Realms Editor"
 MAIN="main.py"
 UPDATER_MAIN="updater.py"
 UPDATER_NAME="updater"
@@ -21,7 +21,6 @@ function copy_assets() {
   find "$ROOT/enginepersistence" -type f
 
   cp -r "$ROOT/assets" "$TARGET"
-  cp -r "$ROOT/logs" "$TARGET"
   cp -r "$ROOT/saves" "$TARGET"
   cp -r "$ROOT/environment" "$TARGET"
   cp -r "$ROOT/enginepersistence" "$TARGET"
@@ -31,6 +30,9 @@ function copy_assets() {
   cp "$ROOT/LICENSE" "$TARGET"
   cp "$ROOT/instructions.md" "$TARGET"
 
+  echo "making logs/ directory"
+  mkdir "$TARGET/logs"
+  echo "logs/ directory added"
 }
 
 function cleanup_internal() {
