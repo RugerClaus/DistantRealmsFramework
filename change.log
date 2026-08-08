@@ -62,3 +62,11 @@ Development version Alpha 0.4.0 - 2026-08-03
 - The contained application itself can be reloaded at any time.
 - Established final boundary between the framework, the editor, and other applications developed using the framework + editor
 - Updated build system to accomodate UI files for exported applications
+
+Development version Alpha 0.5.0 - 2026-08-XX
+------------------------------------------------
+- Textboxes no longer have a big fat border
+- All UI elements using normals
+- Added more customizability to multiple widgets
+- Commands can now be openly registered anywhere to the command module. You can use the framework's key abstraction for keys
+- Textboxes accept a max char count but by default it's 21

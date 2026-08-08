@@ -3,3 +3,4 @@ Development version Alpha 0.5.0 - 2026-08-XX
 - All UI elements using normals
 - Added more customizability to multiple widgets
 - Commands can now be openly registered anywhere to the command module. You can use the framework's key abstraction for keys
+- Textboxes accept a max char count but by default it's 21

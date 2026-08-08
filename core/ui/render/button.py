@@ -3,12 +3,14 @@ class ButtonRenderer:
     def __init__(self, system):
         self.system = system
 
+    def draw(self, button, target=None):
 
-    def draw(self, button):
+        if target is None:
+            target = self.system.window
 
         style = button.styles[button.state.state]
 
-        button.surface.fill((0,0,0,0))
+        button.surface.fill((0, 0, 0, 0))
 
         rect = button.surface.get_rect()
 
@@ -38,7 +40,7 @@ class ButtonRenderer:
             button.text_rect
         )
 
-        self.system.window.blit(
+        target.blit(
             button.surface,
             button.rect
         )

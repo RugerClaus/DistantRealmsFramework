@@ -80,7 +80,8 @@ class UILoader:
                 tuple(data.get("position", [0, 0])),
                 tuple(data.get("dimensions", [0.1432, 0.0926])),
                 font_size=data.get("font_size", 30),
-                is_active=data.get("active", False)
+                is_active=data.get("active", False),
+                char_limit=data.get("max_chars")
             )
 
             element.is_password = data.get("password", False)

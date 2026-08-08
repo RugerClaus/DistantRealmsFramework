@@ -186,9 +186,8 @@ class Button(UIElement):
         if changed and self.state.is_state(BUTTON_STATE.HOVER):
             self.system.sound.play_ui_sfx("button_hover")
 
-    def draw(self):
-        self.renderer.draw(self)
-
+    def draw(self, target=None):
+        self.renderer.draw(self, target)
 
     def set_text(self, text):
         print(f"Changing '{self.text}' -> '{text}'")
