@@ -102,10 +102,9 @@ class AppInterface:
             return None
         
     def init(self):
-        main_menu = self.system.persistence.get_menu("main")
+        main_menu = self.system.persistence.get_menu("MAIN")
         if main_menu.exists():
-            self.ui_controller.show_ui("main")
-            self.system.sound.play_music("LoFiSi")
+            self.ui_controller.show_ui("MAIN")
         self.system.runtime_state.set_state(RUNTIME_STATE.APPLICATION)
         self.reload_application()
         self.action_registrar.register()
