@@ -12,6 +12,14 @@ class UIManager:
         if event.type == self.system.input.mouse_button_down() and event.button == 1:
             mouse_pos = self.system.input.get_mouse_pos()
 
+            if (
+                self.active_element
+                and self.active_element.type == WIDGET.SELECT
+                and self.active_element.is_open
+            ):
+                self.active_element.handle_event(event)
+                return
+
             for element in self.elements:
                 if element.focusable:
                     if element.contains_point(mouse_pos):
@@ -20,11 +28,8 @@ class UIManager:
 
             for element in self.elements:
                 if element.type == WIDGET.BUTTON:
-                    if event.type == self.system.input.mouse_button_down() and event.button == 1:
-                        mouse_pos = self.system.input.get_mouse_pos()
-
-                        if element.is_clicked(mouse_pos, True):
-                            break
+                    if element.is_clicked(mouse_pos, True):
+                        break
 
         if self.active_element:
             self.active_element.handle_event(event)
@@ -32,7 +37,8 @@ class UIManager:
         if event.type == self.system.input.keydown():
             if event.key == self.system.input.keys.tab_key():
                 focusable_elements = [
-                    element for element in self.elements
+                    element
+                    for element in self.elements
                     if element.focusable
                 ]
 
@@ -40,16 +46,25 @@ class UIManager:
                     return
 
                 if self.active_element in focusable_elements:
-                    index = focusable_elements.index(self.active_element)
-                    next_index = (index + 1) % len(focusable_elements)
+                    index = focusable_elements.index(
+                        self.active_element
+                    )
+
+                    next_index = (
+                        index + 1
+                    ) % len(focusable_elements)
+
                 else:
                     next_index = 0
 
-                self.set_active(focusable_elements[next_index])
+                self.set_active(
+                    focusable_elements[next_index]
+                )
 
         for element in self.elements:
             if element.type == WIDGET.SCROLLABLETEXT:
                 element.handle_event(event)
+
 
     def set_active(self, element):
         if self.active_element:

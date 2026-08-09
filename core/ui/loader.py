@@ -133,7 +133,7 @@ class UILoader:
                 self.system,
                 element_id,
                 font_size=data.get("font_size", 30),
-                anchor=tuple(data.get("position", [0.5, 0.5])),
+                position=tuple(data.get("position", [0.5, 0.5])),
                 width=data.get("width", 0.8),
                 height=data.get("height", 0.6),
                 align=data.get("align", "left"),
@@ -157,7 +157,9 @@ class UILoader:
                 element_id,
                 tuple(data.get("position", [0, 0])),
                 data.get("options"),
-                font_size=data.get("font_size",30)
+                font_size=data.get("font_size",30),
+                width=data.get("width", 0.1),
+                height=data.get("height", 0.1)
             )
 
-        log_error(f"Unknown UI element type: {element_type}")
+            log_error(f"Unknown UI element type: {element_type}")
