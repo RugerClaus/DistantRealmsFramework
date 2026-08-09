@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+rm -rf tools/
+
 wget -O DR_Editor_Linux.zip https://snowblitz.net/downloads/dreditor/DR_Editor_Linux.zip
 
 mkdir -p tools
@@ -14,7 +16,7 @@ rm DR_Editor_Linux.zip
 
 read -r -p "Would you like to run the editor now? [y/N] " answer
 
-if [[ "$answer" =~ ^[Yy]$ ]]; then
+if [[ "$answer" = ^[Yy]$ ]]; then
     echo "opening editor..."
     ./run_editor.sh
 else
