@@ -54,9 +54,20 @@ class ScrollableText(UIElement):
         if source:
             self.load_source(source)
 
+    
     def load_source(self, filename):
+        from pathlib import Path
+        import sys
+
         try:
-            with open(filename, "r") as file:
+            if getattr(sys, "frozen", False):
+                base_dir = Path(sys.executable).parent
+            else:
+                base_dir = Path(__file__).resolve().parent
+
+            filepath = base_dir / filename
+
+            with open(filepath, "r", encoding="utf-8") as file:
                 lines = [
                     line.rstrip("\n")
                     for line in file
