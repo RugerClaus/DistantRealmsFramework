@@ -99,6 +99,8 @@ This is where the program begins.
 
 # System:
 
+We will start our explanation and exploration of the core/guts directory (later to be named core/engine) by discussing the entrypoints of the system System and Runtime.
+
 System is the framework's service container. It initializes the framework's core services and exposes them through a single object available throughout the application. Let's go over those services that it sets up, one by one, and discuss their functionality and purpose.
 
 To begin I will not elaborate on the hierchical state machine system. That is explained in detail below this section. However to begin, system sets up:
@@ -303,6 +305,98 @@ It will show on the Debug Overlay on the left hand side in order of when you add
     """your_key: Whatever you want to store"""
 
 That covers the core modules set up on the System object. Calling methods on these modules will allow you full control of your application from the bottom up. With the Runtime class handling the core event loop/routing, you will never write a ```while True``` loop again when creating an application. Below we will continue with explaining how Runtime works, and following that, I will start adding the documentation for the Window, Sound, and Input systems, and I will begin discussing how to best start your project, be it a game, inventory management desktop application, or anything else!
+
+# System methods
+
+Before moving onto the next core system, I'd like to document the few methods that exist on the System class, why they are there, and how you can use them.
+
+
+
+# Runtime
+
+The next portion of the core system located in core/guts that I want to talk about before moving into the usage of each submodule of the services container is the Runtime class.
+
+This class establishes the runtime as its name would suggest, and it is the core part of the system that routes what is currently happening to the application. It has its own state machine that was documented above ```RUNTIME_STATE```. This class contains 2 methods to handle all event routing: ```handle_event``` and ```run```
+
+Handle event dispatches events to the input system dependent on the ```RUNTIME_STATE```. This is handled in the whlie loop in ```run()```. 
+
+Event order is extermely self-explanitory, so instead of painstakingly walking you through the architecture, you can see for yourself
+
+    ```
+    def run(self):
+        while not self.system.runtime_state.is_state(RUNTIME_STATE.QUIT):
+            self.system.window.fill(black)
+            self.handle_events()
+
+            if self.system.runtime_state.is_state(RUNTIME_STATE.SPLASH):
+                self.loading.update()
+                self.loading.draw()
+
+            elif self.system.runtime_state.is_state(RUNTIME_STATE.APPLICATION):
+                if self.system.application is not None:
+                    self.system.application.update()
+                    self.system.application.draw()
+                else:
+                    pass
+            elif self.system.runtime_state.is_state(RUNTIME_STATE.QUIT):
+                self.system.window.quit()
+                sys.exit()
+            if self.system.overlay_state.is_state(DEBUG_OVERLAY_STATE.ON):
+                self.debug_overlay.update()
+                self.debug_overlay.draw()
+            
+            if self.system.control_state.is_state(DEVELOPER_MODE.ON):
+                pass
+
+            if self.loading.state.is_state(BOOT_SPLASH_STATE.NONE):
+                self.system.clean_up_states([self.loading.state.state])
+            
+            self.system.time.timer()
+            self.system.window.update()
+    ```
+
+It's reall, very straightforward. First it fills the screen with a fixed, solid color, establishes the event listener, and then immediately starts checking the RUNTIME_STATE. As you can see, the state machine pattern discussed briefly in the System overview. This is a consistent pattern you'll see everywhere, and you'll even learn to use it yourself for your own applications later on in this documentation!
+
+Notice that Developer Mode, and the Debug Overlay are considered first class systems and can be used during any point in the application. This is useful for obvious reasons, such as live introspection into current application state
+
+# MAIN.PY/KERNEL
+
+Okay so, so far you've seen the System services container and the Runtime loop, and you should have a decent understanding of how they work in tandem to provide you easy to use services to start your application. 
+
+The last thing I'd like to go over in regards to the System/Runtime relationship is how they are instantiated, so you can have a better understanding of the bootstrapping and initialization of the application. This section is not at all important for making games, but is good to understand anyway. It's something I wish was documented more clearly in other frameworks.
+
+So since i've already explained the basic initialization at the top of this file, i'm going to show the main.py file in the root directory by itself since it should be self-explanitory at this point:
+
+    ```
+        import argparse
+        from core.guts.runtime import Runtime
+        from core.guts.system import System
+        from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
+
+        def main():
+            parser = argparse.ArgumentParser(description="Game Startup")
+            
+            parser.add_argument('--dev', action='store_true', help="Enable developer mode")
+            parser.add_argument('--devg', action='store_true', help="Enables developer mode and opens the game in Endless mode, skipping the menu")
+
+            args = parser.parse_args()
+
+            system = System()
+            runtime = Runtime(system)
+
+            if args.dev:
+                system.control_state.set_state(DEVELOPER_MODE.ON)
+            elif args.devg:
+                system.control_state.set_state(DEVELOPER_MODE.ON)
+                system.initialize_application()
+            runtime.run()
+
+        if __name__ == "__main__":
+            main()
+
+    ```
+
+    Essentially structured like any C application you'll see, and frankly how I think every main file should look. It does very little work. It instantiates both the System and Runtime and then runs the software, and depending on what flags you pass, you get access to different features. As explained earlier you can start the program in developer mode or both developer mode and skip the splash screen. The same thing happens when you start the executable, but pyinstaller takes care of the initialization of this file.
 
 # Feature Additions
 
