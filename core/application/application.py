@@ -3,6 +3,7 @@ from core.util.colors import *
 class Application:
     def __init__(self,app_interface):
         self.app_interface = app_interface
+        self.system = app_interface.system
 
     def handle_event(self,event,command=None):
         pass
@@ -17,7 +18,8 @@ class Application:
         pass
 
     def clean_up_states(self):
-        pass
+        self.system.app_inspector.clear()
+        self.system.clean_up_states([]) # pass XStateManager.state in the list
 
     def register_debug_telemetry(self):
         # exmaple:
@@ -27,5 +29,4 @@ class Application:
     def reset(self):
         pass
 
-    def init(self):
-        pass
+    

@@ -208,11 +208,11 @@ These are all for observing the active state of all state machines during runtim
 
 checking state:     
 
-        ```system.state_monitor_state.is_state(STATE_MONITOR_STATE.[states])```
+        ```system.state_monitor_state.is_state(MONITOR_STATE.[states])```
 
 setting state:
 
-        ```system.state_monitor_state.set_state(STATE_MONITOR_STATE.[states])```
+        ```system.state_monitor_state.set_state(MONITOR_STATE.[states])```
 
 This is another on you probably will likely never want to touch directly, however you will find it useful for debugging your applications provided you use the state machine pattern
 
@@ -272,13 +272,13 @@ This is another module from core/network, and it handles basic username/password
 
 Window:
 
-    ```system.window = Window()```
+    ```system.window = Window(system)```
 
 This instantiates the Window module, that wraps all of Pygame-CE's window instantiation functions as well as Pygame's draw functions into a neat API that works with the entire system, keeping you from having to use PyGame at all during your development time. This will be a core module you use all the time for all your rendering. I will provide all methods of this class as well as the other core service modules showing how to use their methods.
 
 Sound:
 
-    ```system.sound = AudioEngine()```
+    ```system.sound = AudioEngine(system)```
 
 The naming for this isn't great at the moment, but essentially, the AudioEngine module, completely wraps all of PyGame-CE's audio functions into a neat wrapper you'll likely never spend much time thinking about. Ultimately it allows for volume controls of sound effects, and music, which are handled separately. (sfx_volume_up/down for sfx, volume_up/down for music). The big parts you'll need to use in your games/applications are system.sound.play_music(song="optional title for a specific track"). If you pass a song, it will play on repeat, otherwise,  if left empty, the music system randomly plays files in the assets/sounds/music directory.
 
@@ -286,7 +286,7 @@ You can also call system.sound.play_sfx(effect_name). This works just like the m
 
 Input:
 
-    ```system.input = InputManager()```
+    ```system.input = InputManager(system)```
 
 Arguably as important as anything else, any application you make will generally require user input. There is a whole event system, and self-contained, extensible command system baked into it. It wraps all of pygame's event handling in a single neat place, with event checking for all sorts of events including but not limited to: mouse_movement, keypresses, keydown events, window resizing events, etc...
 
@@ -310,7 +310,54 @@ That covers the core modules set up on the System object. Calling methods on the
 
 Before moving onto the next core system, I'd like to document the few methods that exist on the System class, why they are there, and how you can use them.
 
+    ```system.control_state_toggle()```
 
+The control state toggle is as it sounds, it toggles the Developer Mode on and off when called. In order to toggle it during runtime, as mentioned earlier in the System initialization overview, you press the F2 key at any time during the runtime.
+
+    ```system.overlay_state_toggle()```
+
+The overlay state toggle is as it sounds, it toggles the Debug Overlay on and off when called. This is set up in the system to use the F9 command, but this can be overwritten using the engine's built in command system by calling: ```system.input.CommandModule.sequences["debug"] = [youroverwritecommand]```
+
+Although, I don't recommend overwriting the commands that are already in there. A full list can be found at the top of the Input system documentation below.
+
+    ```system.quit()```
+
+Again something else self-explanitory. This method sets the RUNTIME_STATE to RUNTIME_STATE.QUIT, and closes the program gracefully. This can be accessed from anywhere in the program.
+
+    ```system.initialize_application()```
+
+This method bootstraps the application by instantiating an AppInterface from core/application/application_interface.py (soon to be renamed DistantRealms and be included in core/guts). It begins by importing the AppInteface, allowing for hot reloading without a lot of effort, and then sets the RUNTIME_STATE to RUNTIME_STATE.APPLICATION, sets the MONITOR_STATE to MONITOR_STATE.APPLICATION so the debug overlay automatically shows the running APPLICATION states without all the other system state machines to worry about. By default it only includes APP_STATE.RUNNING, but as you add state machines, it includes them as well. How to do so is documented below under the State Machine section.
+
+    ```system.clean_up_states(states=[])```
+
+This is the only method on the system service that contains a single parameter. You pass a list with the states of active state machines like so:
+
+Pretend we have an Application class that runs, but it has a state machine it uses to manage itself
+
+    ```
+        from core.state.ApplicationLayer.MyApp.state import MY_APP_STATE
+        from core.state.ApplicationLayer.MyApp.statemanager import MyAppStateManager
+
+        class Application:
+            def __init__(self,app_interface):
+                self.app_interface = app_interface
+                self.system = app_interface.system
+
+                self.state =  MyAppStateManager()
+
+            ...
+
+            def clean_up_states(self):
+                self.system.clean_up_states([self.state.state])
+
+            ...
+    ```
+
+Notice the pattern that keeps getting introduced. Cleaning up states ultimately just clears what exists in the state monitor's state lists. If your state machine is in one of those lists, this is how you clear it so it doesn't show on the Debug Overlay, when that state machine's parent object (Application) in this case, is not active.
+
+This is not a functional system. This is purely for observability. State machines manage themselves otherwise when it comes to state transitions.
+
+However with that out of the way, we can move onto the next system overview.
 
 # Runtime
 
@@ -397,6 +444,233 @@ So since i've already explained the basic initialization at the top of this file
     ```
 
     Essentially structured like any C application you'll see, and frankly how I think every main file should look. It does very little work. It instantiates both the System and Runtime and then runs the software, and depending on what flags you pass, you get access to different features. As explained earlier you can start the program in developer mode or both developer mode and skip the splash screen. The same thing happens when you start the executable, but pyinstaller takes care of the initialization of this file.
+
+# system.window
+
+Okay, now we begin to get into the meat and potatoes of the system that makes it so easy to make working applications. We're going to begin this section the same way I began System. With showing the instantiation variables that can be accessed on the window.
+
+Though note, most of the time you will not be accessing most the of the members of Window that are not methods. The properties are largely setup.
+
+    ```
+        Window.system - uses the System services container to access system wide utilities
+        Window.default_width - default window width
+        Window.default_height - default window height
+        Window.color - defines the default fill color of the window. This is overwritten by the runtime and is largely redundant
+        Window.width - current window width set to None by default
+        Window.height - current window height set to None by default
+        Window.fps - sets the default FPS cap
+        Window.fullscreen - False by default
+        Window.rect - used to create pygame.Rects for use in your application. Replaceable backend
+    ```
+
+You'll likely find yourself never touching these properties, but it's good to know what the Window sets up at initialization
+
+Below we'll show you the methods you can call to draw primitives like rectangles, circles, lines and polygons, as well as images onto the window. I will not be including the conceptually private methods, only the public interfaces.
+
+    ```Window.mask(surface)```
+
+Returns ```pygame.mask.from_surface(surface)```
+
+Allows you to create masks easily around surfaces, so you don't have to use rects to determine collision. A nice abstraction provided by pygame for pixel perfect collision
+
+    ```Window.transform_scale(original_surface,new_surface_w, new_surface_h)```
+
+Transforms a surface's width/height parameters while maintaining scale. 
+Returns ```pygame.transform.scale(original_surface,(new_surface_w,new_surface_h))```
+
+    ```Window.transform_smoothscale(original_surface,new_width,new_height)```
+
+Much like the above method, this returns ```pygame.transform.smoothscale(original_surface,(new_width,new_height))```
+
+    ```Window.get_width()```
+
+Returns the width of the window in pixels
+
+    ```Window.get_height()```
+
+Returns the height of the window in pixels
+
+    ```Window.get_size()```
+
+Returns the window size as a tuple (width,height)
+
+    ```Window.fill(color,alpha=True/False/None)```
+
+Fills the window with a set color, a tuple of 3 positions for a solid color (R,G,B):
+    
+    ```system.window.fill((R,G,B))```
+    
+Or if Alpha (0-255) is set to true for the surface, you can pass:
+
+    ```system.window.fill((R,G,B), A)```
+
+Simple method, but powerful and is great for testing different application states.
+
+    ```Window.draw_overlay(color,alpha)```
+
+A simple method for drawing a transparent overlay. Good for simple lighting. This method creates a new surface, purely for displaying a transparent, or opaque overlay.
+
+Usage is straightforward and mirrors Window.fill() although this feature may soon be deprecated:
+
+    ```overlay = system.window.draw_overlay((R,G,B), A)```
+
+Currently it can be used by blitting it with a custom rect, you could do something like ```overlay_rect = overlay.get_rect()``` and then blit it via the included blit functionality below.
+
+    ```Window.blit(surface, destination, area=None)```
+
+It takes a surface (we could use overlay from our previous example for instance), a destination, you can pass something like overlay_rect here, and an area, takes a custom area of the surface you're drawing to, to specify where the blit should happen. Although, this is a compatibility point for pygame, and I personally have not made much use of areas as make_surface allows you to create as many arbitrary surfaces as you want on the window. Here is an example of how you would use this in your application's draw method using our ```overlay``` example above:
+
+    ```
+        class Application:
+            def __init__(self,app_interface):
+                self.app_interface = app_interface
+                self.system = app_interface.system
+                self.overlay = self.system.window.draw_overlay((255,255,255),120)
+                self.overlay_rect = self.overlay.get_rect()
+
+            ...
+            
+            def draw(self):
+                self.system.window.blit(self.overlay,self.overlay_rect)
+                """your other drawing logic"""
+            ...
+    ```
+
+As you can see, this follows pygame's conventions with optionally replacing pygame in the future being an option i'm exploring.
+
+    ```Window.load_image(file_path)```
+
+Pretty self-explanatory, you can dynamically load images from your assets. This actually returns a copy of the surface it is rendered to on the backend, so it calls ```pygame.image.load(file_path)```, runs ```convert_alpha``` on it for preserving transparency, creates a copy, and returns the copy.
+
+Here is some example usage:
+
+    ```
+        class Application:
+            def __init__(self,app_interface):
+                self.app_interface = app_interface
+                self.system = app_interface.system
+                self.image = self.system.window.load_image('path/to/my/file' or absolute path)
+                self.image_rect = self.image.get_rect()         
+
+            ...
+
+            def draw(self):
+                self.system.window.blit(self.image,self.image_rect)
+            ...
+    ```
+Like other methods in this API, its usage is incredibly straightforward, and if you've used pygame before, this will be very familiar.
+
+    ```Window.draw_line(point_a,point_b,color=(R,G,B),width=1)```
+
+This method draws a line from the defined ```point_a``` to defined ```point_b``` with the assigned color tuple, and a pixel width that is totally optional by default.
+
+Here is some example usage:
+
+    ```
+        from core.util.colors import *
+
+        class Application:
+            def __init__(self,app_interface):
+                self.app_interface = app_interface
+                self.system = app_interface.system 
+            ...
+
+            def draw(self):
+                self.surface.fill(black)
+                self.system.window.draw_line((24,44), (208,48),blue,width=2)
+            ...
+    ```
+
+Again, just like pygame, but with the comfort of knowing most of the backend work is handled for you and that this is all you have to write to make that a reality.
+
+    ```Window.draw_polygon(surface, color=(R,G,B), points=[])```
+
+This method draws an arbitrary polygon and wraps ```pygame.draw.polygon``` though it does not return it and draws right away without blitting just like draw_line.
+
+Here is some example usage:
+
+    ```
+        from core.util.colors import *
+
+        class Application:
+            def __init__(self,app_interface):
+                self.app_interface = app_interface
+                self.system = app_interface.system 
+
+                ww = self.system.window.get_width()
+                wh = self.system.window.get_height()
+
+                self.surface = self.system.window.make_surface(100,100,False)
+                self.rect = self.surface.get_rect(center=(ww/2,wh/2))
+            ...
+
+            def draw(self):
+                self.surface.fill(black)
+                self.system.window.draw_polygon(self.surface,blue,points=[(201,50),(250,50),(225,100)]) #triangle
+            ...
+    ```
+
+Much like draw_line, this is very easy to set up and use
+
+    ```Window.draw_rect(surface, color, rect, width=0, border_radius=None, object=None)```
+
+This seems like it does a lot more, but really it's quite simple like the previous two methods.
+
+For a bit of elaborating the difference you see here should be obvious, but here, we present with a Surface, a Color, a Rect (x,y,w,h), a border width, a border radius value for rounded corners, and the object it exists on ```object="Player"``` for example. This is for debugging. If your values are incorrect an error will be outputted to core/logs/error.log, hence adding the object property is useful for debugging but optional.
+
+Here is some example usage:
+
+    ```
+        from core.util.colors import *
+
+        class Application:
+            def __init__(self,app_interface):
+                self.app_interface = app_interface
+                self.system = app_interface.system 
+
+                ww = self.system.window.get_width()
+                wh = self.system.window.get_height()
+
+                self.surface = self.system.window.make_surface(100,100,False)
+                self.rect = self.surface.get_rect(center=(ww/2,wh/2))
+            ...
+
+            def draw(self):
+                self.surface.fill(black)
+                self.system.window.draw_rect(self.surface,blue,(50,24,100,100),border_radius=2,object="Application")
+            ...
+    ```
+
+Again simple to use, but has some debugging features not included in pygame.draw.rect despite the fact that's all that it really is.
+
+    ```Window.draw_circle(surface,color,center,radius,object=None)```
+
+Again the draw circle takes an object for outputting errors if there are errors. Like draw_rect, and draw_polygon, it takes a surface to draw to, a color in an RGB tuple, the center point of the circle, and the radius of the circle, and finally an option to pass an Object for debugging. 
+
+Here is some example usage:
+
+    ```
+        from core.util.colors import *
+
+        class Application:
+            def __init__(self,app_interface):
+                self.app_interface = app_interface
+                self.system = app_interface.system 
+
+                ww = self.system.window.get_width()
+                wh = self.system.window.get_height()
+
+                self.surface = self.system.window.make_surface(100,100,False)
+                self.rect = self.surface.get_rect(center=(ww/2,wh/2))
+            ...
+
+            def draw(self):
+                self.surface.fill(black)
+                self.system.window.draw_circle(self.surface,blue,(50,50),15,object="Application")
+            ...
+    ```
+
+If you can use the other primitives, this should be straightforward as well.
 
 # Feature Additions
 

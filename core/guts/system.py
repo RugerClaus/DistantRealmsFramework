@@ -83,12 +83,10 @@ class System():
             self.overlay_state.set_state(DEBUG_OVERLAY_STATE.ON)
         else:
             self.overlay_state.set_state(DEBUG_OVERLAY_STATE.OFF)
-
-    def reset_application(self):
-        if self.application:
-            self.application.reset_game()
         
     def quit(self):
+        if self.application:
+            self.application.clean_up()
         self.runtime_state.set_state(RUNTIME_STATE.QUIT)
 
     def initialize_application(self):

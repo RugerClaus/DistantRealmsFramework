@@ -1,3 +1,5 @@
+from systemlogging import log_warning
+
 from core.state.ApplicationLayer.state import APP_STATE
 from core.state.ApplicationLayer.statemanager import AppStateManager
 from core.state.RuntimeLayer.state import RUNTIME_STATE
@@ -59,9 +61,6 @@ class AppInterface:
             
     def send_debug_info_to_system(self):
         self.app_object.register_debug_telemetry()
-
-    def remove_debug_info_from_system(self):
-        self.system.app_inspector.clear()
         
     def handle_event(self, event,command=None):
         self.ui_controller.handle_event(event)
@@ -85,20 +84,20 @@ class AppInterface:
         if self.app_object:
             self.app_object.draw()
         self.ui_controller.draw()
-        
 
-    def save_game(self):
+    # below is for saving in the engine's built in save format
+    def save_application_data(self):
         self.system.save_telemetry = ""
         data = {}
         self.system.persistence.save.write_save(data)
-        print("saved game!")
+        print("Saved Data!")
 
-    def load_game(self):
+    def load_application_data(self):
         load_data_dict = self.system.persistence.load.load_save()
         if load_data_dict is not None:
             pass
         else:
-            self.system.save_telemetry = "No Save File Found!" # message printed to main menu
+            log_warning("No Save File found")
             return None
         
     def init(self):
@@ -109,7 +108,7 @@ class AppInterface:
         self.reload_application()
         self.action_registrar.register()
 
-    def reset_game(self):
+    def reset_application(self):
         self.app_object.reset()
 
     def update(self):
@@ -118,12 +117,7 @@ class AppInterface:
             if self.app_object:
                 self.app_object.update()
 
-    def quit_to_menu(self):
-        self.remove_debug_info_from_system()
-        self.system.save_telemetry = ""
-        self.app_object.clean_up_states()
-        self.app_object.reset()
-        self.system.clean_up_states([self.state.state])
-
-    def quit(self):
-        self.system.quit()
+    def clean_up(self):
+        self.system.app_inspector.clear()
+        if self.app_object:
+            self.app_object.clean_up_states()
