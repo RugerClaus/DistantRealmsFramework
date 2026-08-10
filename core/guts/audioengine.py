@@ -5,7 +5,6 @@ from mutagen import File
 from helper import audio_path
 from systemlogging import log_error, log_event
 
-from core.state.RuntimeLayer.state import RUNTIME_STATE
 from core.state.RuntimeLayer.Audio.Interface.state import INTERFACE_SFX_STATE
 from core.state.RuntimeLayer.Audio.Interface.statemanager import InterfaceSFXStateManager
 from core.state.RuntimeLayer.Audio.Music.state import MUSIC_STATE
@@ -18,13 +17,12 @@ from core.state.RuntimeLayer.Audio.SFX.statemanager import SystemSFXStateManager
 class AudioEngine:
     def __init__(self, system):
         self.system = system
-        self.runtime_state = system.runtime_state
         default_volume = 0.3
         self.create_volume_files(str(default_volume))
 
         self.interface_sfx_state = InterfaceSFXStateManager()
         self.music_state = MusicStateManager()
-        self.game_sfx_state = AppSFXStateManager()
+        self.app_sfx_state = AppSFXStateManager()
         self.system_sfx_state = SystemSFXStateManager()
 
         self.audio_available = self.initialize_audio()
@@ -32,13 +30,13 @@ class AudioEngine:
         if self.audio_available:
             self.interface_sfx_state.set_state(INTERFACE_SFX_STATE.ON)
             self.music_state.set_state(MUSIC_STATE.ON)
-            self.game_sfx_state.set_state(APP_SFX_STATE.ON)
+            self.app_sfx_state.set_state(APP_SFX_STATE.ON)
             self.system_sfx_state.set_state(SYSTEM_SFX_STATE.ON)
             self.system.system_monitor["Audio"] = "Active"
         else:
             self.interface_sfx_state.set_state(INTERFACE_SFX_STATE.OFF)
             self.music_state.set_state(MUSIC_STATE.OFF)
-            self.game_sfx_state.set_state(APP_SFX_STATE.OFF)
+            self.app_sfx_state.set_state(APP_SFX_STATE.OFF)
             self.system_sfx_state.set_state(SYSTEM_SFX_STATE.OFF)
             self.system.system_monitor["Audio"] = "Unavailable: No Device"
 
@@ -117,7 +115,7 @@ class AudioEngine:
         if not self.audio_available:
             return "off"
 
-        if self.game_sfx_state.is_state(APP_SFX_STATE.ON):
+        if self.app_sfx_state.is_state(APP_SFX_STATE.ON):
             if effect_name in self.sound_effects:
                 sound_effect = self.sound_effects[effect_name]
                 sound_effect.set_volume(self.sfx_volume)
@@ -125,7 +123,7 @@ class AudioEngine:
                 self.active_sfx[effect_name] = sound_effect
             else:
                 log_error(f"Sound effect '{effect_name}' not found.")
-        elif self.game_sfx_state.is_state(APP_SFX_STATE.NONE):
+        elif self.app_sfx_state.is_state(APP_SFX_STATE.NONE):
             log_error("Missing sound device", "AudioEngine: cannot set sound device")
         else:
             return "off"

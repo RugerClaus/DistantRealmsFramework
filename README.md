@@ -1,5 +1,5 @@
 # Welcome to the Distant Realms Framework for Developing Applications with Python
-- An application framework with a working tooling ecosystem, proving support for rendering, audio, input, simple networking as well as a ready bulit WYSIWYG ui editor that outputs to a format the engine can read directly. Below you will learn how to make games and other applications using Distant Realms
+- Distant Realms is a Python application framework and tooling ecosystem for building games and interactive applications. Containing support for rendering, audio, input, simple networking as well as a ready bulit WYSIWYG ui editor that outputs to a format the engine can read directly. Below you will learn how to make games and other applications using Distant Realms
 
 - Distant Realms is designed around convenience without lock-in.
 
@@ -326,7 +326,7 @@ Again something else self-explanitory. This method sets the RUNTIME_STATE to RUN
 
     ```system.initialize_application()```
 
-This method bootstraps the application by instantiating an AppInterface from core/application/application_interface.py (soon to be renamed DistantRealms and be included in core/guts). It begins by importing the AppInteface, allowing for hot reloading without a lot of effort, and then sets the RUNTIME_STATE to RUNTIME_STATE.APPLICATION, sets the MONITOR_STATE to MONITOR_STATE.APPLICATION so the debug overlay automatically shows the running APPLICATION states without all the other system state machines to worry about. By default it only includes APP_STATE.RUNNING, but as you add state machines, it includes them as well. How to do so is documented below under the State Machine section.
+This method bootstraps the application by instantiating an AppInterface from core/application/application_interface.py (soon to be renamed DistantRealms and be included in core/guts). It begins by importing the AppInterface, allowing for hot reloading without a lot of effort, and then sets the RUNTIME_STATE to RUNTIME_STATE.APPLICATION, sets the MONITOR_STATE to MONITOR_STATE.APPLICATION so the debug overlay automatically shows the running APPLICATION states without all the other system state machines to worry about. By default it only includes APP_STATE.RUNNING, but as you add state machines, it includes them as well. How to do so is documented below under the State Machine section.
 
     ```system.clean_up_states(states=[])```
 
@@ -402,7 +402,7 @@ Event order is extermely self-explanitory, so instead of painstakingly walking y
             self.system.window.update()
     ```
 
-It's reall, very straightforward. First it fills the screen with a fixed, solid color, establishes the event listener, and then immediately starts checking the RUNTIME_STATE. As you can see, the state machine pattern discussed briefly in the System overview. This is a consistent pattern you'll see everywhere, and you'll even learn to use it yourself for your own applications later on in this documentation!
+It's really, very straightforward. First it fills the screen with a fixed, solid color, establishes the event listener, and then immediately starts checking the RUNTIME_STATE. As you can see, the state machine pattern discussed briefly in the System overview. This is a consistent pattern you'll see everywhere, and you'll even learn to use it yourself for your own applications later on in this documentation!
 
 Notice that Developer Mode, and the Debug Overlay are considered first class systems and can be used during any point in the application. This is useful for obvious reasons, such as live introspection into current application state
 
@@ -443,7 +443,7 @@ So since i've already explained the basic initialization at the top of this file
 
     ```
 
-    Essentially structured like any C application you'll see, and frankly how I think every main file should look. It does very little work. It instantiates both the System and Runtime and then runs the software, and depending on what flags you pass, you get access to different features. As explained earlier you can start the program in developer mode or both developer mode and skip the splash screen. The same thing happens when you start the executable, but pyinstaller takes care of the initialization of this file.
+Essentially structured like any C application you'll see, and frankly how I think every main file should look. It does very little work. It instantiates both the System and Runtime and then runs the software, and depending on what flags you pass, you get access to different features. As explained earlier you can start the program in developer mode or both developer mode and skip the splash screen. The same thing happens when you start the executable, but pyinstaller takes care of the initialization of this file.
 
 # system.window
 
@@ -672,16 +672,113 @@ Here is some example usage:
 
 If you can use the other primitives, this should be straightforward as well.
 
-# Feature Additions
+# system.sound
 
-Before adding new features, check the requested_additions file in the root directory. Try implementing one of those ideas first, then submit a pull request.
+For this next trick, you're going to need to open your ears, or perhaps have them sewn shut should your sound effects make the Brown Note.
 
-Developer Mode
-Debug Overlay
+In all seriousness, ```system.sound``` is pretty straightforward as a subsystem as you really only have to remember a few different methods:
 
-Press F2 to enter developer mode. This will eventually allow opening a developer console and modifying game variables, including executing Python code.
+We're going to begin with the constructor of AudioEngine as we did for System and Window. This will give you an idea of how the audio system is initialized without going into useless detail about the code itself or exposing every member:
 
-Work happens in core/application.
+    ```
+
+        AudioEngine.system - the Audio Engine takes the system container like most subsystems in this framework
+        default_volume is set to 0.3/1
+        AudioEngine.interface_sfx_state - Sets up a state manager for UI sound effects (button clicks, hovers, etc...)
+        AudioEngine.app_sfx_state - sets up a state manager for application sfx toggle (game sfx for example)
+        AudioEngine.music_state - State manager for determining if music is enabled/disabled
+        AudioEngine.music_tracks - a dictionary that receives all the files in assets/sounds/music/ and makes them callable by title.
+        AudioEngine.sound_effects - a dictionary that like AudioEngine.music_tracks does the same thing with files in assets/sounds/sfx
+        AudioEngine.volume - Music volume loaded from disk
+        AudioEngine.sfx_volume - SFX volume loaded from disk
+        AudioEngine.current_track - stores a string of the title of the current track being played.
+
+    ```
+
+Now for the methods themselves. This is how you'll interact with the audio system. It's fairly straightforward and I'll show you how:
+
+    ```
+        AudioEngine.play_music(str(track) = None)
+    ```
+
+Allows you to play a given music file by track name (everything before your file extension) if you pass a track to it. Otherwise if you don't pass a track to it, it'll randomly play music files from the assets/sounds/music directory until you disable the music. You can also pass "stop" to it and it will stop all music.
+
+Here is some example usage:
+
+    ```
+        from core.state.ApplicationLayer.state import APP_STATE
+        from core.state.ApplicationLayer.statemanager import AppStateManager
+
+        class Application:
+            def __init__(self,app_interface):
+                self.app_interface = app_interface
+                self.system = app_interface.system 
+                self.state = AppStateManager()
+
+                self.system.sound.play_music()
+
+            def update(self):
+                if self.state.is_state(APP_STATE.FROZEN):
+                    self.system.sound.play_music("stop")
+                
+            def start_app(self):
+                self.system.sound.play_music("My Music Track")
+            ...
+    ```
+All the other parts of the ```system.sound``` API work just like this for the most part, although this particular method has more options than others
+
+    ```system.sound.play_sfx(sfx_name)```
+
+This does exactly what you would expect it to. It plays a given sound effect in assets/sounds/sfx. That's all it does.
+
+Here is some example usage:
+
+    ```
+        from core.state.ApplicationLayer.MyGame.Powerup.state import POWERUP_STATE
+        from core.state.ApplicationLayer.MyGame.Powerup.statemanager import PowerUpStateManager
+
+        class Application:
+            def __init__(self,app_interface):
+                self.app_interface = app_interface
+                self.system = app_interface.system 
+                self.power_up_state = PowerUpStateManager()
+
+            def update(self):
+                if self.power_up_state.is_state(POWERUP_STATE.POWERUPONE):
+                    self.system.sound.play_sfx("powerup1")
+            ...
+    ```
+
+Even easier with that. 
+
+    ```system.sound.play_ui_sfx(sfx_name)```
+
+The same goes for playing UI SFX, which you likely won't need to worry about as UI sfx, are mostly routed by the framework, but you're welcom to add your own. 
+
+Here is some example usage:
+
+    ```
+        from core.state.RuntimeLayer.UI.Button.state import BUTTON_STATE
+        from core.state.RuntimeLayer.UI.Button.statemanager import ButtonStateManager
+
+        class Application:
+            def __init__(self,app_interface):
+                self.app_interface = app_interface
+                self.system = app_interface.system 
+                self.button_state = ButtonStateManager()
+
+            def update(self):
+                if self.button_state.is_state(BUTTON_STATE.HOVER):
+                    self.system.sound.play_ui_sfx("buttonhover")
+            ...
+    ```
+
+For ```AudioEngine.volume_up()```, ```AudioEngine.volume_down()```, ```AudioEngine.sfx_volume_up()```, and ```AudioEngine.sfx_volume_down()```,
+I recommend following a similar pattern though you'll likely want to tie these into button actions to be triggered at some point. In fact, there is a default settings menu system included with this framework that has volume controls in it. I will however leave this section out as it will map more cleanly to the UI framework usage, for things like the Action Register.
+
+Overall, that wraps up most of what you'll need to process simple audio with the framework. This system will likely greatly improve later on.
+
+# State system
 
 State System Overview
 
