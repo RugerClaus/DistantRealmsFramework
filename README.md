@@ -1,5 +1,9 @@
 # Welcome to the Distant Realms Framework for Developing Applications with Python
-- An application framework with a working tooling ecosystem, proving support for rendering, audio, input, simple networking as well as a ready bulit WYSIWYG ui editor that outputs to a format the engine can read directly. Below you will learn how to become productive at making games and other applications using Distant Realms
+- An application framework with a working tooling ecosystem, proving support for rendering, audio, input, simple networking as well as a ready bulit WYSIWYG ui editor that outputs to a format the engine can read directly. Below you will learn how to make games and other applications using Distant Realms
+
+- Distant Realms is designed around convenience without lock-in.
+
+- The framework provides high-level systems for common application needs, but those systems are built on straightforward underlying APIs. You can use as much or as little of the framework as your application requires.
 
 ## Dependencies
 
@@ -95,107 +99,120 @@ This is where the program begins.
 
 # System:
 
-The system object contains all core services for the engine, as you've likely already read above. Let's go over those services that it sets up, one by one, and discuss their functionality and purpose.
+System is the framework's service container. It initializes the framework's core services and exposes them through a single object available throughout the application. Let's go over those services that it sets up, one by one, and discuss their functionality and purpose.
 
 To begin I will not elaborate on the hierchical state machine system. That is explained in detail below this section. However to begin, system sets up:
 
 WIP, wrapping all python default modules onto the system object as needed.
 
-    Math:
+Math:
 
         ```system.math = python math```
 
-    Random:
+Random:
         
         ```system.random = python random```
 
 Setting up globally accessible state machines
 
-    State:
+State:
 
         ```system.runtime_state```
-        A standalone state machine used by Runtime to manage what core state to route to. They are as follows:
-            RUNTIME_STATE.SPLASH - intermediate behavior as I remove this as a core assumption once I include a splash editor in the editor.
-            RUNTIME_STATE.APPLICATION - What happens during this state is controlled by you, the developer
-            RUNTIME_STATE.QUIT - Invoking this state closes the program gracefully.
 
-        Acceseed and transformed via valid transitions by:
+A standalone state machine used by Runtime to manage what core state to route to. They are as follows:
+RUNTIME_STATE.SPLASH - intermediate behavior as I remove this as a core assumption once I include a splash editor in the editor.
+RUNTIME_STATE.APPLICATION - What happens during this state is controlled by you, the developer
+RUNTIME_STATE.QUIT - Invoking this state closes the program gracefully.
+
+Acceseed and transformed via valid transitions by:
            
-            ```states = [SPLASH,APPLICATION,QUIT]```
+         ```states = [SPLASH,APPLICATION,QUIT]```
 
-            checking state:     
+checking state:     
 
-                ```system.runtime_state.is_state(RUNTIME_STATE.[states])```
+        ```system.runtime_state.is_state(RUNTIME_STATE.[states])```
 
-            setting state:
+setting state:
 
-                ```system.runtime_state.set_state(RUNTIME_STATE.[states])```
+        ```system.runtime_state.set_state(RUNTIME_STATE.[states])```
 
-        Note: you will rarely be using this state machine to manage your application. You really shouldn't ever touch this one
+Note: you will rarely be using this state machine to manage your application. You really shouldn't ever touch this one
+
+
 
         ```system.overlay_state```
-        DEBUG_OVERLAY_STATE.ON - The state that causes the debug overlay to be shown on top of everything.
-        DEBUG_OVERLAY_STATE.OFF - The state that causes the debug overlay to cease displaying
-        A standalone state machine used by the Runtime to dictate when to display the debug overlay.
 
-                - Press F9 to toggle the debug overlay. This shows the current track, framerate, networking information, and whatever you pass to ```system.app_inspector``` (see below) and the state tree for all active states, including RUNTIME_STATE
+DEBUG_OVERLAY_STATE.ON - The state that causes the debug overlay to be shown on top of everything.
+DEBUG_OVERLAY_STATE.OFF - The state that causes the debug overlay to cease displaying
+A standalone state machine used by the Runtime to dictate when to display the debug overlay.
 
-        Acceseed and transformed via valid transitions by:
+- Press F9 to toggle the debug overlay. This shows the current track, framerate, networking information, and whatever you pass to ```system.app_inspector``` (see below) and the state tree for all active states, including RUNTIME_STATE
+
+Acceseed and transformed via valid transitions by:
            
-            ```states = [ON,OFF]```
+        ```states = [ON,OFF]```
 
-            checking state:     
+checking state:     
 
-                ```system.overlay_state.is_state(DEBUG_OVERLAY_STATE.[states])```
+        ```system.overlay_state.is_state(DEBUG_OVERLAY_STATE.[states])```
 
-            setting state:
+setting state:
 
-                ```system.overlay_state.set_state(DEBUG_OVERLAY_STATE.[states])```
+        ```system.overlay_state.set_state(DEBUG_OVERLAY_STATE.[states])```
+
+
 
         ```system.control_state```
-        A standalone state machine for controlling a specially privilaged control mode in the program: DEVELOPER_MODE.
 
-        Developer mode is triggered by pressing F2 on your keyboard. This can be used for controlling developer features in your application. When it is enabled, you can turn on advanced features to help you. By default, when it is active, a red banner is shown in the bottom right hand corner of the Debug Overlay saying ```WARNING: DEVELOPER MODE IS ENABLED```
+A standalone state machine for controlling a specially privilaged control mode in the program: DEVELOPER_MODE.
 
-        Acceseed and transformed via valid transitions by:
-           
-            ```states = [ON,OFF]```
+Developer mode is triggered by pressing F2 on your keyboard. This can be used for controlling developer features in your application. When it is enabled, you can turn on advanced features to help you. By default, when it is active, a red banner is shown in the bottom right hand corner of the Debug Overlay saying ```WARNING: DEVELOPER MODE IS ENABLED```
 
-            checking state:     
+Acceseed and transformed via valid transitions by:
+        
+        ```states = [ON,OFF]```
 
-                ```system.overlay_state.is_state(DEBUG_OVERLAY_STATE.[states])```
+checking state:     
 
-            setting state:
+        ```system.overlay_state.is_state(DEBUG_OVERLAY_STATE.[states])```
 
-                ```system.overlay_state.set_state(DEBUG_OVERLAY_STATE.[states])```
+setting state:
+
+        ```system.overlay_state.set_state(DEBUG_OVERLAY_STATE.[states])```
+
+
 
         ```system.state_monitor_state```
-        A standalone state machine for managing the state of the state monitor in the top right hand corner of the debug overlay
+        
+A standalone state machine for managing the state of the state monitor in the top right hand corner of the debug overlay
 
-            When the debug overlay is active:
+When the debug overlay is active:
 
-                    - F8 + 1: Show all global active SYSTEM states (system level state machines like fetching data, sound system states, etc...)
-                    - F8 + 2: Show all global active RUNTIME states (all runtime level state machines such as RUNTIME_STATE)
-                    - F8 + 3: Show all global active APPLICATION states (All application level state machines created by you)
-                    - F8 + 4: Show all global active states
+- F8 + 1: Show all global active SYSTEM states (system level state machines like fetching data, sound system states, etc...)
+- F8 + 2: Show all global active RUNTIME states (all runtime level state machines such as RUNTIME_STATE)
+- F8 + 3: Show all global active APPLICATION states (All application level state machines created by you)
+- F8 + 4: Show all global active states
 
-                    These are all for observing the active state of all state machines during runtime. The hierarchy for state machines is flexible enough, that you don't absolutely have to use them for you programs, but they do act as a core part of the runtime. They are powerful and useful for definining time-sensitive functionality
+These are all for observing the active state of all state machines during runtime. The hierarchy for state machines is flexible enough, that you don't absolutely have to use them for you programs, but they do act as a core part of the runtime. They are powerful and useful for definining time-sensitive functionality
 
+        A- F8 + 1: Show all global active SYSTEM states (system level state machines like fetching data, sound system states, etc...)
+- F8 + 2: Show all global active RUNTIME states (all runtime level state machines such as RUNTIME_STATE)
+- F8 + 3: Show all global active APPLICATION states (All application level state machines created by you)
+- F8 + 4: Show all global active states
 
-        Acceseed and transformed via valid transitions by:
+These are all for observing the active state of all state machines during runtime. The hierarchy for state machines is flexible enough, that you don't absolutely have to use them for you programs, but they do act as a core part of the runtime. They are powerful and useful for definining time-sensitive functionalitycceseed and transformed via valid transitions by:
            
-            ```states = [RUNTIME,SYSTEM,APPLICATION,ALL]```
+        ```states = [RUNTIME,SYSTEM,APPLICATION,ALL]```
 
-            checking state:     
+checking state:     
 
-                ```system.state_monitor_state.is_state(STATE_MONITOR_STATE.[states])```
+        ```system.state_monitor_state.is_state(STATE_MONITOR_STATE.[states])```
 
-            setting state:
+setting state:
 
-                ```system.state_monitor_state.set_state(STATE_MONITOR_STATE.[states])```
+        ```system.state_monitor_state.set_state(STATE_MONITOR_STATE.[states])```
 
-
-        This is another on you probably will likely never want to touch directly, however you will find it useful for debugging your applications provided you use the state machine pattern
+This is another on you probably will likely never want to touch directly, however you will find it useful for debugging your applications provided you use the state machine pattern
 
 Setting up the Time object:
 
@@ -207,19 +224,85 @@ Save Schema:
     
     ```system.save_schema = {}```
 
-    The save schema pulls from core/application/save_schema.py where you can set values and data types to be saved using the built in serializeation system set up below (see Persistence). This is useful for creating game saves in a safe, serialized format that can easily be reloaded and modified at any time.
+The save schema pulls from core/application/save_schema.py where you can set values and data types to be saved using the built in serializeation system set up below (see Persistence). This is useful for creating game saves in a safe, serialized format that can easily be reloaded and modified at any time.
 
 System Monitor:
 
     ```system.system_monitor = {}```
 
-    System monitor is a dictionary whose contents are passed to the Debug Overlay to display system level diagnostics. This will not commonly be used by you.
+System monitor is a dictionary whose contents are passed to the Debug Overlay to display system level diagnostics. This will not commonly be used by you.
 
 Persistence:
 
     ```system.persistence = Persistence(System)```
 
-    This, as the name implies is the persistence layer
+This, as the name implies is the persistence layer. It is the first core service instantiated and handles saving constant files, environment variable files, and the framework's custom save format for game data/application data. It also supports loading these files, as well as loading UI files for the UI framework (core/ui) to interpret and determine active UIs. 
+
+This system will be explored later, when we talk about saving data, and using the editor with the framework.
+
+We then assign the save_schema to the Persistence object to let that system take over full control of that file.
+
+    ```system.persistence.save.save_schema = self.save_schema```
+
+Updating:
+
+    ```system.update = Update()```
+
+The next module set up is the Update Module. This provides an easy API for checking for updates to your custom game client via API urls set in ```config.py``` within the root directory of the framework. You can set where it checks for updates, when it downloads them (usually I have it set so a user can just click an update button in their client, but UI is up to you). This is part of the larger build and distribution system which we will go over later.
+
+Networking:
+    
+    ```system.network = Network()```
+
+The Network module handles boilerplate authentication actions and depends on the endpoints set up in core/guts/network/system_endpoints.py, which is a config file that pulls your custom API key and version data from your ```config.py``` file. This allows you to set your custom versioning and plug it into the framework. You shouldn't have to directly touch ```system_endpoints.py``` and if you need custom endpoints, set them in the ```config.py``` file and call them from core/application/network/endpoints.py
+
+User:
+
+    ```system.user = User()```
+
+This is a facade wrapper to handle basic user functions. This sets everything for your users, so if you want to manage networking with auth, you can use the system.user module to manage the username, and any other getters and setters you set in core/guts/user.py
+
+Auth:
+
+    ```system.auth = Authentication()``` 
+
+This is another module from core/network, and it handles basic username/password authentication, with direct built in support for handling server assigned client app passwords and client IDs as well. This is good for managing clients and their versions. Full documentation on this will be part of the NETCODE section of this readme, and will walk you through getting set up connecting your custom application to a remote database utilizing the endpoint system.
+
+Window:
+
+    ```system.window = Window()```
+
+This instantiates the Window module, that wraps all of Pygame-CE's window instantiation functions as well as Pygame's draw functions into a neat API that works with the entire system, keeping you from having to use PyGame at all during your development time. This will be a core module you use all the time for all your rendering. I will provide all methods of this class as well as the other core service modules showing how to use their methods.
+
+Sound:
+
+    ```system.sound = AudioEngine()```
+
+The naming for this isn't great at the moment, but essentially, the AudioEngine module, completely wraps all of PyGame-CE's audio functions into a neat wrapper you'll likely never spend much time thinking about. Ultimately it allows for volume controls of sound effects, and music, which are handled separately. (sfx_volume_up/down for sfx, volume_up/down for music). The big parts you'll need to use in your games/applications are system.sound.play_music(song="optional title for a specific track"). If you pass a song, it will play on repeat, otherwise,  if left empty, the music system randomly plays files in the assets/sounds/music directory.
+
+You can also call system.sound.play_sfx(effect_name). This works just like the music system, except for there is no repetition and the files are not dynamically loaded for random play. This keeps it simple for playing a sound effect at a specific time, like when you click a button on the UI, or if you want a sound effect to play in your game during a specific state, this system lets you do that with ease.
+
+Input:
+
+    ```system.input = InputManager()```
+
+Arguably as important as anything else, any application you make will generally require user input. There is a whole event system, and self-contained, extensible command system baked into it. It wraps all of pygame's event handling in a single neat place, with event checking for all sorts of events including but not limited to: mouse_movement, keypresses, keydown events, window resizing events, etc...
+
+This will be heavily elaborated on, but generally you'll use every single one of these commands within your handle_event(event,command) method from the Application class, and whatever you establish beneath it.
+
+App Inspector:
+
+    ```system.app_inspector = {}```
+
+Like the system monitor, data passed to this dictionary is immediately displayed on the Debug Overlay automatically. This is what you'll use if you want to display something like your player's coordinates, or other debugging info for your specific application directly onto the bulit in F9 debug overlay. Very useful observability tool. You can do so by doing this
+
+    ```system.app_inspector["your_key"] = "Whatever you want to store"```
+
+It will show on the Debug Overlay on the left hand side in order of when you add each item as:
+
+    """your_key: Whatever you want to store"""
+
+That covers the core modules set up on the System object. Calling methods on these modules will allow you full control of your application from the bottom up. With the Runtime class handling the core event loop/routing, you will never write a ```while True``` loop again when creating an application. Below we will continue with explaining how Runtime works, and following that, I will start adding the documentation for the Window, Sound, and Input systems, and I will begin discussing how to best start your project, be it a game, inventory management desktop application, or anything else!
 
 # Feature Additions
 
