@@ -81,11 +81,11 @@ Pygame-ce provides the backend for creating a window, drawing, audio, and input,
 The files that use it are as follows:
 
     ```
-    -core/guts/window.py
-    -core/guts/audioengine.py
-    -core/guts/input/inputmanager.py
-    -core/guts/input/keys.py
-    -core/guts/time.py
+    -core/engine/window.py
+    -core/engine/audioengine.py
+    -core/engine/input/inputmanager.py
+    -core/engine/input/keys.py
+    -core/engine/time.py
     ```
 
 A simple API is provided for working with all of these functionalities using the System services container. More below.
@@ -142,7 +142,7 @@ This is where the program begins.
 
 # System:
 
-We will start our explanation and exploration of the core/guts directory (later to be named core/engine) by discussing the entrypoints of the system System and Runtime.
+We will start our explanation and exploration of the core/engine directory (later to be named core/engine) by discussing the entrypoints of the system System and Runtime.
 
 System is the framework's service container. It initializes the framework's core services and exposes them through a single object available throughout the application. Let's go over those services that it sets up, one by one, and discuss their functionality and purpose.
 
@@ -299,13 +299,13 @@ Networking:
     
     ```system.network = Network()```
 
-The Network module handles boilerplate authentication actions and depends on the endpoints set up in core/guts/network/system_endpoints.py, which is a config file that pulls your custom API key and version data from your ```config.py``` file. This allows you to set your custom versioning and plug it into the framework. You shouldn't have to directly touch ```system_endpoints.py``` and if you need custom endpoints, set them in the ```config.py``` file and call them from core/application/network/endpoints.py
+The Network module handles boilerplate authentication actions and depends on the endpoints set up in core/engine/network/system_endpoints.py, which is a config file that pulls your custom API key and version data from your ```config.py``` file. This allows you to set your custom versioning and plug it into the framework. You shouldn't have to directly touch ```system_endpoints.py``` and if you need custom endpoints, set them in the ```config.py``` file and call them from core/application/network/endpoints.py
 
 User:
 
     ```system.user = User()```
 
-This is a facade wrapper to handle basic user functions. This sets everything for your users, so if you want to manage networking with auth, you can use the system.user module to manage the username, and any other getters and setters you set in core/guts/user.py
+This is a facade wrapper to handle basic user functions. This sets everything for your users, so if you want to manage networking with auth, you can use the system.user module to manage the username, and any other getters and setters you set in core/engine/user.py
 
 Auth:
 
@@ -369,7 +369,7 @@ Again something else self-explanitory. This method sets the RUNTIME_STATE to RUN
 
     ```system.initialize_application()```
 
-This method bootstraps the application by instantiating an AppInterface from core/application/application_interface.py (soon to be renamed DistantRealms and be included in core/guts). It begins by importing the AppInterface, allowing for hot reloading without a lot of effort, and then sets the RUNTIME_STATE to RUNTIME_STATE.APPLICATION, sets the MONITOR_STATE to MONITOR_STATE.APPLICATION so the debug overlay automatically shows the running APPLICATION states without all the other system state machines to worry about. By default it only includes APP_STATE.RUNNING, but as you add state machines, it includes them as well. How to do so is documented below under the State Machine section.
+This method bootstraps the application by instantiating an DistantRealms from core/engine/distant_realms.py (soon to be renamed DistantRealms and be included in core/engine). It begins by importing the DistantRealms, allowing for hot reloading without a lot of effort, and then sets the RUNTIME_STATE to RUNTIME_STATE.APPLICATION, sets the MONITOR_STATE to MONITOR_STATE.APPLICATION so the debug overlay automatically shows the running APPLICATION states without all the other system state machines to worry about. By default it only includes APP_STATE.RUNNING, but as you add state machines, it includes them as well. How to do so is documented below under the State Machine section.
 
     ```system.clean_up_states(states=[])```
 
@@ -382,9 +382,9 @@ Pretend we have an Application class that runs, but it has a state machine it us
         from core.state.ApplicationLayer.MyApp.statemanager import MyAppStateManager
 
         class Application:
-            def __init__(self,app_interface):
-                self.app_interface = app_interface
-                self.system = app_interface.system
+            def __init__(self,distant_realms):
+                self.distant_realms = distant_realms
+                self.system = distant_realms.system
 
                 self.state =  MyAppStateManager()
 
@@ -404,7 +404,7 @@ However with that out of the way, we can move onto the next system overview.
 
 # Runtime
 
-The next portion of the core system located in core/guts that I want to talk about before moving into the usage of each submodule of the services container is the Runtime class.
+The next portion of the core system located in core/engine that I want to talk about before moving into the usage of each submodule of the services container is the Runtime class.
 
 This class establishes the runtime as its name would suggest, and it is the core part of the system that routes what is currently happening to the application. It has its own state machine that was documented above ```RUNTIME_STATE```. This class contains 2 methods to handle all event routing: ```handle_event``` and ```run```
 
@@ -567,9 +567,9 @@ Here is some example usage:
 
     ```
         class Application:
-            def __init__(self,app_interface):
-                self.app_interface = app_interface
-                self.system = app_interface.system
+            def __init__(self,distant_realms):
+                self.distant_realms = distant_realms
+                self.system = distant_realms.system
                 self.overlay = self.system.window.draw_overlay((255,255,255),120)
                 self.overlay_rect = self.overlay.get_rect()
 
@@ -591,9 +591,9 @@ Here is some example usage:
 
     ```
         class Application:
-            def __init__(self,app_interface):
-                self.app_interface = app_interface
-                self.system = app_interface.system
+            def __init__(self,distant_realms):
+                self.distant_realms = distant_realms
+                self.system = distant_realms.system
                 self.image = self.system.window.load_image('path/to/my/file' or absolute path)
                 self.image_rect = self.image.get_rect()         
 
@@ -615,9 +615,9 @@ Here is some example usage:
         from core.util.colors import *
 
         class Application:
-            def __init__(self,app_interface):
-                self.app_interface = app_interface
-                self.system = app_interface.system 
+            def __init__(self,distant_realms):
+                self.distant_realms = distant_realms
+                self.system = distant_realms.system 
             ...
 
             def draw(self):
@@ -638,9 +638,9 @@ Here is some example usage:
         from core.util.colors import *
 
         class Application:
-            def __init__(self,app_interface):
-                self.app_interface = app_interface
-                self.system = app_interface.system 
+            def __init__(self,distant_realms):
+                self.distant_realms = distant_realms
+                self.system = distant_realms.system 
 
                 ww = self.system.window.get_width()
                 wh = self.system.window.get_height()
@@ -669,9 +669,9 @@ Here is some example usage:
         from core.util.colors import *
 
         class Application:
-            def __init__(self,app_interface):
-                self.app_interface = app_interface
-                self.system = app_interface.system 
+            def __init__(self,distant_realms):
+                self.distant_realms = distant_realms
+                self.system = distant_realms.system 
 
                 ww = self.system.window.get_width()
                 wh = self.system.window.get_height()
@@ -698,9 +698,9 @@ Here is some example usage:
         from core.util.colors import *
 
         class Application:
-            def __init__(self,app_interface):
-                self.app_interface = app_interface
-                self.system = app_interface.system 
+            def __init__(self,distant_realms):
+                self.distant_realms = distant_realms
+                self.system = distant_realms.system 
 
                 ww = self.system.window.get_width()
                 wh = self.system.window.get_height()
@@ -755,9 +755,9 @@ Here is some example usage:
         from core.state.ApplicationLayer.statemanager import AppStateManager
 
         class Application:
-            def __init__(self,app_interface):
-                self.app_interface = app_interface
-                self.system = app_interface.system 
+            def __init__(self,distant_realms):
+                self.distant_realms = distant_realms
+                self.system = distant_realms.system 
                 self.state = AppStateManager()
 
                 self.system.sound.play_music()
@@ -783,9 +783,9 @@ Here is some example usage:
         from core.state.ApplicationLayer.MyGame.Powerup.statemanager import PowerUpStateManager
 
         class Application:
-            def __init__(self,app_interface):
-                self.app_interface = app_interface
-                self.system = app_interface.system 
+            def __init__(self,distant_realms):
+                self.distant_realms = distant_realms
+                self.system = distant_realms.system 
                 self.power_up_state = PowerUpStateManager()
 
             def update(self):
@@ -807,9 +807,9 @@ Here is some example usage:
         from core.state.RuntimeLayer.UI.Button.statemanager import ButtonStateManager
 
         class Application:
-            def __init__(self,app_interface):
-                self.app_interface = app_interface
-                self.system = app_interface.system 
+            def __init__(self,distant_realms):
+                self.distant_realms = distant_realms
+                self.system = distant_realms.system 
                 self.button_state = ButtonStateManager()
 
             def update(self):
@@ -842,9 +842,9 @@ Here is some example usage:
 
     ```
         class Application:
-            def __init__(self,app_interface):
-                self.app_interface = app_interface
-                self.system = app_interface.system 
+            def __init__(self,distant_realms):
+                self.distant_realms = distant_realms
+                self.system = distant_realms.system 
 
             def handle_event(self,event,command=None):
                 if event.type == self.system.input.keydown():
@@ -875,15 +875,15 @@ I also want to go over the Command Module. Another very straight forward tool th
     ```
 
 [13]
-Here is an example of how to create and use your own commands. The implementation is identical to core/guts/runtime.py, but runtime.py actually creates the command variable. You just get to check it for a given command. The interval for pressed key combos for commands is 5000ms. You can set whatever command you want, but it must not conflict with the above sequences or you'll overwrite key functionality. Here we go:
+Here is an example of how to create and use your own commands. The implementation is identical to core/engine/runtime.py, but runtime.py actually creates the command variable. You just get to check it for a given command. The interval for pressed key combos for commands is 5000ms. You can set whatever command you want, but it must not conflict with the above sequences or you'll overwrite key functionality. Here we go:
 
     ```
         from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
 
         class Application:
-            def __init__(self,app_interface):
-                self.app_interface = app_interface
-                self.system = app_interface.system 
+            def __init__(self,distant_realms):
+                self.distant_realms = distant_realms
+                self.system = distant_realms.system 
 
                 self.system.input.CommandModule["my_command"] = [self.system.input.keys.F7_key()]
 
@@ -910,16 +910,20 @@ This method returns the mouse position in screen coordinates as a tuple (EX: (24
 
     ```system.input.mouse_button_down()```
 
-This method returns a pygame.MOUSEBUTTONDOWN event. It returns a boolean and you can then check ```event.button``` just like on the below example. 1 is for left click; 2 is for middle click; 3 is for right click;
+This method returns a pygame.MOUSEBUTTONDOWN event. It returns a boolean and you can then check ```event.button``` just like on the below example. 
+
+1 is for left click; 
+2 is for middle click; 
+3 is for right click;
 
 [14]
     ```
         from core.util.colors import *
 
         class Application:
-            def __init__(self,app_interface):
-                self.app_interface = app_interface
-                self.system = app_interface.system 
+            def __init__(self,distant_realms):
+                self.distant_realms = distant_realms
+                self.system = distant_realms.system 
 
                 ww = self.system.window.get_width()
                 wh = self.system.window.get_height()
@@ -930,13 +934,67 @@ This method returns a pygame.MOUSEBUTTONDOWN event. It returns a boolean and you
 
             def handle_event(self,event,command=None):
                 mouse_pos = self.system.input.get_mouse_pos()
-
+ 
                 if event.type == self.system.input.mouse_button_down():
                     if self.rect.collidepoint(mouse_pos):
                         # do your action that happens when you click the rectangle
 
             ...
     ```
+Now you know not only how to use the input system, but one of the ways to make a basic clickable object! Yay for you!
+
+    
+    ```system.input.mouse_button_down()```
+
+This method returns a `pygame.MOUSEBUTTONDOWN` event.
+
+    ```system.input.mouse_motion(self)```
+
+This method returns a `pygame.MOUSEMOTION` event
+
+    ```system.input.get_mouse_pos()```
+
+This method returns a `pygame.mouse.get_pos()` which is just a tuple containing (x,y) coordinates
+
+    ```system.input.keydown()```
+
+This method returns a `pygame.KEYDOWN` event.
+
+    ```system.input.mouse_scroll_event()```
+
+This method returns a `pygame.MOUSEWHEEL` event. Populates `event.y` which is a 1 or a -1. For example:
+[15]
+
+    ```
+        class Application:
+            def __init__(self,distant_realms):
+                self.distant_realms = distant_realms
+                self.system = distant_realms.system 
+
+            def handle_event(self, event):
+                if event.type == self.system.input.mouse_scroll_event():
+                    if event.y == 1:
+                        # mouse scroll up event
+                    else:
+                        # mouse scroll down event
+        ...
+    ``` 
+
+As you can see it's easy enough to do. Eventually i'll provide some basic offset logic for making proper scroll windows. However currently this is mostly used by the ScrollableText widget, which is a configurable box for displaying text.
+
+    ```system.input.get_pressed_keys()```
+
+This method returns ```pygame.key.get_pressed()```. returns a list of `pygame.K_[keys]` currently pressed. This is something that the CommandModule uses, but you can also get it for your games. Say if you wanted to make a character go diagonally on the screen by pressing W and D, you could do that with that method. Just check for if they are equal to `system.input.keys.keyname_key()` rather than using pygame's raw functionality. This will ensure your applications stay compatible with future versions of the framework which may or may not include pygame by default. I will obey the same assumptions if you do.
+
+    ```system.input.window_focus_gained()```
+
+This method returns `pygame.WINDOWFOCUSGAINED`, which if you check it against event.type like in examples [12], [13], [14], and [15], you can do what you'd like with the outcome of `system.input.window_focus_gained()`
+
+    ```system.input.window_focus_lost()```
+
+This method returns `pygame.WINDOWFOCUSLOST` which is the opposite of the previous method. As in the same examples: [12], [13], [14], and [15], you can do what you like when the focus is lost. I recommend pausing your game in that event, if you're making a game.
+
+And that concludes the methods that you need to make games and applications with ```DistantRealms.system.input```
 
 Before we conclude the system.input section, I'd like to leave this key mapping here so you know how to access every key:
 
@@ -1118,12 +1176,102 @@ The ```Keys``` class provides backend-independent access to keyboard keys. These
 
 The purpose of this class is to prevent the rest of the input system from directly depending on Pygame. For example:
 
-```python
-if input.is_key_pressed(keys.w_key()):
-    player.move_forward()
-```
+    ```
+        if input.is_key_pressed(keys.w_key()):
+            player.move_forward()
+    ```
 
 The input/control system only needs to know about the `Keys` interface. A different backend can provide its own implementation without requiring the rest of the engine to change.
+
+
+Happy day, we're done with the grueling input documentation. And I've probably still got a million typos to fix, not to mention the Dunning-Kruger effect taking over my psyche, so half the language in this document could be entirely garbage from count slopula himself. Essentially, if you disagree with my terminology, IDK what to tell you. Bye felisha? Wow that was 2000 and late.
+
+# system.persistence
+
+So for this one, it's a pretty simple object. It controls where UI files are found, and routes save and load functions for files on the disk (unrelated to ui files, those are a special case for now)
+
+So what you need to know about the Persistence class, is that it sets up 2 objects you're going to deal with if you're making games or for some reason need to store data to disk. 
+
+    ```system.persistence.save```
+
+    and
+
+    ```system.persistence.load```
+
+You really only need 2 of the methods on each of these objects. They directly mirror each other for our current purposes, so I'm going to give quick and easy examples:
+
+If you're wanting to save a single value to a single file that you can easily reference (say like a username, or a volume file) you can do:
+
+    ```system.persistence.save.write_constant("name of file", "value to store")```
+
+The same interface is provided for reading said files:
+
+    ```system.persistence.save.read_constant("name of file")```
+
+Notice it doesn't give you the choice where to store it. That is because all saves go to the `ROOTDIR/saves/`. Constants like in this section, are stored in `saves/constants`.
+
+The other way of saving uses my custom save format system. You'll want to use this for things like game saves where you're saving a lot of different data types and you need to preserve the typing. This way, the save schema itself is actually the source of truth for typing. You just pass your values, and load your values. Loading is much simpler since again, the schema knows the type. 
+
+    ```system.persistence.save.write_save(data={})```
+
+It stores in `saves/appdata/app.sav`
+
+In order to save to it you can pass data in like this example:
+
+Enter your save parameters in `core/application/save_schema.py`:
+
+    ```
+        #save_schema.py
+
+        schema = {
+            "WORLDSEED": ("seed", int),
+            "PLAYERWORLDX": ("player_world_x", float),
+            "PLAYERWORLDY": ("player_world_y", float),
+            "PLAYERHEALTH": ("player_health, float),
+            "PLAYERINVENTORY": ("player_inventory", dict)
+        }
+
+    ```
+
+As you can see, it just takes in python types directly as the second value in the tuple
+
+And here's how you would encode it when saving:
+
+    ```
+        def serialize(self,player,world):
+            return {
+                "player_world_x": player.world_x,
+                "player_world_y": player.world_y,
+                "seed": world.seed,
+                "player_health": player.health,
+                "player_inventory": player.inventory # maybe a dict
+            }
+    ```
+
+And then to load it, it's very simple:
+
+    ```
+
+        load_data = system.persistence.load.load_save()
+
+        player_data = [load_data["player_world_x"],load_data["player_world_y"],load_data["player_health"],load_data["player_inventory"]]
+
+        def load(load_data):
+            if load_data is not None:
+            game.player = Player(system,saved_data=player_data)
+            game.world.seed = load_data["seed"]
+    ```
+
+Currently, there is experimental functionality to pass a file to `save.write_save` or `load.load_save` after the data, but that hasn't been fully tested. If you do so, you structure it like this:
+
+    ```system.persistence.save.write_save(data,filename)```
+
+    and
+
+    ```system.persistence.load.load_save(filename)```
+
+This functionality is coded in, so you can use it, but again, it's experimental and may totally just not work. But it will only have a single source of truth so eventually I'll add a third argument for a different schema. That'd be a second argument on the loading method.
+
 
 
 # State system

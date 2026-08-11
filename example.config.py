@@ -3,7 +3,7 @@ import platform
 config = {
     "TITLE": "My New Application",
     "AUTHORS": [""],
-    "VERSION": "0.4.0-alpha",
+    "VERSION": "0.6.0-alpha",
     "OS": platform.system(),
     "OSV": platform.version(),
     "OSR": platform.release(),

@@ -4,7 +4,6 @@ from core.application.save_schema import schema
 
 class Save():
     def __init__(self):
-        self.game_save_path = "saves/gamedata/world.sav"
         self.save_schema = schema
 
     def write_envar(self,envar_name,value):
@@ -47,10 +46,9 @@ class Save():
 
         log_event(f"Saved CONSTANT value: '{value}' to: saves/constants/{constant}!")
 
-    def write_save(self, data, file=None):
-        if file:
-            self.game_save_path = file
-        with open(self.game_save_path, "w") as f:
+    def write_save(self, data, file="app.sav"):
+        app_save_path = f"saves/appdata/{file}"
+        with open(f'{app_save_path}', "w") as f:
             for file_key, mapped in self.save_schema.items():
                 internal_key = mapped[0]
 

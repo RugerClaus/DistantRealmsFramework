@@ -4,7 +4,6 @@ from core.application.save_schema import schema
 
 class Load():
     def __init__(self):
-        self.game_save_path = "saves/gamedata/world.sav"
         self.load_dict = {}
 
     def read_envar(self,envar_name): 
@@ -37,11 +36,10 @@ class Load():
             log_error(f"Error reading from file: {e}")
             return None
     
-    def load_save(self,file=None):
-        if file:
-            self.game_save_path = file
-        if os.path.exists(self.game_save_path):
-            with open(self.game_save_path, "r") as f:
+    def load_save(self,file="app.sav'"):
+        app_save_path = f"saves/appdata/{file}.sav"
+        if os.path.exists(app_save_path):
+            with open(app_save_path, "r") as f:
                 for line in f:
                     line = line.strip()
                     
