@@ -23,7 +23,7 @@ class Runtime:
                 self.debug_overlay.scale()
                 if self.system.runtime_state.is_state(RUNTIME_STATE.SPLASH):
                     self.loading.rescale_assets()
-                self.system.input.rescale(event.w,event.h)
+                self.system.input.scale(event.w,event.h)
 
             if event.type == self.system.input.quit_event():
                 self.system.runtime_state.set_state(RUNTIME_STATE.QUIT)

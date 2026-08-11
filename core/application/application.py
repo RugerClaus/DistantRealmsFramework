@@ -1,9 +1,9 @@
 from core.util.colors import *
 
 class Application:
-    def __init__(self,app_interface):
-        self.app_interface = app_interface
-        self.system = app_interface.system
+    def __init__(self,distant_realms):
+        self.distant_realms = distant_realms
+        self.system = distant_realms.system
 
     def handle_event(self,event,command=None):
         pass
@@ -12,9 +12,9 @@ class Application:
         pass
 
     def draw(self):
-        self.app_interface.system.window.fill((black))
+        self.distant_realms.system.window.fill((black))
 
-    def resize(self):
+    def scale(self):
         pass
 
     def clean_up_states(self):

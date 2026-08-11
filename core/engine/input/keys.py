@@ -200,3 +200,183 @@ class Keys:
     
     def escape_key(self):
         return pygame.K_ESCAPE
+
+    def right_ctrl_key(self):
+        return pygame.K_RCTRL
+
+    def l_alt_key(self):
+        return pygame.K_LALT
+
+    def r_alt_key(self):
+        return pygame.K_RALT
+
+    def l_gui_key(self):
+        return pygame.K_LGUI
+
+    def r_gui_key(self):
+        return pygame.K_RGUI
+
+    def caps_lock_key(self):
+        return pygame.K_CAPSLOCK
+
+    def num_lock_key(self):
+        return pygame.K_NUMLOCK
+
+    def scroll_lock_key(self):
+        return pygame.K_SCROLLOCK
+
+    def insert_key(self):
+        return pygame.K_INSERT
+
+    def home_key(self):
+        return pygame.K_HOME
+
+    def end_key(self):
+        return pygame.K_END
+
+    def print_screen_key(self):
+        return pygame.K_PRINT
+
+    def sys_req_key(self):
+        return pygame.K_SYSREQ
+
+    def pause_key(self):
+        return pygame.K_PAUSE
+
+    def break_key(self):
+        return pygame.K_BREAK
+
+    def menu_key(self):
+        return pygame.K_MENU
+
+    def help_key(self):
+        return pygame.K_HELP
+
+    def clear_key(self):
+        return pygame.K_CLEAR
+
+    def left_bracket_key(self):
+        return pygame.K_LEFTBRACKET
+
+    def right_bracket_key(self):
+        return pygame.K_RIGHTBRACKET
+
+    def backslash_key(self):
+        return pygame.K_BACKSLASH
+
+    def semicolon_key(self):
+        return pygame.K_SEMICOLON
+
+    def apostrophe_key(self):
+        return pygame.K_QUOTE
+
+    def comma_key(self):
+        return pygame.K_COMMA
+
+    def period_key(self):
+        return pygame.K_PERIOD
+
+    def slash_key(self):
+        return pygame.K_SLASH
+
+    def equals_key(self):
+        return pygame.K_EQUALS
+
+    def minus_key(self):
+        return pygame.K_MINUS
+
+    def underscore_key(self):
+        return pygame.K_UNDERSCORE
+
+    def plus_key(self):
+        return pygame.K_PLUS
+
+    def asterisk_key(self):
+        return pygame.K_ASTERISK
+
+    def colon_key(self):
+        return pygame.K_COLON
+
+    def question_mark_key(self):
+        return pygame.K_QUESTION
+
+    def less_than_key(self):
+        return pygame.K_LESS
+
+    def greater_than_key(self):
+        return pygame.K_GREATER
+
+    def ampersand_key(self):
+        return pygame.K_AMPERSAND
+
+    def caret_key(self):
+        return pygame.K_CARET
+
+    def dollar_key(self):
+        return pygame.K_DOLLAR
+
+    def percent_key(self):
+        return pygame.K_PERCENT
+
+    def hash_key(self):
+        return pygame.K_HASH
+
+    def at_key(self):
+        return pygame.K_AT
+
+    def left_parenthesis_key(self):
+        return pygame.K_LEFTPAREN
+
+    def right_parenthesis_key(self):
+        return pygame.K_RIGHTPAREN
+
+    def keypad_0_key(self):
+        return pygame.K_KP0
+
+    def keypad_1_key(self):
+        return pygame.K_KP1
+
+    def keypad_2_key(self):
+        return pygame.K_KP2
+
+    def keypad_3_key(self):
+        return pygame.K_KP3
+
+    def keypad_4_key(self):
+        return pygame.K_KP4
+
+    def keypad_5_key(self):
+        return pygame.K_KP5
+
+    def keypad_6_key(self):
+        return pygame.K_KP6
+
+    def keypad_7_key(self):
+        return pygame.K_KP7
+
+    def keypad_8_key(self):
+        return pygame.K_KP8
+
+    def keypad_9_key(self):
+        return pygame.K_KP9
+
+    def keypad_period_key(self):
+        return pygame.K_KP_PERIOD
+
+    def keypad_divide_key(self):
+        return pygame.K_KP_DIVIDE
+
+    def keypad_multiply_key(self):
+        return pygame.K_KP_MULTIPLY
+
+    def keypad_minus_key(self):
+        return pygame.K_KP_MINUS
+
+    def keypad_plus_key(self):
+        return pygame.K_KP_PLUS
+
+    def keypad_enter_key(self):
+        return pygame.K_KP_ENTER
+
+    def keypad_equals_key(self):
+        return pygame.K_KP_EQUALS

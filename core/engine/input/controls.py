@@ -1,4 +1,4 @@
-from core.guts.input.keys import Keys
+from core.engine.input.keys import Keys
 
 class Controls:
     def __init__(self):

@@ -1,7 +1,7 @@
 import pygame
-from core.guts.input.controls import Controls
-from core.guts.input.CommandModule import CommandModule
-from core.guts.input.keys import Keys
+from core.engine.input.controls import Controls
+from core.engine.input.CommandModule import CommandModule
+from core.engine.input.keys import Keys
 from core.ui.font import FontEngine
 
 
@@ -82,7 +82,7 @@ class InputManager:
     def get_pressed_keys(self):
         return pygame.key.get_pressed()
 
-    def rescale(self,w,h):
+    def scale(self,w,h):
         self.surface = self.system.window.make_surface(w,h,True)
         self.draw_most_recent_keypress()
 

@@ -1,18 +1,18 @@
 import math,random
 from config import config
 # core systems
-from core.guts.input.inputmanager import InputManager
-from core.guts.audioengine import AudioEngine
-from core.guts.window import Window
-from core.guts.time import Time
-from core.guts.persistence.persistence import Persistence
-from core.guts.network.update import Update
-from core.guts.network.network import Network
-from core.guts.network.authentication import Authentication
-from core.guts.user import User
+from core.engine.input.inputmanager import InputManager
+from core.engine.audioengine import AudioEngine
+from core.engine.window import Window
+from core.engine.time import Time
+from core.engine.persistence.persistence import Persistence
+from core.engine.network.update import Update
+from core.engine.network.network import Network
+from core.engine.network.authentication import Authentication
+from core.engine.user import User
 from core.application.app_inspector import app_inspector
 from core.application.save_schema import schema
-from core.guts.telemetry import system_monitor
+from core.engine.telemetry import system_monitor
 
 # state systems
 from core.state.RuntimeLayer.statemanager import RuntimeStateManager
@@ -90,10 +90,10 @@ class System():
         self.runtime_state.set_state(RUNTIME_STATE.QUIT)
 
     def initialize_application(self):
-        from core.application.application_interface import AppInterface
+        from core.engine.distant_realms import DistantRealms
         self.runtime_state.set_state(RUNTIME_STATE.APPLICATION)
         self.state_monitor_state.set_state(MONITOR_STATE.APPLICATION)
-        self.application = AppInterface(self)
+        self.application = DistantRealms(self)
         self.application.init()
 
     def clean_up_states(self, states):

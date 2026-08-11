@@ -1,5 +1,5 @@
 from core.application.network.endpoints import LOGIN,REGISTER
-from core.guts.network.system_endpoints import API_KEY,VERSION
+from core.engine.network.system_endpoints import API_KEY,VERSION
 from core.state.RuntimeLayer.NetworkLayer.Login.state import LOGIN_STATE
 
 class Authentication:

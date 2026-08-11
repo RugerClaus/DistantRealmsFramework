@@ -1,5 +1,5 @@
 #will integrate keys class later
-from core.guts.input.keys import Keys
+from core.engine.input.keys import Keys
 
 class CommandModule:
     def __init__(self,eventmanager):

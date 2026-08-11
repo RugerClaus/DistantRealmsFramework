@@ -7,9 +7,9 @@ from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
 from core.ui.loader import UILoader
 from core.ui.actionmanager import UIActionManager
 from core.application.action_register import ActionRegistrar
-from core.guts.UI.uicontroller import UIController
+from core.engine.UI.uicontroller import UIController
 
-class AppInterface:
+class DistantRealms:
     def __init__(self, system):
         self.system = system
 
@@ -31,7 +31,7 @@ class AppInterface:
     def reload_actions(self):
         import importlib
         from core.ui import actionmanager, loader
-        from core.guts.UI import uicontroller
+        from core.engine.UI import uicontroller
         from core.application import action_register
 
         current_ui = self.ui_controller.active_name
@@ -66,7 +66,9 @@ class AppInterface:
         self.ui_controller.handle_event(event)
         
         if event.type == self.system.input.video_resize_event():
-            self.app_object.resize()
+
+            if self.app_object:
+                self.app_object.scale()
             self.ui_controller.scale()
 
         if self.system.control_state.is_state(DEVELOPER_MODE.ON):
@@ -86,9 +88,8 @@ class AppInterface:
         self.ui_controller.draw()
 
     # below is for saving in the engine's built in save format
-    def save_application_data(self):
+    def save_application_data(self,data={}):
         self.system.save_telemetry = ""
-        data = {}
         self.system.persistence.save.write_save(data)
         print("Saved Data!")
 

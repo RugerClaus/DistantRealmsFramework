@@ -1,6 +1,8 @@
 # Welcome to the Distant Realms Framework for Developing Applications with Python
 - Distant Realms is a Python application framework and tooling ecosystem for building games and interactive applications. Containing support for rendering, audio, input, simple networking as well as a ready bulit WYSIWYG ui editor that outputs to a format the engine can read directly. Below you will learn how to make games and other applications using Distant Realms
 
+NOTE: ALL EXAMPLE SECTIONS START WITH A NUMBER LIKE THIS: [01] +. When I refer to an example, I will refer to its number.
+
 - Distant Realms is designed around convenience without lock-in.
 
 - The framework provides high-level systems for common application needs, but those systems are built on straightforward underlying APIs. You can use as much or as little of the framework as your application requires.
@@ -36,15 +38,56 @@ To skip the splash screen and start the program with developer mode on:
 For windows use:
  ```python main.py --flags```
 
+# Project Structure
+
+When you create an application with Distant Realms, the framework provides a directory structure for separating application code, framework/engine systems, data on the disk, assets, and tooling.
+
+You do not need to understand every single directory or class to get started. Think of this a bit like Laravel or another large application framework, where your primary work takes place in a few, very specific directories.
+
+DistantRealmsFramework/
+├── assets/              # Application assets
+├── core/                # Framework and application systems
+├── enginepersistence/   # Framework-managed data including UI files
+├── environment/         # Environment-specific data
+├── saves/               # User/application save data
+├── logs/                # Runtime logs
+├── tools/               # A directory created by installers if it does not exist, for example "install_editor_[windows|linux].sh" creates this directory
+├── main.py              # System application entry point
+├── config.py            # Application/framework configuration
+├── setup.sh             # Framework setup
+├── buildlinux.sh        # Linux build script
+├── buildwindows.sh      # Windows build script
+├── buildmacos.sh        # macOS build script
+└── README.md            # Framework documentation
+
+You'll be doing most of your work inside the ```core/``` directory in ``` core/application```. Inside that directory, you'll find ```application.py``` containing a class called ```Application```. This class is where all your code goes, and anything else you add, including directories and modules, should remain beneath ```core/application```, unless you're creating state machines, in which case follow the documentation near the bottom of the README.
+
+The ```core/``` directory is really where all the magic is happening, so I'm going to give a basic rundown on each directory inside of it:
+
+core/
+├── application/     # Your application code and application-facing APIs
+├── experimental/    # Experimental and in-development framework features
+├── guts/            # Framework internals and core runtime services
+├── loading/         # Boot, loading screen, and application loading systems
+├── state/           # State machine definitions and state management
+├── ui/              # Framework UI system and widgets
+└── util/            # Shared utility classes, helpers, and supporting functionality
+
+For example, ```core/util``` contains the ```DebugOverlay``` class in ```core/util/debugoverlay.py```. This is the service container for all the functionality of the debug overlay. This is the perfect example of a file, you'll likely never need to think about. The same goes for mostly anything outside of ```core/application```. You may find yourself using the state system as well, and you'll primarily be working in, and creating your state machines in ```core/state/ApplicationLayer/```. This will all be explained under the State Machine section of the docs.
+
 # About 3rd party dependencies:
 
 Pygame-ce provides the backend for creating a window, drawing, audio, and input, as well as some of its time functions. 
 The files that use it are as follows:
+
+    ```
     -core/guts/window.py
     -core/guts/audioengine.py
     -core/guts/input/inputmanager.py
     -core/guts/input/keys.py
     -core/guts/time.py
+    ```
+
 A simple API is provided for working with all of these functionalities using the System services container. More below.
 
 Mutagen provides the File function for getting attributes of WAV files for all inlcuded music tracks. The audio system included with this framework allows you to arbitrarily drag in your audio files, and run them with ```system.sound.play_music("tile of your track"). Mutagen aids in accomplishing this user-friendly feature!
@@ -85,16 +128,16 @@ The way the program is invoked is by creating two singletons. A System, which is
 The second singleton created is a Runtime object which contains a method called run() that when invoked begins an infinite while loop that runs every frame until the Runtime state machine is transitioned to the QUIT state.
 
 During bootstrapping, you can choose to start the program in developer mode, or do so and also boot into the application directly, skipping the built in splash screen feature.
-
+[01]
 Here is a visualization of the pattern:
 
-```
+    ```
 
-system = System()
-runtime = Runtime(system)
-runtime.run()
+    system = System()
+    runtime = Runtime(system)
+    runtime.run()
 
-```
+    ```
 This is where the program begins. 
 
 # System:
@@ -333,7 +376,7 @@ This method bootstraps the application by instantiating an AppInterface from cor
 This is the only method on the system service that contains a single parameter. You pass a list with the states of active state machines like so:
 
 Pretend we have an Application class that runs, but it has a state machine it uses to manage itself
-
+[02]
     ```
         from core.state.ApplicationLayer.MyApp.state import MY_APP_STATE
         from core.state.ApplicationLayer.MyApp.statemanager import MyAppStateManager
@@ -518,7 +561,9 @@ Currently it can be used by blitting it with a custom rect, you could do somethi
 
     ```Window.blit(surface, destination, area=None)```
 
-It takes a surface (we could use overlay from our previous example for instance), a destination, you can pass something like overlay_rect here, and an area, takes a custom area of the surface you're drawing to, to specify where the blit should happen. Although, this is a compatibility point for pygame, and I personally have not made much use of areas as make_surface allows you to create as many arbitrary surfaces as you want on the window. Here is an example of how you would use this in your application's draw method using our ```overlay``` example above:
+It takes a surface (we could use overlay from for instance), a destination, you can pass something like overlay_rect here, and an area, takes a custom area of the surface you're drawing to, to specify where the blit should happen. Although, this is a compatibility point for pygame, and I personally have not made much use of areas as make_surface allows you to create as many arbitrary surfaces as you want on the window. Here is an example of how you would use this in your application's draw method using our ```overlay``` example above:
+[03]
+Here is some example usage:
 
     ```
         class Application:
@@ -541,7 +586,7 @@ As you can see, this follows pygame's conventions with optionally replacing pyga
     ```Window.load_image(file_path)```
 
 Pretty self-explanatory, you can dynamically load images from your assets. This actually returns a copy of the surface it is rendered to on the backend, so it calls ```pygame.image.load(file_path)```, runs ```convert_alpha``` on it for preserving transparency, creates a copy, and returns the copy.
-
+[04]
 Here is some example usage:
 
     ```
@@ -563,7 +608,7 @@ Like other methods in this API, its usage is incredibly straightforward, and if 
     ```Window.draw_line(point_a,point_b,color=(R,G,B),width=1)```
 
 This method draws a line from the defined ```point_a``` to defined ```point_b``` with the assigned color tuple, and a pixel width that is totally optional by default.
-
+[05]
 Here is some example usage:
 
     ```
@@ -586,7 +631,7 @@ Again, just like pygame, but with the comfort of knowing most of the backend wor
     ```Window.draw_polygon(surface, color=(R,G,B), points=[])```
 
 This method draws an arbitrary polygon and wraps ```pygame.draw.polygon``` though it does not return it and draws right away without blitting just like draw_line.
-
+[06]
 Here is some example usage:
 
     ```
@@ -617,7 +662,7 @@ Much like draw_line, this is very easy to set up and use
 This seems like it does a lot more, but really it's quite simple like the previous two methods.
 
 For a bit of elaborating the difference you see here should be obvious, but here, we present with a Surface, a Color, a Rect (x,y,w,h), a border width, a border radius value for rounded corners, and the object it exists on ```object="Player"``` for example. This is for debugging. If your values are incorrect an error will be outputted to core/logs/error.log, hence adding the object property is useful for debugging but optional.
-
+[07]
 Here is some example usage:
 
     ```
@@ -646,7 +691,7 @@ Again simple to use, but has some debugging features not included in pygame.draw
     ```Window.draw_circle(surface,color,center,radius,object=None)```
 
 Again the draw circle takes an object for outputting errors if there are errors. Like draw_rect, and draw_polygon, it takes a surface to draw to, a color in an RGB tuple, the center point of the circle, and the radius of the circle, and finally an option to pass an Object for debugging. 
-
+[08]
 Here is some example usage:
 
     ```
@@ -702,7 +747,7 @@ Now for the methods themselves. This is how you'll interact with the audio syste
     ```
 
 Allows you to play a given music file by track name (everything before your file extension) if you pass a track to it. Otherwise if you don't pass a track to it, it'll randomly play music files from the assets/sounds/music directory until you disable the music. You can also pass "stop" to it and it will stop all music.
-
+[09]
 Here is some example usage:
 
     ```
@@ -730,7 +775,7 @@ All the other parts of the ```system.sound``` API work just like this for the mo
     ```system.sound.play_sfx(sfx_name)```
 
 This does exactly what you would expect it to. It plays a given sound effect in assets/sounds/sfx. That's all it does.
-
+[10]
 Here is some example usage:
 
     ```
@@ -754,7 +799,7 @@ Even easier with that.
     ```system.sound.play_ui_sfx(sfx_name)```
 
 The same goes for playing UI SFX, which you likely won't need to worry about as UI sfx, are mostly routed by the framework, but you're welcom to add your own. 
-
+[11]
 Here is some example usage:
 
     ```
@@ -777,6 +822,309 @@ For ```AudioEngine.volume_up()```, ```AudioEngine.volume_down()```, ```AudioEngi
 I recommend following a similar pattern though you'll likely want to tie these into button actions to be triggered at some point. In fact, there is a default settings menu system included with this framework that has volume controls in it. I will however leave this section out as it will map more cleanly to the UI framework usage, for things like the Action Register.
 
 Overall, that wraps up most of what you'll need to process simple audio with the framework. This system will likely greatly improve later on.
+
+# system.input
+
+To begin with the input system, this may see some large changes over the next 6-8 months, however, this is how to use it in its current form. We're going to start, like the previous APIs by documenting the InputManager class' constructor.
+
+    ```
+        InputManager.system - Like most other classes, the InputManager class also takes a System in its constructor
+        InputManager.CommandModule - an object of the CommandModule class, we'll continue after InputManager with this class
+        InputManager.keys - an object of the Keys class, this contains a method for every kind of key press. It wraps pygame's key constants.
+        InputManager.game_controls - the last relic of game mentions in the program. I really think with the pattern I have that having a Controls class specifically for managing game input. This allows you to allow custom key-mapping per user input. It's a feature that I'm on the fence leaving in since it's really the last muddy line between application concerns and the engine itself in the codebase.
+    ```
+
+So yeah, this system is bloated and full of terrible ideas, but the things that are good, are useful, and that's largely in the methods as well as the ```system.input.keys.*_key()``` API, and the ```system.input.CommandModule``` API. 
+
+Before starting the InputManager's methods, I'd first like to exlain how it's used. Normally with Pygame, or GLFW, or even SDL, you're going to see a similar event loop. So I decided that all input needs to take place in a class' handle_event() method, and the standard for the API is this:
+[12]
+Here is some example usage:
+
+    ```
+        class Application:
+            def __init__(self,app_interface):
+                self.app_interface = app_interface
+                self.system = app_interface.system 
+
+            def handle_event(self,event,command=None):
+                if event.type == self.system.input.keydown():
+                    if event.key == self.system.input.keys.up_arrow_key():
+                        # do up arrow key stuff
+            ...
+    ```
+
+As you can see the API is extremely straightforward for checking keypresses. All event types implemented are part of the InputManager class and are methods that return pygame events. So if you've used pygame, you'll be at a major advantage using this framework. In the above script, we don't need to do a for loop or a while loop. You just check the event argument. This should be passed down to all ```handle_event``` methods. As you start in the application class, its ```handle_event``` method is called by default. A full List of the keys will be inlcuded at the bottom of the section on #system.input.
+
+I also want to go over the Command Module. Another very straight forward tool that can also be used in conjunction for keys. Below are the built in sequences you can use globally. Commands you create are local to where you create them and only exist during the RUNTIME_STATE.APPLICATION, and if deeper, then wherever you decide to put them.
+
+    ```
+        CommandModule.sequences = {
+            "debug": [self.keys.F9_key()],
+            "developer": [self.keys.F2_key()],
+            "monitor_system_states": [self.keys.F8_key(),self.keys.one_key()],
+            "monitor_runtime_states": [self.keys.F8_key(),self.keys.two_key()],
+            "monitor_application_states": [self.keys.F8_key(),self.keys.three_key()],
+            "monitor_all_states": [self.keys.F8_key(),self.keys.four_key()],
+            "raise_opacity": [self.keys.F8_key(),self.keys.five_key()],
+            "lower_opacity": [self.keys.F8_key(),self.keys.six_key()],
+            "reload_ui": [self.keys.F1_key(),self.keys.one_key()],
+            "reload_application": [self.keys.F1_key(),self.keys.two_key()],
+            "reload_menu_editor": [self.keys.F1_key(),self.keys.three_key()],
+            "reload_form_editor": [self.keys.F1_key(),self.keys.four_key()]
+        }
+    ```
+
+[13]
+Here is an example of how to create and use your own commands. The implementation is identical to core/guts/runtime.py, but runtime.py actually creates the command variable. You just get to check it for a given command. The interval for pressed key combos for commands is 5000ms. You can set whatever command you want, but it must not conflict with the above sequences or you'll overwrite key functionality. Here we go:
+
+    ```
+        from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
+
+        class Application:
+            def __init__(self,app_interface):
+                self.app_interface = app_interface
+                self.system = app_interface.system 
+
+                self.system.input.CommandModule["my_command"] = [self.system.input.keys.F7_key()]
+
+            def handle_event(self,event,command=None):
+                if self.system.control_state.is_state(DEVELOPER_MODE.ON):
+                    if command == "my_command":
+                        # Do some developer mode stuff
+            ...
+    ```
+
+In example [13], I actually use another system in the framework to demonstrate a nice use of Developer Mode. This is the system.control_state state machine. We check for if developer mode is on (again, you can do this by pressing F2 or starting the program with the --dev or --devg flags). If it is, we check if the command has occurred. If it has, we do the stuff you assign in the command.
+
+Now that we're somewhat familiar with the way the input system works with its keys and commands, and some basic conditions, let's show the important event methods on the InputManager class. These are all used identically to how we're using ```system.input.keydown()``` on example [12].
+
+Here are the event methods on the InputManager class called with system.input.(event())
+
+    ```system.input.video_resize_event()```
+
+This method returns a pygame.VIDEORESIZE event. You can use this in your ```scale``` method. The ```scale``` method on the ```Application``` class, where you start your work, is already automatically called, so feel free to use it. You can also just use this method straight away.
+
+    ```system.input.get_mouse_pos()```
+
+This method returns the mouse position in screen coordinates as a tuple (EX: (24,42))
+
+    ```system.input.mouse_button_down()```
+
+This method returns a pygame.MOUSEBUTTONDOWN event. It returns a boolean and you can then check ```event.button``` just like on the below example. 1 is for left click; 2 is for middle click; 3 is for right click;
+
+[14]
+    ```
+        from core.util.colors import *
+
+        class Application:
+            def __init__(self,app_interface):
+                self.app_interface = app_interface
+                self.system = app_interface.system 
+
+                ww = self.system.window.get_width()
+                wh = self.system.window.get_height()
+
+                self.surface = self.system.make_surface(40,40)
+                self.rect = self.surface.get_rect(center=(ww/2,wh/3)) # Will always return a pygame-like rect. rect.collidepoint() will always work
+                self.surface.fill(red)
+
+            def handle_event(self,event,command=None):
+                mouse_pos = self.system.input.get_mouse_pos()
+
+                if event.type == self.system.input.mouse_button_down():
+                    if self.rect.collidepoint(mouse_pos):
+                        # do your action that happens when you click the rectangle
+
+            ...
+    ```
+
+Before we conclude the system.input section, I'd like to leave this key mapping here so you know how to access every key:
+
+The ```Keys``` class provides backend-independent access to keyboard keys. These can all be accessed like in example [13] by calling ```system.input.keys.a_key()``` for every method listed here:
+
+### Alphabetic Keys
+
+| Function  | Key |
+| --------- | --- |
+| `a_key()` | A   |
+| `b_key()` | B   |
+| `c_key()` | C   |
+| `d_key()` | D   |
+| `e_key()` | E   |
+| `f_key()` | F   |
+| `g_key()` | G   |
+| `h_key()` | H   |
+| `i_key()` | I   |
+| `j_key()` | J   |
+| `k_key()` | K   |
+| `l_key()` | L   |
+| `m_key()` | M   |
+| `n_key()` | N   |
+| `o_key()` | O   |
+| `p_key()` | P   |
+| `q_key()` | Q   |
+| `r_key()` | R   |
+| `s_key()` | S   |
+| `t_key()` | T   |
+| `u_key()` | U   |
+| `v_key()` | V   |
+| `w_key()` | W   |
+| `x_key()` | X   |
+| `y_key()` | Y   |
+| `z_key()` | Z   |
+
+### Number Keys
+
+| Function      | Key |
+| ------------- | --- |
+| `zero_key()`  | 0   |
+| `one_key()`   | 1   |
+| `two_key()`   | 2   |
+| `three_key()` | 3   |
+| `four_key()`  | 4   |
+| `five_key()`  | 5   |
+| `six_key()`   | 6   |
+| `seven_key()` | 7   |
+| `eight_key()` | 8   |
+| `nine_key()`  | 9   |
+
+### Function Keys
+
+| Function    | Key |
+| ----------- | --- |
+| `F1_key()`  | F1  |
+| `F2_key()`  | F2  |
+| `F3_key()`  | F3  |
+| `F4_key()`  | F4  |
+| `F5_key()`  | F5  |
+| `F6_key()`  | F6  |
+| `F7_key()`  | F7  |
+| `F8_key()`  | F8  |
+| `F9_key()`  | F9  |
+| `F10_key()` | F10 |
+| `F11_key()` | F11 |
+| `F12_key()` | F12 |
+
+### Modifier Keys
+
+| Function            | Key                 |
+| ------------------- | ------------------- |
+| `l_ctrl_key()`      | Left Ctrl           |
+| `right_ctrl_key()`  | Right Ctrl          |
+| `left_shift_key()`  | Left Shift          |
+| `right_shift_key()` | Right Shift         |
+| `l_alt_key()`       | Left Alt            |
+| `r_alt_key()`       | Right Alt           |
+| `l_gui_key()`       | Left GUI / Windows  |
+| `r_gui_key()`       | Right GUI / Windows |
+
+### Arrow & Navigation Keys
+
+| Function            | Key         |
+| ------------------- | ----------- |
+| `up_arrow_key()`    | Up Arrow    |
+| `down_arrow_key()`  | Down Arrow  |
+| `left_arrow_key()`  | Left Arrow  |
+| `right_arrow_key()` | Right Arrow |
+| `home_key()`        | Home        |
+| `end_key()`         | End         |
+| `insert_key()`      | Insert      |
+| `delete_key()`      | Delete      |
+| `page_up_key()`     | Page Up     |
+| `page_down_key()`   | Page Down   |
+
+### Lock & System Keys
+
+| Function             | Key          |
+| -------------------- | ------------ |
+| `caps_lock_key()`    | Caps Lock    |
+| `num_lock_key()`     | Num Lock     |
+| `scroll_lock_key()`  | Scroll Lock  |
+| `print_screen_key()` | Print Screen |
+| `sys_req_key()`      | SysRq        |
+| `pause_key()`        | Pause        |
+| `break_key()`        | Break        |
+| `menu_key()`         | Menu         |
+| `help_key()`         | Help         |
+| `clear_key()`        | Clear        |
+
+### Control Keys
+
+| Function          | Key       |
+| ----------------- | --------- |
+| `space_key()`     | Space     |
+| `return_key()`    | Return    |
+| `enter_key()`     | Enter     |
+| `escape_key()`    | Escape    |
+| `backspace_key()` | Backspace |
+| `tab_key()`       | Tab       |
+| `backtick()`      | `         |
+
+> **Note:** `return_key()` and `enter_key()` currently both return `pygame.K_RETURN`.
+
+### Punctuation & Symbol Keys
+
+| Function                  | Key |
+| ------------------------- | --- |
+| `left_bracket_key()`      | `[` |
+| `right_bracket_key()`     | `]` |
+| `backslash_key()`         | `\` |
+| `semicolon_key()`         | `;` |
+| `apostrophe_key()`        | `'` |
+| `comma_key()`             | `,` |
+| `period_key()`            | `.` |
+| `slash_key()`             | `/` |
+| `equals_key()`            | `=` |
+| `minus_key()`             | `-` |
+| `underscore_key()`        | `_` |
+| `plus_key()`              | `+` |
+| `asterisk_key()`          | `*` |
+| `colon_key()`             | `:` |
+| `question_mark_key()`     | `?` |
+| `less_than_key()`         | `<` |
+| `greater_than_key()`      | `>` |
+| `ampersand_key()`         | `&` |
+| `caret_key()`             | `^` |
+| `dollar_key()`            | `$` |
+| `percent_key()`           | `%` |
+| `hash_key()`              | `#` |
+| `at_key()`                | `@` |
+| `left_parenthesis_key()`  | `(` |
+| `right_parenthesis_key()` | `)` |
+
+### Keypad Keys
+
+| Function                | Key          |
+| ----------------------- | ------------ |
+| `keypad_0_key()`        | Keypad 0     |
+| `keypad_1_key()`        | Keypad 1     |
+| `keypad_2_key()`        | Keypad 2     |
+| `keypad_3_key()`        | Keypad 3     |
+| `keypad_4_key()`        | Keypad 4     |
+| `keypad_5_key()`        | Keypad 5     |
+| `keypad_6_key()`        | Keypad 6     |
+| `keypad_7_key()`        | Keypad 7     |
+| `keypad_8_key()`        | Keypad 8     |
+| `keypad_9_key()`        | Keypad 9     |
+| `keypad_period_key()`   | Keypad .     |
+| `keypad_divide_key()`   | Keypad /     |
+| `keypad_multiply_key()` | Keypad *     |
+| `keypad_minus_key()`    | Keypad -     |
+| `keypad_plus_key()`     | Keypad +     |
+| `keypad_enter_key()`    | Keypad Enter |
+| `keypad_equals_key()`   | Keypad =     |
+
+### Backend Abstraction
+
+The purpose of this class is to prevent the rest of the input system from directly depending on Pygame. For example:
+
+```python
+if input.is_key_pressed(keys.w_key()):
+    player.move_forward()
+```
+
+The input/control system only needs to know about the `Keys` interface. A different backend can provide its own implementation without requiring the rest of the engine to change.
+
 
 # State system
 
