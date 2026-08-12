@@ -50,12 +50,12 @@ function cleanup_internal() {
 function build_main() {
   echo "Building $APP_NAME executable..."
 
-  TMP_DIST="$DIST_ROOT/$APP_NAME_linux_tmp"
-  FINAL_DIST="$DIST_ROOT/$APP_NAME_linux"
+  TMP_DIST="$DIST_ROOT/{$APP_NAME}linux_tmp"
+  FINAL_DIST="$DIST_ROOT/{$APP_NAME}linux"
 
   pyinstaller "$ROOT/$MAIN" \
     --onedir \
-    --icon="assets/images/build/$APP_NAME_linux.png" \
+    --icon="assets/images/build/{$APP_NAME}linux.png" \
     --noconsole \
     --windowed \
     --clean \
@@ -65,8 +65,8 @@ function build_main() {
     --add-data "$ROOT/saves:saves" \
     --add-data "$ROOT/environment:environment" \
     --distpath "$TMP_DIST" \
-    --workpath "$WORK_ROOT/$APP_NAME_linux" \
-    --specpath "$SPEC_ROOT/$APP_NAME_linux" \
+    --workpath "$WORK_ROOT/{$APP_NAME}linux" \
+    --specpath "$SPEC_ROOT/{$APP_NAME}linux" \
     --debug all
 
   rm -rf "$FINAL_DIST"
@@ -82,7 +82,7 @@ function build_updater() {
   echo "Building Linux updater executable..."
 
   TMP_DIST="$DIST_ROOT/updater_tmp"
-  FINAL_DIST="$DIST_ROOT/$APP_NAME_linux"
+  FINAL_DIST="$DIST_ROOT/{$APP_NAME}linux"
 
   pyinstaller "$ROOT/$UPDATER_MAIN" \
     --onefile \
