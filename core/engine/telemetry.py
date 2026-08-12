@@ -4,5 +4,6 @@ system_monitor ={
     "clientAppPassword": None,
     "OS": None,
     "Client Version" : None,
+    "DRFramework Ver": None,
     "Audio": None
 }

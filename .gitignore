@@ -4,10 +4,10 @@ __pycache__
 /.vscode
 /saves/constants/leaderboard_opt_in
 /saves/constants/username
-saves/constants/high_score
 saves/constants/music_volume
 saves/constants/sfx_volume
-saves/gamedata/world.sav
+saves/constants/clientAppPassword
+saves/constants/clientID
 /executable
 logs/*/*.log
 logs/*.log
