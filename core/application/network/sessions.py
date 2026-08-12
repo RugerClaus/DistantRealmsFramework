@@ -1,7 +1,6 @@
 from .endpoints import CREATE_SESSION
 from core.engine.network.system_endpoints import API_KEY
 from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
-from core.application.network.leaderboard import Leaderboard
 from core.state.ApplicationLayer.Session.state import ONLINE_SESSION_STATE
 from core.state.ApplicationLayer.Session.statemanager import OnlineSessionStateManager
 class Session:
@@ -42,20 +41,6 @@ class Session:
                 self.state.set_state(ONLINE_SESSION_STATE.INACTIVE)
             self.system.runtime_inspector["OnlineSession"] = False
             return False
-        
-    def submit_score(self, score):
-        
-        if not self.state.is_state(ONLINE_SESSION_STATE.ACTIVE):
-            print(self.state.state)
-            return False
-        print("submitting score to server")
-
-        leaderboard = Leaderboard(self.system)
-
-        submission = leaderboard.submit(score,self.sessionToken)
-
-        if submission:
-            self.end_online_session()
 
     def end_online_session(self):
         self.state.set_state(ONLINE_SESSION_STATE.INACTIVE)

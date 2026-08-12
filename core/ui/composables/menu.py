@@ -9,8 +9,6 @@ class Menu(UIElement):
 
         self.system = system
         self.children = []
-        self.fields = {}
-        self.error_element = None
 
         self.ui = UIManager(system)
 

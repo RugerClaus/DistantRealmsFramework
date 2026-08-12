@@ -32,6 +32,8 @@ class Persistence:
         self.save = Save()
         self.load = Load()
 
+        print(self.save_directory())
+
     def developer_mode(self):
         return self.system.control_state.is_state(DEVELOPER_MODE.ON)
 
@@ -83,3 +85,14 @@ class Persistence:
 
         log_event("Saved engine UI:", path)
         return True
+
+    def save_directory(self):
+        path = self.workspace_root / "saves/appdata"
+        if path:
+            log_event(f"Found workspace save directory: {path}", "Persistence.save_directory")
+            return path
+
+        path = self.install_root / "saves/appdata"
+        if path:
+            log_event(f"Found install save directory: {path}", "Persistence.save_directory")
+            return path

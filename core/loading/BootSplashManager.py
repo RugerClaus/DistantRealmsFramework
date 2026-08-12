@@ -29,7 +29,7 @@ class BootSplashManager:
 
     def update(self):
         if self.state.is_state(BOOT_SPLASH_STATE.NONE):
-            self.system.runtime_state.set_state(RUNTIME_STATE.MAIN_MENU)
+            self.system.runtime_state.set_state(RUNTIME_STATE.APPLICATION)
         if not self.system.runtime_state.is_state(RUNTIME_STATE.SPLASH):
 
             self.system.sound.system_sfx_state.set_state(SYSTEM_SFX_STATE.OFF)

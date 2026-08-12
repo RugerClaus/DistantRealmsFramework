@@ -86,20 +86,6 @@ class DistantRealms:
         if self.application:
             self.application.draw()
         self.ui_controller.draw()
-
-    # below is for saving in the engine's built in save format
-    def save_application_data(self,data={}):
-        self.system.save_telemetry = ""
-        self.system.persistence.save.write_save(data)
-        print("Saved Data!")
-
-    def load_application_data(self):
-        load_data_dict = self.system.persistence.load.load_save()
-        if load_data_dict is not None:
-            pass
-        else:
-            log_warning("No Save File found")
-            return None
         
     def init(self):
         main_menu = self.system.persistence.get_menu("MAIN")

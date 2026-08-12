@@ -1328,7 +1328,7 @@ The important thing to understand here is that `delta_time()` gives you the amou
                 timer = current_time - self.life_start_time
     ```
 
-## Core systems wrapup
+# Top level UI system W/WYSIWYG editor
 
 Welp I'm sure that by now you're itching to get into making some games. At this point you should be able to draw all kinds of primitives and images to the screen. I hope you are also able to handle the event system for your keypresses and other user interactions, as well as be able to trigger `sound effects` and `music`. You should understand how to use the `system.time` module, and how you should be using methods like `system.time.delta_time()` instead of calculating your own. You should even have a decent picture on how to use the state system from a high level, even though I haven't introduced how they entirely work yet. That will come later, but you should be able to use developer mode to great effect already.
 
@@ -1342,6 +1342,9 @@ the **Distant Realms Editor** is built on.
 This is not an instruction manual on how to use the editor. This is an instruction manual on how to install and use the editor with your workflow.
 
 In the section **Project Structure**, I pointed out the `tools/` directory. Well that directory is not here by default, and that is by design. To get started with designing your own menus and input data forms, go ahead and run the following command:
+
+NOTE: At some point I may include a sprite loader in the `core/application` directory, however it is not a direct priority of the framework until I've finished the workflow.
+
 [21]
 Linux:
 
@@ -1447,7 +1450,7 @@ Now that we know how to control button click actions from buttons given to you b
 
     ```Application.distant_realms.ui_controller.get_active_ui()```
 
-This method returns the active UI and interacting with the dictionary it returns. Here is a list of all the possible children you will get per UI dictionary:
+This method returns the active UI as a list of UI objects. The following are the possible UI objects you may encounter in that list:
 
 ## UI Objects
 
@@ -1457,11 +1460,11 @@ This method returns the active UI and interacting with the dictionary it returns
 | **Label** | `label` | Static text element | `id`, `text`, `position`, `font_size`, `color` |
 | **Header** | `header` | Large text element intended for headings | `id`, `text`, `position`, `font_size`, `color` |
 | **Query** | `query` | Text-based query/input element | `id`, `text`, `position`, `font_size`, `color` |
-| **Scrollable Text** | `scrollable_text` | Text area with scrolling support | `id`, `text`, `position`, `color`, `width`, `height`, `align`, `line_spacing`, `font_size` |
+| **ScrollableText** | `scrollable_text` | Text area with scrolling support | `id`, `text`, `position`, `color`, `width`, `height`, `align`, `line_spacing`, `font_size` |
 | **Textbox** | `textbox` | User text input field | `id`, `field`, `position`, `dimensions`, `font_size`, `max_chars` |
 | **Select** | `select` | Dropdown/selectable option field | `id`, `options`, `selected_option`, `position`, `font_size`, `width`, `height`, `padding`, `field` |
 
-### Button Styles
+## Button Styles
 
 | Property          | `idle` | `hover` | `press` | `disable` | `focused` |
 | ----------------- | -----: | ------: | ------: | --------: | --------: |
@@ -1495,7 +1498,70 @@ Here is an example of how the **Distant Realms Editor** edits any of these dynam
 
 With this we can set any of the properties of any of the elements in the actively shown UI to be anything we want, at any time we want! Nifty isn't it?
 
-NOTE: At some point I may include a sprite loader in the `core/application` directory, however it is not a direct priority of the framework until I've finished the workflow.
+# core/ui
+
+Okay, now you've probably made some pretty cool things, but what if I told you that you can take advantage of the UI system for more than menus, and submittable forms? Intrigued? Well if you are you better be ready to create your own composables, and if you'd like, implement some of your own. 
+
+I want to make clear going into this section that I will not be documenting all the internals of the widgets themselves. I'll primarily be showing you how to use the `UIManager` to create composable views for yourself on your own surfaces. 
+
+So, as that's a good place to start as any, let's begin. 
+
+The `UIManager` class is located in `core/ui/UIManager.py`, and is the beating heart of the UI system. All parts are important, but this is where the composition happens. The UIManager takes in widgets, referred to in the program as 'elements', and handles all their events based on their individual properties, and their relation to the `UIElement` base element located in `core/ui/element.py`. 
+
+For all your interaction with UIManager, you'll never really touch its internals, so I won't elaborate much on the internals of the class, other than it's fairly simple how it sorts and handles all drawing, updating, and event handling for a given set of ui elements.
+
+So if we have our own UI, say a button menu for loading game saves, how could we do this? Well:
+
+    ```
+        from core.ui.UIManager import UIManager
+        from core.ui.widgets.button import Button
+
+        class GameSaveBrowser:
+
+            def __init__(self,distant_realms):
+                self.distant_realms = distant_realms
+                self.system = distant_realms.system
+                self.ui = UIManager(self.system)
+                self.dir = self.system.persistence.save_directory()
+                self.files = []     #list of files gets put here
+
+            def create_buttons(self):
+                for index, save in enumerate(self.files):
+
+                    button = Button(
+                        self.dr.system,
+                        f"save_{index}",
+                        save["name"],
+                        (0.5, 0.5),
+                        font_size=20,
+                        action=lambda s=save: self.load_save(
+                            s["name"]
+                        )
+                    )
+            
+            def load_save(self,save_name):
+                game_data = self.system.persistence.load.load_save(f'{save_name}.sav')
+
+                self.distant_realms.application.game.start(load_data=game_data)
+
+            def get_save_files(self):
+
+                for path in self.dir.iterdir():
+
+                    if not path.is_file() or path.suffix.lower() != ".sav":
+                        continue
+
+                    self.files.append({
+                        "name": path.stem
+                    })
+
+    ```
+
+This is a raw example and makes an awful lot of assumptions, but it is funcitonal within this framework. Granted, what you do with that data is up to you, and there is no `distant_realms.application.game` at all in the default framework, but this gives you an idea of how you'd structure such a UI composable as a game browser.
+
+If you want to sort through the elements in your current UI, you just call `self.ui.elements` which contains a list of all the elements as dictionaries.
+
+You can also use this exact same pattern for any other number of UI elements. You'll just follow the instructions in example [27] to guide you through how to access said elements. You can follow its `ui.children` pattern, and in this context `self.ui.elements` would be used.
 
 # State system
 
