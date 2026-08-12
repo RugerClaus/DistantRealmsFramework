@@ -44,34 +44,37 @@ When you create an application with Distant Realms, the framework provides a dir
 
 You do not need to understand every single directory or class to get started. Think of this a bit like Laravel or another large application framework, where your primary work takes place in a few, very specific directories.
 
-DistantRealmsFramework/
-├── assets/              # Application assets
-├── core/                # Framework and application systems
-├── enginepersistence/   # Framework-managed data including UI files
-├── environment/         # Environment-specific data
-├── saves/               # User/application save data
-├── logs/                # Runtime logs
-├── tools/               # A directory created by installers if it does not exist, for example "install_editor_[windows|linux].sh" creates this directory
-├── main.py              # System application entry point
-├── config.py            # Application/framework configuration
-├── setup.sh             # Framework setup
-├── buildlinux.sh        # Linux build script
-├── buildwindows.sh      # Windows build script
-├── buildmacos.sh        # macOS build script
-└── README.md            # Framework documentation
+    ```
+        DistantRealmsFramework/
+        ├── assets/              # Application assets
+        ├── core/                # Framework and application systems
+        ├── enginepersistence/   # Framework-managed data including UI files
+        ├── environment/         # Environment-specific data
+        ├── saves/               # User/application save data
+        ├── logs/                # Runtime logs
+        ├── tools/               # A directory created by installers if it does not exist, for example "install_editor_[windows|linux].sh" creates this directory
+        ├── main.py              # System application entry point
+        ├── config.py            # Application/framework configuration
+        ├── setup.sh             # Framework setup
+        ├── buildlinux.sh        # Linux build script
+        ├── buildwindows.sh      # Windows build script
+        ├── buildmacos.sh        # macOS build script
+        └── README.md            # Framework documentation
+    ```
 
 You'll be doing most of your work inside the ```core/``` directory in ``` core/application```. Inside that directory, you'll find ```application.py``` containing a class called ```Application```. This class is where all your code goes, and anything else you add, including directories and modules, should remain beneath ```core/application```, unless you're creating state machines, in which case follow the documentation near the bottom of the README.
 
 The ```core/``` directory is really where all the magic is happening, so I'm going to give a basic rundown on each directory inside of it:
-
-core/
-├── application/     # Your application code and application-facing APIs
-├── experimental/    # Experimental and in-development framework features
-├── guts/            # Framework internals and core runtime services
-├── loading/         # Boot, loading screen, and application loading systems
-├── state/           # State machine definitions and state management
-├── ui/              # Framework UI system and widgets
-└── util/            # Shared utility classes, helpers, and supporting functionality
+    ```
+        core/
+        ├── application/     # Your application code and application-facing APIs
+        ├── experimental/    # Experimental and in-development framework features
+        ├── guts/            # Framework internals and core runtime services
+        ├── loading/         # Boot, loading screen, and application loading systems
+        ├── state/           # State machine definitions and state management
+        ├── ui/              # Framework UI system and widgets
+        └── util/            # Shared utility classes, helpers, and supporting functionality
+    ```
 
 For example, ```core/util``` contains the ```DebugOverlay``` class in ```core/util/debugoverlay.py```. This is the service container for all the functionality of the debug overlay. This is the perfect example of a file, you'll likely never need to think about. The same goes for mostly anything outside of ```core/application```. You may find yourself using the state system as well, and you'll primarily be working in, and creating your state machines in ```core/state/ApplicationLayer/```. This will all be explained under the State Machine section of the docs.
 
