@@ -142,7 +142,7 @@ This is where the program begins.
 
 # System:
 
-We will start our explanation and exploration of the core/engine directory (later to be named core/engine) by discussing the entrypoints of the system System and Runtime.
+We will start our explanation and exploration of the `core/engine` directory by discussing the entrypoints of the system System and Runtime.
 
 System is the framework's service container. It initializes the framework's core services and exposes them through a single object available throughout the application. Let's go over those services that it sets up, one by one, and discuss their functionality and purpose.
 
@@ -339,7 +339,7 @@ App Inspector:
 
     ```system.app_inspector = {}```
 
-Like the system monitor, data passed to this dictionary is immediately displayed on the Debug Overlay automatically. This is what you'll use if you want to display something like your player's coordinates, or other debugging info for your specific application directly onto the bulit in F9 debug overlay. Very useful observability tool. You can do so by doing this
+Like the system monitor, data passed to this dictionary is immediately displayed on the Debug Overlay automatically. This is what you'll use if you want to display something like your player's coordinates, or other debugging info for your specific application directly onto the bulit in F9 debug overlay. Very useful observability tool. You can do so by doing this:
 
     ```system.app_inspector["your_key"] = "Whatever you want to store"```
 
@@ -347,7 +347,15 @@ It will show on the Debug Overlay on the left hand side in order of when you add
 
     """your_key: Whatever you want to store"""
 
+
+Application:
+
+    ```system.application = None```
+
+The `system.application` variable contains, when your application is running, the actual interface you interact with when building your application. You'll access this from your `Application` class, located in `core/application/application.py`, you'll access it via `Application.distant_realms`. However, that the representation of the `system.application` variable. When your application is initialized, the `System` runs its `System.initialize_application()` method. The `DistantRealms` class is assigned to ```system.application```. This makes your application entirely hot reloadable. 
+
 That covers the core modules set up on the System object. Calling methods on these modules will allow you full control of your application from the bottom up. With the Runtime class handling the core event loop/routing, you will never write a ```while True``` loop again when creating an application. Below we will continue with explaining how Runtime works, and following that, I will start adding the documentation for the Window, Sound, and Input systems, and I will begin discussing how to best start your project, be it a game, inventory management desktop application, or anything else!
+
 
 # System methods
 
@@ -1272,9 +1280,224 @@ Currently, there is experimental functionality to pass a file to `save.write_sav
 
 This functionality is coded in, so you can use it, but again, it's experimental and may totally just not work. But it will only have a single source of truth so eventually I'll add a third argument for a different schema. That'd be a second argument on the loading method.
 
+# system.time
 
+Well now, we're going to get to the last core element of the `System`, that you'll need in order to build applications. I'm speaking of course of the `system.time` module
+
+There actually isn't a lot to say about this class, it's relatively small and easy to understand. There are really only 2 methods you'll ever really need to make apps here.
+
+    ```system.time.get_current_time()```
+
+This method returns the current amount of milliseconds since the `System` object was instantiated.
+
+    ```system.time.delta_time()```
+
+This method calculates delta time. Here's how you can use it in your application:
+[19]
+    ```
+        from core.application.MyGameStuff.Player import Player
+
+        class Application:
+            def __init__(self,distant_realms):
+                self.disant_realms = distant_realms
+                self.system = distant_realms.system
+                self.player = Player()
+
+            def update(self): 
+                dt = self.system.time.delta_time()
+                # My player movement 
+                speed = 200.0 
+                # units per second 
+                self.player.position.x += speed * dt
+    ```
+
+The important thing to understand here is that `delta_time()` gives you the amount of time that has passed since the previous update. This allows movement and other time-dependent operations to be expressed in terms of real time rather than frames. This is clear if you're trying to start a timer since the application started, in which case you'll do:
+[20]
+    ```
+        class Application:
+            def __init__(self,distant_realms):
+                self.disant_realms = distant_realms
+                self.system = distant_realms.system
+                self.life_start_time = self.system.time.get_current_time()
+
+            def update(self): 
+                current_time = self.system.time.get_current_time()
+
+                timer = current_time - self.life_start_time
+    ```
+
+## Core systems wrapup
+
+Welp I'm sure that by now you're itching to get into making some games. At this point you should be able to draw all kinds of primitives and images to the screen. I hope you are also able to handle the event system for your keypresses and other user interactions, as well as be able to trigger `sound effects` and `music`. You should understand how to use the `system.time` module, and how you should be using methods like `system.time.delta_time()` instead of calculating your own. You should even have a decent picture on how to use the state system from a high level, even though I haven't introduced how they entirely work yet. That will come later, but you should be able to use developer mode to great effect already.
+
+However the next system is a big one, and will probably be at least half the size of all of the previous sections combined. The system I'm referring to of course is the easy to use, widget based UI system.
+
+The UI framework, within the **Distant Realms Framework**, located in `core/ui` consists of several components for composing user interfaces. Currently the primary built in composables are Form and Menu. However, if you understand the UI system, you should be able to create your own composable views. 
+
+Now, I would like to make absolutely clear, that to use this framework to make rich user driven interfaces, you absolutely do not have to directly understand the UI system. Before I get to the UI section, I'm going to do you a favor and point you to a useful little install script, and an overview of the `DistantRealms` service, and its member methods and variables, so that you can get started making UIs for your games and applications without having to compose your own interfaces with code. Following this section, I will be explaining the intricacies of the UI framework itself. Which is what 
+the **Distant Realms Editor** is built on.
+
+This is not an instruction manual on how to use the editor. This is an instruction manual on how to install and use the editor with your workflow.
+
+In the section **Project Structure**, I pointed out the `tools/` directory. Well that directory is not here by default, and that is by design. To get started with designing your own menus and input data forms, go ahead and run the following command:
+[21]
+Linux:
+
+    ```bash install_editor_linux.sh```
+
+Windows with GitBash:                               NOTE: Windows support is only as much as I use Windows. Gitbash is the only tested environment
+
+    ```bash install_editor_windows.sh```
+
+It will ask you after install if you'd like to start the editor immediately after installation. Selecting yes will open the editor. Otherwise, you can start the editor by running:
+
+    ```bash run_editor.sh```
+
+If you're running the editor, and using it, via its GUI, it will automatically create and modify files in `enginepersistence/` in both the `forms/` subdirectory and the `menus/` subdirectory. To use this tool, you do not need to know the details of the UI framework laid out in this document as most of it is entirely automatic. It's a simple WYSIWYG editor, and has a project browser, and a fully featured editor for all widgets within the UI system.
+
+All you really need to know in that case, is how to show UIs, and this can be accessed via the `DistantRealms` object, which is passed to the application in all of the `Application` examples above. For reference her is an example of how to access the DistantRealms object, as it is never supposed to be directly called by you, the developer:
+[22]
+    ```
+        class Application:
+            def __init__(self,distant_realms):
+                self.distant_realms = distant_realms
+                self.system = distant_realms.system 
+    ```
+
+As you can see in the above example of the usable `Application` class located in `core/application/application.py`, the distant_realms object is just a variable we have access to. This is how the entire system is injected into your application.
+
+Most framework level systems use the System object directly, but the `DistantRealms` class provides an extra barrier of interfaces that you can interact with and use. 
+
+The important member variable and methods you need to worry about for the UI system are simple however:
+
+    ```Application.distant_realms.ui_controller.show_ui("name of ui")```
+
+When creating a new project in the **Distant Realms Editor**, a file is created in either `enginepersistence/forms/` or `enginepersistence/menus`. The above method makes it so you don't have to know how any of that works. You just get to display your UI at any given time regardless of what it displays or how it displays it. Below I have included an example of how you might use this:
+[23]
+    ```
+        class Application:
+            def __init__(self,distant_realms):
+                self.distant_realms = distant_realms
+                self.system = distant_realms.system 
+
+            def init(self):             # This method is called automatically when you start your program
+                self.distant_realms.ui_controller.show_ui("my_main_menu")
+    ```
+
+One more thing I'd like to point out is how to actually clear the UI system out of your way so you can show your own things, since the UI system is always on top for its views. This is even simpler than the above method:
+
+    ```Application.distant_realms.ui_controller.clear()```
+
+No fluff, nothing extra to take care of. Just clear the UI.
+
+But you're asking me, how in the world do "I, the developer" control the ui elements and dynamically change them? How do I actually connect to button actions and assign functionality to them? And we're about to explain just how to do those things, as that will complete the minimal amount of information you need to know to become productive with this framework at this point, while not having to understand the intricacies of the UI framework. 
+
+Let's begin with `core/application/action_register.py`. This file is something you'll be editing often. See, when you create a Button with the framework, one of its properities is "Action". This is arbitrary. You can name your actions whatever you want. the important part would be following the pattern in the example below, which is a direct copy of the included `action_register.py` file:
+[24]
+    ```
+        class ActionRegistrar:
+            def __init__(self, distant_realms):
+                self.distant_realms = distant_realms
+                self.system = distant_realms.system
+                
+            def register(self):
+                application = self.distant_realms
+                application.actions.register("open_changelog",lambda: application.ui_controller.show_ui("changelog"))
+                application.actions.register("open_credits",lambda: application.ui_controller.show_ui("credits"))
+                application.actions.register("main_menu", lambda: application.ui_controller.show_ui("main"))
+                application.actions.register("test_button", lambda: print("Testing"))
+                application.actions.register("quit",self.system.quit)
+    ```
+
+As you can see, registering one of your button actions is exceptionally trivial to plug into a function.
+
+One thing you will want to make note of is that this example doesn't show exactly how you'll control your own functionality, as it isn't immediately obvious. We'll be introducing another property of the `DistantRealms` class that we interact with via `ActionRegistrar.distant_realms`:
+
+    ```DistantRealms.application```
+
+This variable contains your `Application` class code. Not to be conflated with `system.application` which contains `DistantRealms`. `DistantRealms.application` is your only concern. Since you're expected to plug all of your custom functionality into this class, it is the central access for all your application's needs. 
+
+Therefore if you want to make a Button that you created as part of a UI view with the **Distant Realms Editor**, you would pass its action like so:
+[25]
+    ```
+        def register(self):
+            application = self.distant_realms
+            ...
+                application.actions.register("my_action", application.application.my_action_method)
+            ...
+    ```
+
+Or if you're using a method of a class that isn't instantiated yet, but still want the button to activate it, you can use a lambda:
+[26]
+    ```
+        def register(self):
+            application = self.distant_realms
+            ...
+                application.actions.register("my_action", lambda: application.application.my_uninstantiated_class.my_action_method())
+            ...
+    ```
+
+Or like in example [24] where it shows how to use `ui_controller.show_ui()` as a lambda.
+
+This should be pretty easy to implement from here. You can trigger anything with buttons that you want.
+
+Now that we know how to control button click actions from buttons given to you by the **Distant Realms Editor**, we can begin to go over how to actually manipulate the UI elements dynamically from your program. This will mean we get to learn another method on `DistantRealms.ui_controller`.
+
+    ```Application.distant_realms.ui_controller.get_active_ui()```
+
+This method returns the active UI and interacting with the dictionary it returns. Here is a list of all the possible children you will get per UI dictionary:
+
+## UI Objects
+
+| Object | Type | Description | Key Properties |
+|---|---|---|---|
+| **Button** | `button` | Interactive button with configurable visual states and an optional action | `id`, `text`, `position`, `font_size`, `action`, `styles` |
+| **Label** | `label` | Static text element | `id`, `text`, `position`, `font_size`, `color` |
+| **Header** | `header` | Large text element intended for headings | `id`, `text`, `position`, `font_size`, `color` |
+| **Query** | `query` | Text-based query/input element | `id`, `text`, `position`, `font_size`, `color` |
+| **Scrollable Text** | `scrollable_text` | Text area with scrolling support | `id`, `text`, `position`, `color`, `width`, `height`, `align`, `line_spacing`, `font_size` |
+| **Textbox** | `textbox` | User text input field | `id`, `field`, `position`, `dimensions`, `font_size`, `max_chars` |
+| **Select** | `select` | Dropdown/selectable option field | `id`, `options`, `selected_option`, `position`, `font_size`, `width`, `height`, `padding`, `field` |
+
+### Button Styles
+
+| Property          | `idle` | `hover` | `press` | `disable` | `focused` |
+| ----------------- | -----: | ------: | ------: | --------: | --------: |
+| **Background**    | `[RED, GREEN, BLUE]` | `[RED, GREEN, BLUE]` | `[RED, GREEN, BLUE]` | `[RED, GREEN, BLUE]` | `[RED, GREEN, BLUE]` |
+| **Border**        | `[RED, GREEN, BLUE]` | `[RED, GREEN, BLUE]` | `[RED, GREEN, BLUE]` | `[RED, GREEN, BLUE]` | `[RED, GREEN, BLUE]` |
+| **Border Width**  | `2` | `3` | `2` | `2` | `3` |
+| **Border Radius** | `8` | `8` | `8` | `8` | `8` |
+| **Text Color**    | `[RED, GREEN, BLUE]` | `[RED, GREEN, BLUE]` | `[RED, GREEN, BLUE]` | `[RED, GREEN, BLUE]` | `[RED, GREEN, BLUE]` |
+| **Padding**       | `5` | `5` | `5` | `5` | `5` |
+
+That should give you a good picture of all of the possible fields you can edit as part of the UI elements in your active UI. 
+
+Here is an example of how the **Distant Realms Editor** edits any of these dynamically using its volume level display as an example:
+[27]
+    ```
+            ui = self.distant_realms.ui_controller.get_active_ui()
+
+            music_volume = float(self.app_interface.system.sound.volume)
+            normal_music_volume = str(int(music_volume * 10))
+
+            sfx_volume = float(self.app_interface.system.sound.sfx_volume)
+            normal_sfx_volume = str(int(sfx_volume * 10))
+
+            for child in ui.children:
+                if child.id == "music_volume_text":
+                    child.text = normal_music_volume
+                
+                if child.id == "sfx_volume_text":
+                    child.text = normal_sfx_volume
+    ```
+
+With this we can set any of the properties of any of the elements in the actively shown UI to be anything we want, at any time we want! Nifty isn't it?
+
+NOTE: At some point I may include a sprite loader in the `core/application` directory, however it is not a direct priority of the framework until I've finished the workflow.
 
 # State system
+
+## This section is currently a stub
 
 State System Overview
 
@@ -1290,11 +1513,11 @@ State Manager Concepts
 
 Each state manager inherits from BaseStateManager and requires:
 
-initial_state: starting state (e.g., RUNTIME_STATE.LOADING)
+initial_state: starting state (e.g., RUNTIME_STATE.SPLASH)
 allowed_transitions: dictionary of valid transitions
 log_fn: callback for logging transitions
 state_name: string name of the state type
-type: one of SYSTEM, APPLICATION, or GAME
+type: one of SYSTEM, RUNTIME, or APPLICATION,
 
 All transitions are logged automatically in logs/.
 
@@ -1303,8 +1526,8 @@ State Layers
 There are three layers:
 
 SYSTEM
+RUNTIME
 APPLICATION
-GAME
 
 These are stored globally for debugging visibility only. They are not used to control logic.
 
@@ -1313,31 +1536,29 @@ Example State Enum
 from enum import Enum, auto
 
 class RUNTIME_STATE(Enum):
-    LOADING = auto()
-    MAIN_MENU = auto()
-    GAME = auto()
+    SPLASH = auto()
+    APPLICATION = auto()
     QUIT = auto()
 ```
 Example State Manager
 ```
-from core.state.ApplicationLayer.state import RUNTIME_STATE
+from core.state.RuntimeLayer.state import RUNTIME_STATE
 from core.state.basestatemanager import BaseStateManager
 from helper import log_state_transition
 
 class StateManager(BaseStateManager):
     def __init__(self):
         allowed_transitions = {
-            RUNTIME_STATE.LOADING: [RUNTIME_STATE.MAIN_MENU, RUNTIME_STATE.QUIT],
-            RUNTIME_STATE.MAIN_MENU: [RUNTIME_STATE.GAME, RUNTIME_STATE.QUIT],
-            RUNTIME_STATE.GAME: [RUNTIME_STATE.MAIN_MENU, RUNTIME_STATE.QUIT]
+            RUNTIME_STATE.SPLASH: [RUNTIME_STATE.APPLICATION, RUNTIME_STATE.QUIT],
+            RUNTIME_STATE.APPLICATION: [RUNTIME_STATE.QUIT]
         }
 
         super().__init__(
-            initial_state=RUNTIME_STATE.LOADING,
+            initial_state=RUNTIME_STATE.SPLASH,
             allowed_transitions=allowed_transitions,
             log_fn=lambda old, new, state_type: log_state_transition(old, new, state_type),
             state_name="RUNTIME_STATE",
-            type="APPLICATION"
+            type="RUNTIME"
         )
 ```
 Example Usage

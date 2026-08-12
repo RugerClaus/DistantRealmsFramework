@@ -3,6 +3,7 @@ class ActionRegistrar:
     def __init__(self, distant_realms):
         self.distant_realms = distant_realms
         self.system = distant_realms.system
+        
     def register(self):
         application = self.distant_realms
         application.actions.register("open_changelog",lambda: application.ui_controller.show_ui("changelog"))

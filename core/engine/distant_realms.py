@@ -18,7 +18,7 @@ class DistantRealms:
         self.ui = UILoader(system, self.actions)
         self.ui_controller = UIController(system, self.ui)
 
-        self.app_object = None
+        self.application = None
         self.action_registrar = ActionRegistrar(self)
 
     def toggle_freeze(self):
@@ -57,18 +57,18 @@ class DistantRealms:
 
         importlib.reload(application)
 
-        self.app_object = application.Application(self)
+        self.application = application.Application(self)
             
     def send_debug_info_to_system(self):
-        self.app_object.register_debug_telemetry()
+        self.application.register_debug_telemetry()
         
     def handle_event(self, event,command=None):
         self.ui_controller.handle_event(event)
         
         if event.type == self.system.input.video_resize_event():
 
-            if self.app_object:
-                self.app_object.scale()
+            if self.application:
+                self.application.scale()
             self.ui_controller.scale()
 
         if self.system.control_state.is_state(DEVELOPER_MODE.ON):
@@ -78,13 +78,13 @@ class DistantRealms:
             elif command == "reload_application":
                 self.reload_application()
                 print("Reloading Application...")
-        if self.app_object:
+        if self.application:
             if self.state.is_state(APP_STATE.RUNNING):
-                self.app_object.handle_event(event,command)
+                self.application.handle_event(event,command)
 
     def draw(self):
-        if self.app_object:
-            self.app_object.draw()
+        if self.application:
+            self.application.draw()
         self.ui_controller.draw()
 
     # below is for saving in the engine's built in save format
@@ -110,15 +110,15 @@ class DistantRealms:
         self.action_registrar.register()
 
     def reset_application(self):
-        self.app_object.reset()
+        self.application.reset()
 
     def update(self):
         self.ui_controller.update()
         if self.state.is_state(APP_STATE.RUNNING):
-            if self.app_object:
-                self.app_object.update()
+            if self.application:
+                self.application.update()
 
     def clean_up(self):
         self.system.app_inspector.clear()
-        if self.app_object:
-            self.app_object.clean_up_states()
+        if self.application:
+            self.application.clean_up_states()
