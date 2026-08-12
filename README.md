@@ -1,11 +1,13 @@
 # Welcome to the Distant Realms Framework for Developing Applications with Python
-- Distant Realms is a Python application framework and tooling ecosystem for building games and interactive applications. Containing support for rendering, audio, input, simple networking as well as a ready bulit WYSIWYG ui editor that outputs to a format the engine can read directly. Below you will learn how to make games and other applications using Distant Realms
 
-NOTE: ALL EXAMPLE SECTIONS START WITH A NUMBER LIKE THIS: [01] +. When I refer to an example, I will refer to its number.
+## Introduction
+- Distant Realms is a Python application framework and tooling ecosystem for building games and interactive applications. Containing support for rendering, audio, input, simple networking as well as a ready built WYSIWYG ui editor that outputs to a format the engine can read directly. Below you will learn how to make games and other applications using Distant Realms
 
 - Distant Realms is designed around convenience without lock-in.
 
 - The framework provides high-level systems for common application needs, but those systems are built on straightforward underlying APIs. You can use as much or as little of the framework as your application requires.
+
+NOTE: ALL EXAMPLE SECTIONS START WITH A NUMBER LIKE THIS: [01] +. When I refer to an example, I will refer to its number.
 
 ## Dependencies
 
