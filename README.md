@@ -221,11 +221,11 @@ Acceseed and transformed via valid transitions by:
 
 checking state:     
 
-        ```system.overlay_state.is_state(DEBUG_OVERLAY_STATE.[states])```
+        ```system.control_state.is_state(DEVELOPER_MODE.[states])```
 
 setting state:
 
-        ```system.overlay_state.set_state(DEBUG_OVERLAY_STATE.[states])```
+        ```system.control_state.set_state(DEVELOPER_MODE.[states])```
 
 
 
@@ -1511,7 +1511,7 @@ The `UIManager` class is located in `core/ui/UIManager.py`, and is the beating h
 For all your interaction with UIManager, you'll never really touch its internals, so I won't elaborate much on the internals of the class, other than it's fairly simple how it sorts and handles all drawing, updating, and event handling for a given set of ui elements.
 
 So if we have our own UI, say a button menu for loading game saves, how could we do this? Well:
-
+[28]
     ```
         from core.ui.UIManager import UIManager
         from core.ui.widgets.button import Button
@@ -1529,16 +1529,15 @@ So if we have our own UI, say a button menu for loading game saves, how could we
                 for index, save in enumerate(self.files):
 
                     button = Button(
-                        self.dr.system,
-                        f"save_{index}",
-                        save["name"],
-                        (0.5, 0.5),
-                        font_size=20,
-                        action=lambda s=save: self.load_save(
-                            s["name"]
-                        )
+                    self.system,
+                    f"save_{index}",
+                    save["name"],
+                    (0.5, 0.5),
+                    font_size=20,
+                    action=lambda s=save: self.load_save(s["name"])
                     )
-            
+                    self.ui.add(button)
+
             def load_save(self,save_name):
                 game_data = self.system.persistence.load.load_save(f'{save_name}.sav')
 
@@ -1555,6 +1554,16 @@ So if we have our own UI, say a button menu for loading game saves, how could we
                         "name": path.stem
                     })
 
+                self.create_buttons()
+
+            def handle_event(self,event,command=None):
+                self.ui.handle_event(event)
+
+            def update(self):
+                self.ui.update()
+            
+            def draw(self):
+                self.ui.draw()
     ```
 
 This is a raw example and makes an awful lot of assumptions, but it is funcitonal within this framework. Granted, what you do with that data is up to you, and there is no `distant_realms.application.game` at all in the default framework, but this gives you an idea of how you'd structure such a UI composable as a game browser.
