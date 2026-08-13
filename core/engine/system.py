@@ -8,8 +8,6 @@ from core.engine.time import Time
 from core.engine.persistence.persistence import Persistence
 from core.engine.network.update import Update
 from core.engine.network.network import Network
-from core.engine.network.authentication import Authentication
-from core.engine.user import User
 from core.application.app_inspector import app_inspector
 from core.application.save_schema import schema
 from core.engine.telemetry import system_monitor
@@ -45,12 +43,6 @@ class System():
 
         self.updater = Update()
         self.network = Network()
-
-        self.user = User(self)
-        self.auth = Authentication(self)
-
-        if self.user.username:
-            self.auth.auto_login()
 
         self.window = Window(self)
         self.sound = AudioEngine(self)

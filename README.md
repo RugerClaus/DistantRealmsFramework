@@ -301,19 +301,13 @@ Networking:
     
     ```system.network = Network()```
 
-The Network module handles boilerplate authentication actions and depends on the endpoints set up in core/engine/network/system_endpoints.py, which is a config file that pulls your custom API key and version data from your ```config.py``` file. This allows you to set your custom versioning and plug it into the framework. You shouldn't have to directly touch ```system_endpoints.py``` and if you need custom endpoints, set them in the ```config.py``` file and call them from core/application/network/endpoints.py
+The Network module handles basic HTTP requests (get,post), as well as containing a helper method for the application to determine if networking is active by pinging whatver you have set to "NSTATURL" in config.py in the root directory.
 
 User:
 
     ```system.user = User()```
 
 This is a facade wrapper to handle basic user functions. This sets everything for your users, so if you want to manage networking with auth, you can use the system.user module to manage the username, and any other getters and setters you set in core/engine/user.py
-
-Auth:
-
-    ```system.auth = Authentication()``` 
-
-This is another module from core/network, and it handles basic username/password authentication, with direct built in support for handling server assigned client app passwords and client IDs as well. This is good for managing clients and their versions. Full documentation on this will be part of the NETCODE section of this readme, and will walk you through getting set up connecting your custom application to a remote database utilizing the endpoint system.
 
 Window:
 
