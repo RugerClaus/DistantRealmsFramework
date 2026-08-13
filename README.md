@@ -94,7 +94,7 @@ A simple API is provided for working with all of these functionalities using the
 
 Mutagen provides the File function for getting attributes of WAV files for all inlcuded music tracks. The audio system included with this framework allows you to arbitrarily drag in your audio files, and run them with ```system.sound.play_music("tile of your track"). Mutagen aids in accomplishing this user-friendly feature!
 
-Requests is used for networking capabilities. There are built in assumptions for authentication as well as ensuring the system is online, and having fallbacks for if it is not online.
+Requests is used for networking capabilities. There are built in assumptions for http requests as well as ensuring the system is online, and having fallbacks for if it is not online.
 
 Finally PyInstaller is used by the built in buildscripts (buildlinux.sh,buildwindows.sh,buildmacos.sh) to package executables of whatever program you decide to make with the framework.
 
@@ -307,7 +307,7 @@ User:
 
     ```system.user = User()```
 
-This is a facade wrapper to handle basic user functions. This sets everything for your users, so if you want to manage networking with auth, you can use the system.user module to manage the username, and any other getters and setters you set in core/engine/user.py
+This is a facade wrapper to handle basic user functions. This sets everything for your users, so if you want to manage networking with authentication, you can use the system.user module to manage the username, and any other getters and setters you set in core/engine/user.py
 
 Window:
 
