@@ -69,7 +69,7 @@ The ```core/``` directory is really where all the magic is happening, so I'm goi
     core/
     ├── application/     # Your application code and application-facing APIs
     ├── experimental/    # Experimental and in-development framework features
-    ├── guts/            # Framework internals and core runtime services
+    ├── engine/            # Framework internals and core runtime services
     ├── loading/         # Boot, loading screen, and application loading systems
     ├── state/           # State machine definitions and state management
     ├── ui/              # Framework UI system and widgets
