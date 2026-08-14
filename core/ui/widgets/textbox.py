@@ -14,6 +14,7 @@ class TextBox(UIElement):
         dimensions=(0.1432, 0.0926),
         font_size=30,
         is_active=False,
+        is_password=False,
         text=None,
         char_limit=21
     ):
@@ -44,7 +45,7 @@ class TextBox(UIElement):
 
         self.box = list(initial_text)
 
-        self.is_password = False
+        self.is_password = is_password
 
         self.cursor_interval = 500
         self.cursor = "|"
