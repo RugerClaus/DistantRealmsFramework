@@ -84,8 +84,6 @@ class UILoader:
                 is_password=data.get("is_password", False),
                 char_limit=data.get("max_chars")
             )
-
-            element.is_password = data.get("password", False)
             return element
 
         elif element_type == "button":
@@ -163,4 +161,4 @@ class UILoader:
                 height=data.get("height", 0.1)
             )
 
-            log_error(f"Unknown UI element type: {element_type}")
+        log_error(f"Unknown UI element type: {element_type}")

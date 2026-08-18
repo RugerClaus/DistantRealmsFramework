@@ -50,11 +50,11 @@ class Form(UIElement):
 
     def set_error(self, message, color=None):
         if self.error_element:
-            self.error_element.set_text(message, color)
+            self.error_element.text = message
 
     def clear_error(self):
         if self.error_element:
-            self.error_element.set_text("")
+            self.error_element.text = ""
 
     def handle_event(self, event):
         self.ui.handle_event(event)
@@ -70,9 +70,3 @@ class Form(UIElement):
 
     def update(self):
         self.ui.update()
-
-    def submit(self):
-        return {
-            name: element.get_return_string()
-            for name, element in self.fields.items()
-        }

@@ -7,7 +7,6 @@ class Load():
         self.load_dict = {}
 
     def read_envar(self,envar_name): 
-        log_event(f"Reading contents in environment/{envar_name}")
         file_path = os.path.join('environment', envar_name)
         
         try:
@@ -15,14 +14,13 @@ class Load():
                 with open(file_path, 'r') as file:
                     return file.read().strip()
             else:
-                log_event(f"File {file_path} does not exist.")
+                log_error(f"File {file_path} does not exist.")
                 return None
         except Exception as e:
             log_error(f"Error reading from file: {e}")
             return None
     
     def read_constant(self,constant): 
-        log_event(f"Reading contents in saves/constants/{constant}")
         file_path = os.path.join('saves/constants', constant)
     
         try:
@@ -30,7 +28,7 @@ class Load():
                 with open(file_path, 'r') as file:
                     return file.read().strip()
             else:
-                log_event(f"File {file_path} does not exist.")
+                log_error(f"File {file_path} does not exist.")
                 return None
         except Exception as e:
             log_error(f"Error reading from file: {e}")
