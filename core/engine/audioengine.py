@@ -27,9 +27,15 @@ class AudioEngine:
 
         self.audio_available = self.initialize_audio()
 
+        music_enabled = self.system.persistence.load.read_constant("music") == "True"
+
         if self.audio_available:
             self.interface_sfx_state.set_state(INTERFACE_SFX_STATE.ON)
-            self.music_state.set_state(MUSIC_STATE.ON)
+            if music_enabled:
+                self.music_state.set_state(MUSIC_STATE.ON)
+                self.system.persistence.save.write_constant("music", "True")
+            else:
+                self.music_state.set_state(MUSIC_STATE.OFF)
             self.app_sfx_state.set_state(APP_SFX_STATE.ON)
             self.system_sfx_state.set_state(SYSTEM_SFX_STATE.ON)
             self.system.system_monitor["Audio"] = "Active"
@@ -66,6 +72,9 @@ class AudioEngine:
                 log_event('SFX volume file creation: sfx_volume file created')
             else:
                 log_event('SFX volume file creation: sfx_volume file exists')
+
+            if not os.path.exists(f"{file_path}/music"):
+                self.system.persistence.save.write_constant("music", "True")
 
     def initialize_audio(self):
         try:
@@ -208,6 +217,8 @@ class AudioEngine:
             track = self.music_queue.pop()
 
             self.current_track = track
+            self.music_state.set_state(MUSIC_STATE.ON)
+
             pygame.mixer.music.load(self.music_tracks[track])
             pygame.mixer.music.set_volume(self.volume)
             pygame.mixer.music.play()
@@ -231,7 +242,11 @@ class AudioEngine:
                 return
 
             self.current_track = matching_track
-            pygame.mixer.music.load(self.music_tracks[matching_track])
+            self.music_state.set_state(MUSIC_STATE.ON)
+
+            pygame.mixer.music.load(
+                self.music_tracks[matching_track]
+            )
             pygame.mixer.music.set_volume(self.volume)
             pygame.mixer.music.play(-1)
 
@@ -243,15 +258,19 @@ class AudioEngine:
             if self.music_state.is_state(MUSIC_STATE.ON) and self.music_queue:
                 self.play_music()
 
-    def toggle_music(self):
+    def toggle_music(self,song=None):
         if not self.audio_available:
             return "off"
 
         if self.music_state.is_state(MUSIC_STATE.ON):
             self.play_music("stop")
+            self.system.persistence.save.write_constant("music", "False")
             self.music_state.set_state(MUSIC_STATE.OFF)
+
         else:
-            self.play_music()
+            if song:
+                self.play_music(song)
+            self.system.persistence.save.write_constant("music", "True")
             self.music_state.set_state(MUSIC_STATE.ON)
 
     def volume_up(self):

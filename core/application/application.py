@@ -1,9 +1,15 @@
 from core.util.colors import *
+from core.state.RuntimeLayer.Audio.Music.state import MUSIC_STATE
 
 class Application:
     def __init__(self,distant_realms):
         self.distant_realms = distant_realms
         self.system = distant_realms.system
+
+        # UNCOMMENT BELOW IF YOU WANT TO PLAY YOUR MUSIC FILES ON STARTUP
+
+        # if self.system.sound.music_state.is_state(MUSIC_STATE.ON):
+        #     self.system.sound.play_music()
 
     def handle_event(self,event,command=None):
         pass

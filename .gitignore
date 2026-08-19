@@ -2,12 +2,7 @@
 __pycache__
 *.pyc
 /.vscode
-/saves/constants/leaderboard_opt_in
-/saves/constants/username
-saves/constants/music_volume
-saves/constants/sfx_volume
-saves/constants/clientAppPassword
-saves/constants/clientID
+/saves/constants/*
 /executable
 logs/*/*.log
 logs/*.log
