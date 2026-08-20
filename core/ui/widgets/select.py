@@ -7,24 +7,10 @@ import ast
 
 class Select(UIElement):
 
-    def __init__(
-        self,
-        system,
-        id,
-        position,
-        options,
-        font_size=30,
-        width=0.25,
-        height=0.05,
-        option_height=0.05,
-        padding=10,
-        max_visible_options=3,
-        is_active=False
-    ):
+    def __init__(self,system,id,position,options,font_size=30,width=0.25,height=0.05,
+                 option_height=0.05,padding=10,max_visible_options=3,is_active=False):
         super().__init__(
-            focusable=True,
-            position=position
-        )
+            focusable=True,position=position)
 
         self.system = system
         self.id = id
@@ -36,11 +22,7 @@ class Select(UIElement):
 
         self.options = self.normalize_options(options)
 
-        self.selected_option = (
-            self.options[0]
-            if self.options
-            else None
-        )
+        self.selected_option = self.options[0] if self.options else None
 
         self.is_active = is_active
         self.is_open = False
@@ -146,51 +128,26 @@ class Select(UIElement):
         window_width = self.system.window.get_width()
         window_height = self.system.window.get_height()
 
-        width = max(
-            1,
-            int(window_width * self.width)
-        )
+        width = max(1,int(window_width * self.width))
 
-        height = max(
-            1,
-            int(window_height * self.height)
-        )
+        height = max(1,int(window_height * self.height))
 
-        option_height = max(
-            1,
-            int(window_height * self.option_height)
-        )
+        option_height = max(1,int(window_height * self.option_height))
 
-        x, y = self.get_screen_position()
+        x,y = self.get_screen_position()
 
-        self.rect = self.system.window.make_surface(
-            width,
-            height
-        ).get_rect(
-            midtop=(
-                x,
-                y - height // 2
-            )
-        )
+        self.rect = self.system.window.make_surface(width,height).get_rect(midtop=(x,y - height // 2))
 
         self.select_rect = self.rect.copy()
 
-        visible_count = min(
-            self.max_visible_options,
-            len(self.options)
-        )
+        visible_count = min(self.max_visible_options,len(self.options))
 
         total_height = height
 
         if self.is_open:
-            total_height += (
-                visible_count * option_height
-            )
+            total_height += visible_count * option_height
 
-        self.surface = self.system.window.make_surface(
-            width,
-            total_height
-        )
+        self.surface = self.system.window.make_surface(width,total_height)
 
         self.option_rects = []
 
@@ -201,10 +158,7 @@ class Select(UIElement):
             rect = self.rect.copy()
 
             rect.x = self.rect.x
-            rect.y = (
-                self.rect.bottom
-                + index * option_height
-            )
+            rect.y = (self.rect.bottom + index * option_height)
             rect.width = width
             rect.height = option_height
 
@@ -220,24 +174,14 @@ class Select(UIElement):
             return
 
         if event.type == self.system.input.mouse_scroll_event():
-
             if not self.is_open:
                 return
 
-            max_offset = max(
-                0,
-                len(self.options) - self.max_visible_options
-            )
+            max_offset = max(0,len(self.options) - self.max_visible_options)
 
             self.scroll_offset -= event.y
 
-            self.scroll_offset = max(
-                0,
-                min(
-                    self.scroll_offset,
-                    max_offset
-                )
-            )
+            self.scroll_offset = max(0,min(self.scroll_offset,max_offset))
 
             self.scale()
             return
@@ -251,7 +195,6 @@ class Select(UIElement):
         mouse_pos = self.system.input.get_mouse_pos()
 
         if self.select_rect.collidepoint(mouse_pos):
-
             self.is_open = not self.is_open
 
             self.scale()
@@ -262,13 +205,10 @@ class Select(UIElement):
             return
 
         for index, rect in enumerate(self.option_rects):
-
             if not rect.collidepoint(mouse_pos):
                 continue
 
-            option_index = (
-                self.scroll_offset + index
-            )
+            option_index = (self.scroll_offset + index)
 
             if option_index >= len(self.options):
                 return
@@ -303,120 +243,56 @@ class Select(UIElement):
         if self.surface is None:
             return
 
-        self.surface.fill(
-            self.background_color
-        )
+        self.surface.fill(self.background_color)
 
         select_surface_rect = self.select_rect.copy()
         select_surface_rect.x -= self.rect.x
         select_surface_rect.y -= self.rect.y
 
-        self.system.window.draw_rect(
-            self.surface,
-            black,
-            select_surface_rect,
-            2
-        )
+        self.system.window.draw_rect(self.surface,black,select_surface_rect,2)
 
         if self.selected_option is not None:
 
-            surf = self.font.render(
-                str(self.selected_option),
-                False,
-                black
-            )
+            surf = self.font.render(str(self.selected_option),False,black)
 
-            text_rect = surf.get_rect(
-                midleft=(
-                    self.padding,
-                    select_surface_rect.centery
-                )
-            )
+            text_rect = surf.get_rect( midleft=(self.padding,select_surface_rect.centery))
 
-            self.surface.blit(
-                surf,
-                text_rect
-            )
+            self.surface.blit(surf,text_rect)
 
-        arrow_x = (
-            select_surface_rect.right - 20
-        )
+        arrow_x = select_surface_rect.right - 20
 
-        arrow_y = (
-            select_surface_rect.centery
-        )
+        arrow_y = select_surface_rect.centery
 
-        self.system.window.draw_polygon(
-            self.surface,
-            black,
-            [
-                (
-                    arrow_x - 7,
-                    arrow_y - 3
-                ),
-                (
-                    arrow_x + 7,
-                    arrow_y - 3
-                ),
-                (
-                    arrow_x,
-                    arrow_y + 5
-                )
+        self.system.window.draw_polygon(self.surface,black,[
+                (arrow_x - 7,arrow_y - 3),
+                (arrow_x + 7,arrow_y - 3),
+                (arrow_x,arrow_y + 5)
             ]
         )
 
         if self.is_open:
 
-            visible_options = self.options[
-                self.scroll_offset:
-                self.scroll_offset + self.max_visible_options
-            ]
+            visible_options = self.options[self.scroll_offset: self.scroll_offset + self.max_visible_options]
 
-            for index, option in enumerate(
-                visible_options
-            ):
-
+            for index, option in enumerate(visible_options):
                 if index >= len(self.option_rects):
                     break
 
-                screen_rect = self.option_rects[index]
+                dropdown_rect = self.option_rects[index]
 
-                rect = screen_rect.copy()
+                rect = dropdown_rect.copy()
 
                 rect.x -= self.rect.x
                 rect.y -= self.rect.y
 
-                self.surface.fill(
-                    white,
-                    rect
-                )
+                self.surface.fill(white,rect)
 
-                surf = self.font.render(
-                    str(option),
-                    False,
-                    black
-                )
+                surf = self.font.render(str(option),False,black)
 
-                text_rect = surf.get_rect(
-                    midleft=(
-                        self.padding,
-                        rect.centery
-                    )
-                )
+                text_rect = surf.get_rect(midleft=(self.padding,rect.centery))
 
-                self.surface.blit(
-                    surf,
-                    text_rect
-                )
+                self.surface.blit(surf,text_rect)
 
-                self.system.window.draw_rect(
-                    self.surface,
-                    black,
-                    rect,
-                    1
-                )
+                self.system.window.draw_rect(self.surface,black,rect,1)
 
-        self.system.window.blit(
-            self.surface,
-            self.rect
-        )
+        self.system.window.blit(self.surface,self.rect)

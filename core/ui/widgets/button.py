@@ -8,15 +8,8 @@ from core.ui.element import UIElement
 from core.ui.type import WIDGET
 
 class Style:
-    def __init__(
-        self,
-        background=None,
-        border=None,
-        border_width=0,
-        border_radius=0,
-        padding=5,
-        text_color=(255,255,255)
-    ):
+    def __init__(self,background=None,border=None,border_width=0,
+                 border_radius=0,padding=5,text_color=(255,255,255)):
         self.background = background
         self.border = border
         self.border_width = border_width
@@ -127,35 +120,17 @@ class Button(UIElement):
 
     def scale(self, preserve_position=False):
 
-        old_center = self.rect.center if (
-            preserve_position and self.rect is not None
-        ) else None
+        old_center = self.rect.center if preserve_position and self.rect is not None else None
 
         current_style = self.styles[self.state.state]
 
-        self.text_surface = self.font.render(
-            self.text,
-            True,
-            current_style.text_color
-        )
+        self.text_surface = self.font.render(self.text,True,current_style.text_color)
 
-        self.width = (
-            self.text_surface.get_width()
-            + current_style.padding * 2
-            + current_style.border_width * 2
-        )
+        self.width = self.text_surface.get_width() + current_style.padding * 2 + current_style.border_width * 2
 
-        self.height = (
-            self.text_surface.get_height()
-            + current_style.padding * 2
-            + current_style.border_width * 2
-        )
+        self.height = self.text_surface.get_height() + current_style.padding * 2 + current_style.border_width * 2
 
-        self.surface = self.system.window.make_surface(
-            self.width,
-            self.height,
-            True
-        )
+        self.surface = self.system.window.make_surface(self.width,self.height,True)
 
         if old_center is not None:
             center = old_center
@@ -163,18 +138,11 @@ class Button(UIElement):
             ww = self.system.window.get_width()
             wh = self.system.window.get_height()
 
-            center = (
-                int(ww * self.x_ratio),
-                int(wh * self.y_ratio)
-            )
+            center = (int(ww * self.x_ratio),int(wh * self.y_ratio))
 
-        self.rect = self.surface.get_rect(
-            center=center
-        )
+        self.rect = self.surface.get_rect(center=center)
 
-        self.text_rect = self.text_surface.get_rect(
-            center=self.surface.get_rect().center
-        )
+        self.text_rect = self.text_surface.get_rect(center=self.surface.get_rect().center)
 
 
     def update(self, mouse_pos):

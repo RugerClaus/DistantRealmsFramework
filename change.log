@@ -72,3 +72,10 @@ Development version Alpha 0.5.0 - 2026-08-11
 - Textboxes accept a max char count but by default it's 21
 - Renamed core/guts to core/engine
 - Renamed application_interface.py to distant_realms.py, moved to core/engine
+
+Development version Alpha 0.6.0 - 2026-08-17
+------------------------------------------------
+- UI framework mostly stabilized
+- Added install and run scripts for editor
+- solidified setup
+- Completed minimal documentation to use framework

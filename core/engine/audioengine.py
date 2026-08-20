@@ -1,4 +1,3 @@
-import pygame
 import random
 import os
 from mutagen import File
@@ -78,14 +77,14 @@ class AudioEngine:
 
     def initialize_audio(self):
         try:
-            pygame.mixer.init()
-            self.MUSIC_END_EVENT = pygame.USEREVENT + 1
-            pygame.mixer.music.set_endevent(self.MUSIC_END_EVENT)
+            self.system.backend.pygame.mixer.init()
+            self.MUSIC_END_EVENT = self.system.backend.pygame.USEREVENT + 1
+            self.system.backend.pygame.mixer.music.set_endevent(self.MUSIC_END_EVENT)
             log_event("Audio device initialized successfully.")
             return True
 
-        except pygame.error as e:
-            log_error(f"No available audio device. PyGame: {e}")
+        except self.system.backend.pygame.error as e:
+            log_error(f"No available audio device. self.system.backend.PyGame: {e}")
             return False
 
     def load_audio_files(self):
@@ -118,7 +117,7 @@ class AudioEngine:
                 sound_file = File(sfx_path)
                 effect_name = sound_file.get('title', [filename])[0]
                 effect_name = os.path.splitext(effect_name)[0]
-                self.sound_effects[effect_name] = pygame.mixer.Sound(sfx_path)
+                self.sound_effects[effect_name] = self.system.backend.pygame.mixer.Sound(sfx_path)
 
     def play_sfx(self, effect_name):
         if not self.audio_available:
@@ -179,11 +178,11 @@ class AudioEngine:
         step_volume = self.volume / steps
 
         for i in range(steps):
-            pygame.time.delay(50)
+            self.system.backend.pygame.time.delay(50)
             self.volume = max(0, self.volume - step_volume)
-            pygame.mixer.music.set_volume(self.volume)
+            self.system.backend.pygame.mixer.music.set_volume(self.volume)
 
-        pygame.mixer.music.stop()
+        self.system.backend.pygame.mixer.music.stop()
         self.current_track = None
 
     def stop_sfx(self, effect_name):
@@ -219,14 +218,14 @@ class AudioEngine:
             self.current_track = track
             self.music_state.set_state(MUSIC_STATE.ON)
 
-            pygame.mixer.music.load(self.music_tracks[track])
-            pygame.mixer.music.set_volume(self.volume)
-            pygame.mixer.music.play()
+            self.system.backend.pygame.mixer.music.load(self.music_tracks[track])
+            self.system.backend.pygame.mixer.music.set_volume(self.volume)
+            self.system.backend.pygame.mixer.music.play()
 
         elif track == "stop":
             self.music_state.set_state(MUSIC_STATE.OFF)
             self.current_track = None
-            pygame.mixer.music.stop()
+            self.system.backend.pygame.mixer.music.stop()
 
         else:
             matching_track = next(
@@ -244,11 +243,11 @@ class AudioEngine:
             self.current_track = matching_track
             self.music_state.set_state(MUSIC_STATE.ON)
 
-            pygame.mixer.music.load(
+            self.system.backend.pygame.mixer.music.load(
                 self.music_tracks[matching_track]
             )
-            pygame.mixer.music.set_volume(self.volume)
-            pygame.mixer.music.play(-1)
+            self.system.backend.pygame.mixer.music.set_volume(self.volume)
+            self.system.backend.pygame.mixer.music.play(-1)
 
     def handle_music_event(self, event):
         if not self.audio_available:
@@ -281,7 +280,7 @@ class AudioEngine:
             self.system.persistence.save.write_constant('music_volume', str(self.volume))
 
             if self.audio_available:
-                pygame.mixer.music.set_volume(self.volume)
+                self.system.backend.pygame.mixer.music.set_volume(self.volume)
 
     def volume_down(self):
         if self.volume > 0:
@@ -290,7 +289,7 @@ class AudioEngine:
             self.system.persistence.save.write_constant('music_volume', str(self.volume))
 
             if self.audio_available:
-                pygame.mixer.music.set_volume(self.volume)
+                self.system.backend.pygame.mixer.music.set_volume(self.volume)
 
     def sfx_volume_up(self):
         if self.sfx_volume < 0.5:

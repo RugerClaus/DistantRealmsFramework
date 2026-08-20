@@ -1,4 +1,5 @@
-import pygame
+import pygame # this is probably the only place in the framework that imports pygame
+# only for its key codes since i'll probably be using pygame's inpug for a long long time
 
 class Keys:
     def __init__(self):

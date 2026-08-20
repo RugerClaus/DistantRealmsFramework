@@ -32,11 +32,7 @@ class Image(UIElement):
             factor = width / self.original_surf.get_width()
             height = int(self.original_surf.get_height() * factor)
 
-            self.surf = self.system.window.transform_scale(
-                self.original_surf,
-                width,
-                height
-            )
+            self.surf = self.system.window.transform_scale(self.original_surf,width,height)
 
         else:
             self.surf = self.original_surf

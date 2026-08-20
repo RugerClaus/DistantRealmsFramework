@@ -36,10 +36,7 @@ class Form(UIElement):
 
     def get_field(self, name):
         if name not in self.fields:
-            log_error(
-                f"Form field not found: '{name}'",
-                "core.ui.composables.form.Form"
-            )
+            log_error(f"Form field not found: '{name}'","core.ui.composables.form.Form")
             return None
 
         return self.fields[name]

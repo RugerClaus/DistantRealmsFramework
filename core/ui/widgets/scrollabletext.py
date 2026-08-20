@@ -6,18 +6,8 @@ from core.util.colors import white
 
 class ScrollableText(UIElement):
 
-    def __init__(
-        self,
-        system,
-        id,
-        font_size=40,
-        position=(0.5, 0.5),
-        width=0.8,
-        height=0.6,
-        align="left",
-        line_spacing=0.01,
-        source=None
-    ):
+    def __init__(self,system,id,font_size=40,position=(0.5, 0.5),width=0.8,
+                 height=0.6,align="left",line_spacing=0.01,source=None):
         super().__init__(position=position)
 
         self.system = system
@@ -54,11 +44,9 @@ class ScrollableText(UIElement):
         if source:
             self.load_source(source)
 
-    
     def load_source(self, filename):
         from pathlib import Path
         import sys
-
         try:
             if getattr(sys, "frozen", False):
                 base_dir = Path(sys.executable).parent
@@ -70,23 +58,12 @@ class ScrollableText(UIElement):
             with open(filepath, "r", encoding="utf-8") as file:
                 lines = [
                     line.rstrip("\n")
-                    for line in file
-                ]
+                    for line in file]
 
-            self.set_text(
-                self.wrap_lines(lines)
-            )
+            self.set_text(self.wrap_lines(lines))
 
         except FileNotFoundError:
-            self.set_text([
-                [
-                    (
-                        "Unable to load text.",
-                        0.05,
-                        white
-                    )
-                ]
-            ])
+            self.set_text([[("Unable to load text.",0.05,white)]])
 
     def wrap_lines(self, lines):
         wrapped = []
@@ -100,20 +77,9 @@ class ScrollableText(UIElement):
             current_line = ""
 
             for word in words:
-                if (
-                    len(current_line)
-                    + len(word)
-                    + 1
-                    > self.max_char_count
-                ):
+                if len(current_line) + len(word) + 1 > self.max_char_count:
                     if current_line:
-                        wrapped.append([
-                            (
-                                current_line,
-                                0.05,
-                                white
-                            )
-                        ])
+                        wrapped.append([(current_line,0.05,white)])
 
                     current_line = word
 
@@ -124,13 +90,7 @@ class ScrollableText(UIElement):
                         current_line = word
 
             if current_line:
-                wrapped.append([
-                    (
-                        current_line,
-                        0.05,
-                        white
-                    )
-                ])
+                wrapped.append([(current_line,0.05,white)])
 
         return wrapped
 
@@ -162,27 +122,15 @@ class ScrollableText(UIElement):
         screen_width = self.system.window.get_width()
         screen_height = self.system.window.get_height()
 
-        width = max(
-            1,
-            int(screen_width * self.width)
-        )
+        width = max(1,int(screen_width * self.width))
 
-        height = max(
-            1,
-            int(screen_height * self.height)
-        )
+        height = max(1,int(screen_height * self.height))
 
-        self.surface = self.system.window.make_surface(
-            width,
-            height,
-            True
-        )
+        self.surface = self.system.window.make_surface(width,height,True)
 
         x, y = self.get_screen_position()
 
-        self.rect = self.surface.get_rect(
-            center=(x, y)
-        )
+        self.rect = self.surface.get_rect(center=(x, y))
 
     def get_rect(self):
         return self.rect
@@ -193,32 +141,16 @@ class ScrollableText(UIElement):
 
         line_height = self.font.get_height()
 
-        spacing = int(
-            self.system.window.get_height()
-            * self.line_spacing
-        )
+        spacing = int(self.system.window.get_height() * self.line_spacing)
 
-        return max(
-            1,
-            self.surface.get_height()
-            // (line_height + spacing)
-        )
+        return max(1,self.surface.get_height() // (line_height + spacing))
 
     def scroll(self, amount):
         visible = self.visible_lines()
 
-        max_scroll = max(
-            0,
-            len(self.lines) - visible
-        )
+        max_scroll = max(0,len(self.lines) - visible)
 
-        self.scroll_offset = max(
-            0,
-            min(
-                max_scroll,
-                self.scroll_offset + amount
-            )
-        )
+        self.scroll_offset = max(0,min(max_scroll,self.scroll_offset + amount))
 
     def handle_event(self, event):
         if event.type == self.system.input.mouse_scroll_event():
@@ -238,72 +170,38 @@ class ScrollableText(UIElement):
 
         line_height = self.font.get_height()
 
-        spacing = int(
-            self.system.window.get_height()
-            * self.line_spacing
-        )
+        spacing = int(self.system.window.get_height() * self.line_spacing)
 
         visible_count = self.visible_lines()
 
-        visible = self.lines[
-            self.scroll_offset:
-            self.scroll_offset + visible_count
-        ]
+        visible = self.lines[self.scroll_offset:self.scroll_offset + visible_count]
 
         for index, columns in enumerate(visible):
-
-            draw_y = (
-                line_height // 2
-                + index * (line_height + spacing)
-            )
+            draw_y = line_height // 2 + index * (line_height + spacing)
 
             for text, normalized_x, color in columns:
 
                 color = self.resolve_color(color)
 
-                text_surface = self.font.render(
-                    text,
-                    True,
-                    color
-                )
+                text_surface = self.font.render(text,True,color)
 
-                x = int(
-                    normalized_x
-                    * self.surface.get_width()
-                )
+                x = int(normalized_x * self.surface.get_width())
 
                 if self.align == "center":
-
-                    text_rect = text_surface.get_rect(
-                        center=(x, draw_y)
-                    )
+                    text_rect = text_surface.get_rect(center=(x, draw_y))
 
                 elif self.align == "right":
-
-                    text_rect = text_surface.get_rect(
-                        right=x,
-                        centery=draw_y
-                    )
+                    text_rect = text_surface.get_rect(right=x,centery=draw_y)
 
                 else:
+                    text_rect = text_surface.get_rect(left=x,centery=draw_y)
 
-                    text_rect = text_surface.get_rect(
-                        left=x,
-                        centery=draw_y
-                    )
-
-                self.surface.blit(
-                    text_surface,
-                    text_rect
-                )
+                self.surface.blit(text_surface,text_rect)
 
         if self.show_scrollbar:
             self.draw_scrollbar()
 
-        self.system.window.blit(
-            self.surface,
-            self.rect
-        )
+        self.system.window.blit(self.surface,self.rect)
 
     def draw_scrollbar(self):
         total = len(self.lines)
@@ -314,73 +212,34 @@ class ScrollableText(UIElement):
 
         scrollbar_height = self.surface.get_height()
 
-        scrollbar_x = (
-            self.surface.get_width()
-            - self.scrollbar_width
-        )
+        scrollbar_x = self.surface.get_width() - self.scrollbar_width
 
-        track = self.system.window.make_surface(
-            self.scrollbar_width,
-            scrollbar_height,
-            True
-        )
+        track = self.system.window.make_surface(self.scrollbar_width,scrollbar_height,True)
 
-        track.fill(
-            self.scrollbar_track_color
-        )
+        track.fill(self.scrollbar_track_color)
 
-        self.surface.blit(
-            track,
-            (
-                scrollbar_x,
-                0
-            )
-        )
+        self.surface.blit(track,(scrollbar_x,0))
 
         ratio = visible / total
 
-        handle_height = max(
-            20,
-            int(scrollbar_height * ratio)
-        )
+        handle_height = max(20,int(scrollbar_height * ratio))
 
-        max_handle_y = (
-            scrollbar_height
-            - handle_height
-        )
+        max_handle_y = (scrollbar_height - handle_height)
 
         max_scroll = total - visible
 
         if max_scroll > 0:
-            scroll_ratio = (
-                self.scroll_offset
-                / max_scroll
-            )
+            scroll_ratio = (self.scroll_offset / max_scroll)
         else:
             scroll_ratio = 0
 
-        handle_y = int(
-            max_handle_y
-            * scroll_ratio
-        )
+        handle_y = int(max_handle_y * scroll_ratio)
 
-        handle = self.system.window.make_surface(
-            self.scrollbar_width,
-            handle_height,
-            True
-        )
+        handle = self.system.window.make_surface(self.scrollbar_width,handle_height,True)
 
-        handle.fill(
-            self.scrollbar_color
-        )
+        handle.fill(self.scrollbar_color)
 
-        self.surface.blit(
-            handle,
-            (
-                scrollbar_x,
-                handle_y
-            )
-        )
+        self.surface.blit(handle,(scrollbar_x,handle_y))
 
     def update(self):
         pass

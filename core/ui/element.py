@@ -13,10 +13,7 @@ class UIElement:
         ww = self.system.window.get_width()
         wh = self.system.window.get_height()
 
-        return (
-            int(ww * self.position[0]),
-            int(wh * self.position[1])
-        )
+        return (int(ww * self.position[0]),int(wh * self.position[1]))
 
     def contains_point(self,position):
         pass

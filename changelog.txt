@@ -1,1 +1,5 @@
-Development version Alpha 0.6.0 - 2026-08-XX
+Development version Alpha 0.6.1 - 2026-08-17
+- Added core/engine/backends with opengl and pygame
+- Initilized pygame in backend
+- Removed all imports for pygame outside of core/engine/backends/pygame.py and core/engine/input/keys.py
+- Added Window backend config to config.py and example.config

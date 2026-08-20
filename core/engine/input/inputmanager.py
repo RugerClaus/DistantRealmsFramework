@@ -1,4 +1,3 @@
-import pygame
 from core.engine.input.controls import Controls
 from core.engine.input.CommandModule import CommandModule
 from core.engine.input.keys import Keys
@@ -21,32 +20,32 @@ class InputManager:
         self.game_controls = Controls()
 
     def video_resize_event(self):
-        return pygame.VIDEORESIZE
+        return self.system.backend.pygame.VIDEORESIZE
 
     def mouse_button_down(self):
-        return pygame.MOUSEBUTTONDOWN
+        return self.system.backend.pygame.MOUSEBUTTONDOWN
     
     def mouse_button_up(self):
-        return pygame.MOUSEBUTTONUP
+        return self.system.backend.pygame.MOUSEBUTTONUP
 
     def mouse_motion(self):
-        return pygame.MOUSEMOTION
+        return self.system.backend.pygame.MOUSEMOTION
     
     def get_mouse_pos(self):
-        return pygame.mouse.get_pos()
+        return self.system.backend.pygame.mouse.get_pos()
     
     def keydown(self):
-        return pygame.KEYDOWN
+        return self.system.backend.pygame.KEYDOWN
 
     def quit_event(self):
-        return pygame.QUIT
+        return self.system.backend.pygame.QUIT
     
     def mouse_scroll_event(self):
-        return pygame.MOUSEWHEEL
+        return self.system.backend.pygame.MOUSEWHEEL
     
     def reset_mouse_input(self):
-        pygame.event.clear(pygame.MOUSEBUTTONDOWN)
-        pygame.event.clear(pygame.MOUSEBUTTONUP)
+        self.system.backend.pygame.event.clear(self.system.backend.pygame.MOUSEBUTTONDOWN)
+        self.system.backend.pygame.event.clear(self.system.backend.pygame.MOUSEBUTTONUP)
 
     def key_register(self,key):
         now = self.system.time.get_current_time()
@@ -58,29 +57,29 @@ class InputManager:
     def handle_event(self, event,needskeys=False):
         
         if needskeys:
-            if event.type == pygame.KEYDOWN:
+            if event.type == self.system.backend.pygame.KEYDOWN:
                 self.key_register(event.key)
                 return event.key
         else:
-            if event.type == pygame.KEYDOWN:
+            if event.type == self.system.backend.pygame.KEYDOWN:
                 self.key_register(event.key)
                 command = self.CommandModule.update(event)
                 return command
 
-            elif event.type == pygame.KEYUP:
+            elif event.type == self.system.backend.pygame.KEYUP:
                 self.current_keys.discard(event.key)
                 self.released_keys.add(event.key)
 
             return None
         
     def input_event(self):
-        return pygame.event.get()
+        return self.system.backend.pygame.event.get()
         
     def get_key_name(self,key):
-        return pygame.key.name(key)
+        return self.system.backend.pygame.key.name(key)
     
     def get_pressed_keys(self):
-        return pygame.key.get_pressed()
+        return self.system.backend.pygame.key.get_pressed()
 
     def scale(self,w,h):
         self.surface = self.system.window.make_surface(w,h,True)
@@ -96,7 +95,7 @@ class InputManager:
         recent_keys = list(self.key_history.keys())
 
         if recent_keys:
-            key_names = [pygame.key.name(key) for key in recent_keys]
+            key_names = [self.system.backend.pygame.key.name(key) for key in recent_keys]
             keys_str = ", ".join(key_names)
             letter = self.font.render(keys_str, False, (255, 255, 255))
             rect = letter.get_rect(center=(self.surface.get_width() // 2,
@@ -117,7 +116,7 @@ class InputManager:
         self.released_keys.clear()
 
     def window_focus_gained(self):
-        return pygame.WINDOWFOCUSGAINED
+        return self.system.backend.pygame.WINDOWFOCUSGAINED
     
     def window_focus_lost(self):
-        return pygame.WINDOWFOCUSLOST
+        return self.system.backend.pygame.WINDOWFOCUSLOST
