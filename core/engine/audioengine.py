@@ -270,6 +270,7 @@ class AudioEngine:
         else:
             if song:
                 self.play_music(song)
+            self.play_music()
             self.system.persistence.save.write_constant("music", "True")
             self.music_state.set_state(MUSIC_STATE.ON)
 
