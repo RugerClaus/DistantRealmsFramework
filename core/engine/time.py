@@ -8,7 +8,7 @@ class Time:
         self.dt = 0
 
     def get_fps(self):
-        return self.clock.get_fps()
+        return self.backend_clock.get_fps()
 
     def get_current_time(self):
         return self.backend_time.get_ticks()
