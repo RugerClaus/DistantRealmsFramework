@@ -18,10 +18,25 @@ class Window:
     def mask(self,surface):
         return self.system.backend.pygame.mask.from_surface(surface)
 
-    def set_mode(self,width=None,height=None,mode=None):
-        self.screen = self.system.backend.pygame.display.set_mode((width if width is not None else self.default_width,height if height is not None else self.default_height),self.system.backend.pygame.RESIZABLE)
-        
-        self.system.backend.pygame.display.set_caption(f"{config['TITLE']} {config['VERSION']}")
+    def set_mode(self, width=None, height=None, mode=None):
+
+        width = width if width is not None else self.default_width
+        height = height if height is not None else self.default_height
+
+        flags = self.system.backend.pygame.RESIZABLE
+
+        if mode is not None:
+            flags |= mode
+
+        self.screen = self.system.backend.pygame.display.set_mode((width, height),flags)
+
+        self.width = self.screen.get_width()
+        self.height = self.screen.get_height()
+
+        self.system.backend.pygame.display.set_caption(
+            f"{config['TITLE']} {config['VERSION']}"
+        )
+
         icon = self.load_image(asset("linux_icon"))
         self.system.backend.pygame.display.set_icon(icon)
         

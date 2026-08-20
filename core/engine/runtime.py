@@ -19,10 +19,9 @@ class Runtime:
         for event in self.system.input.input_event():
             command = self.system.input.handle_event(event)
             if event.type == self.system.input.video_resize_event():
-                self.system.window.set_mode(event.w,event.h)
                 self.debug_overlay.scale()
                 if self.system.runtime_state.is_state(RUNTIME_STATE.SPLASH):
-                    self.loading.rescale_assets()
+                    self.loading.scale()
                 self.system.input.scale(event.w,event.h)
 
             if event.type == self.system.input.quit_event():

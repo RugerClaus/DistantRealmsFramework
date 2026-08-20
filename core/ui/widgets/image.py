@@ -2,6 +2,7 @@ from core.ui.type import WIDGET
 from core.ui.element import UIElement
 from helper import asset
 
+
 class Image(UIElement):
     def __init__(self, system, id, image, position=(0.5, 0.5), scale=None):
         super().__init__(position=position)
@@ -17,6 +18,7 @@ class Image(UIElement):
 
         self.x_ratio, self.y_ratio = position
         self.scale_ratio = scale
+        self.alpha = 255
 
         self.original_surf = self.system.window.load_image(self.image)
         self.surf = self.original_surf
@@ -32,12 +34,22 @@ class Image(UIElement):
             factor = width / self.original_surf.get_width()
             height = int(self.original_surf.get_height() * factor)
 
-            self.surf = self.system.window.transform_scale(self.original_surf,width,height)
+            self.surf = self.system.window.transform_scale(
+                self.original_surf,
+                width,
+                height
+            )
 
         else:
             self.surf = self.original_surf
 
+        self.surf.set_alpha(self.alpha)
+
         self.rect = self.surf.get_rect(center=(x, y))
+
+    def set_alpha(self, alpha):
+        self.alpha = max(0, min(255, alpha))
+        self.surf.set_alpha(self.alpha)
 
     def update(self):
         pass
