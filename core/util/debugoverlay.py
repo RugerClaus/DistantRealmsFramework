@@ -9,12 +9,54 @@ class DebugOverlay:
         self.surface = system.window.draw_overlay((0, 0, 0), 128)
         self.rect = self.surface.get_rect()
 
-        self.font_left = FontEngine("UI").font
-        self.font_right = FontEngine(25).font
-        self.font_right_all = FontEngine(20).font
-        self.devmodefont = FontEngine(20).font
+        self.font_ui_size = 35
+        self.font_right_size = 25
+
+        self.font_left = FontEngine(self.font_ui_size).font
+        self.font_right = FontEngine(self.font_right_size).font
+        self.font_right_all = FontEngine(self.font_right_size - 5).font
+        self.devmodefont = FontEngine(self.font_right_size + 5).font
 
         self.opacity = 0
+
+        keys = self.system.input.keys
+        cm = self.system.input.CommandModule.sequences
+
+
+        # monitor the system states F8 + 1
+        cm["monitor_system_states"] = [keys.F8_key(),keys.one_key()]
+        # monitor the runtime states F8 + 2
+        cm["monitor_runtime_states"] = [keys.F8_key(),keys.two_key()]
+        # monitor the application states F8 + 3
+        cm["monitor_application_states"] = [keys.F8_key(),keys.three_key()]
+        # monitor every active state F8 + 4
+        cm["monitor_all_states"] = [keys.F8_key(),keys.four_key()]
+        # raise overlay opacity F8 + 5
+        cm["raise_opacity"] = [keys.F8_key(),keys.five_key()]
+        # lower overlay opacity F8 + 6
+        cm["lower_opacity"] = [keys.F8_key(),keys.six_key()]
+        # increase font size of overlay F8 +7
+        cm["embiggen"] = [keys.F8_key(),keys.seven_key()]
+        # decrease font size of overlay F8 + 8
+        cm["delargen"] = [keys.F8_key(),keys.eight_key()]
+
+    def _zoom_in(self):
+        self.font_ui_size += 1
+        self.font_right_size += 1
+
+        self.font_left = FontEngine(self.font_ui_size).font
+        self.font_right = FontEngine(self.font_right_size).font
+        self.font_right_all = FontEngine(self.font_right_size - 5).font
+        self.devmodefont = FontEngine(self.font_right_size + 5).font
+
+    def _zoom_out(self):
+        self.font_ui_size -= 1
+        self.font_right_size -= 1
+
+        self.font_left = FontEngine(self.font_ui_size).font
+        self.font_right = FontEngine(self.font_right_size).font
+        self.font_right_all = FontEngine(self.font_right_size - 5).font
+        self.devmodefont = FontEngine(self.font_right_size + 5).font
 
     def create_options(self):
         pass
@@ -47,6 +89,12 @@ class DebugOverlay:
 
         elif command == "lower_opacity":
             self.opacity = max(0, self.opacity - 32)
+
+        elif command == "embiggen":
+            self._zoom_in()
+        
+        elif command == "delargen":
+            self._zoom_out()
 
     def draw(self):
         text_color = (255, 255, 255)

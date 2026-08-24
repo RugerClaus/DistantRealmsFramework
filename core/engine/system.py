@@ -71,7 +71,7 @@ class System():
         else:
             self.system_monitor["network"] = "Not Connected"
     
-        self.system_monitor["OS"] = config.get("OSV") 
+        self.system_monitor["OS"] = config.get("OS") 
 
         self.application = None
 

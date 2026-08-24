@@ -1,0 +1,65 @@
+from core.engine.world.loader import MapLoader
+from core.engine.world.camera import Camera
+
+
+class World:
+
+    def __init__(self, system, environment):
+        self.system = system
+        self.environment = environment
+        self.maps = []
+        self.camera = Camera()
+        self.map_loader = MapLoader(system, environment)
+        self.load_map_files()
+        
+    def load_map_files(self,filename=None):
+        if filename:
+            self.maps = self.map_loader.load(f"enginepersistence/world/{filename}.json")
+        else:
+            self.maps = self.map_loader.load("enginepersistence/world/world.json")
+
+    def is_map_visible(self, map):
+        if map.wrap_x or map.wrap_y:
+            return True
+
+        camera_x = self.camera.x if map.camera_follow_x else 0
+        camera_y = self.camera.y if map.camera_follow_y else 0
+
+        left = map.world_x - camera_x
+        right = left + map.map_width
+
+        top = map.world_y - camera_y
+        bottom = top + map.map_height
+
+        return (
+            right > 0 and
+            left < 1 and
+            bottom > 0 and
+            top < 1
+        )
+
+    def scale(self):
+        for map in self.maps:
+            map.scale()
+
+    def update(self):
+        self.camera.update()
+
+        for map in self.maps:
+            if self.is_map_visible(map):
+                map.load()
+                map.update()
+            else:
+                map.unload()
+
+    def toggle_map_grid(self, name, color=None, width=None):
+        for map in self.maps:
+            print(map.name)
+            if map.name == name:
+                map.toggle_grid(color, width)
+                
+
+    def draw(self):
+        for map in self.maps:
+            if self.is_map_visible(map):
+                map.draw(self.camera)
