@@ -1,22 +1,29 @@
 from core.engine.world.loader import MapLoader
 from core.engine.world.camera import Camera
-
+from core.engine.world.mechanics.environment.environment import Environment
 
 class World:
 
-    def __init__(self, system, environment):
+    def __init__(self, system):
         self.system = system
-        self.environment = environment
+        self.environment = None
         self.maps = []
         self.camera = Camera()
-        self.map_loader = MapLoader(system, environment)
+        self.map_loader = None
+        
+    def start_environment(self):
+        self.environment = Environment(self.system)
+        self.map_loader = MapLoader(self.system,self.environment)
         self.load_map_files()
         
-    def load_map_files(self,filename=None):
-        if filename:
-            self.maps = self.map_loader.load(f"enginepersistence/world/{filename}.json")
-        else:
-            self.maps = self.map_loader.load("enginepersistence/world/world.json")
+    def load_map_files(self, filename=None):
+        if self.map_loader:
+            if filename:
+                path = f"enginepersistence/world/{filename}.json"
+            else:
+                path = "enginepersistence/world/world.json"
+
+            self.maps = self.map_loader.load(path)
 
     def is_map_visible(self, map):
         if map.wrap_x or map.wrap_y:
@@ -44,6 +51,7 @@ class World:
 
     def update(self):
         self.camera.update()
+        self.environment.update()
 
         for map in self.maps:
             if self.is_map_visible(map):
@@ -58,8 +66,11 @@ class World:
             if map.name == name:
                 map.toggle_grid(color, width)
                 
-
     def draw(self):
+        self.environment.draw()
         for map in self.maps:
             if self.is_map_visible(map):
                 map.draw(self.camera)
+
+    def clean_up_states(self):
+        self.system.clean_up_states([self.environment.season.state.state])

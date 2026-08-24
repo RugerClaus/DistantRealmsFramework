@@ -4,7 +4,7 @@ from core.util.colors import *
 
 from core.engine.world.cell import Cell
 
-from core.engine.world.data_map import cell_data_map
+from core.engine.world.cell_map import cell_data_map
 
 from core.engine.world.mapdef import MapDef
 

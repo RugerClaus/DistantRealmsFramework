@@ -4,7 +4,7 @@ from core.engine.world.map import Map
 
 class MapLoader:
 
-    def __init__(self, system, environment):
+    def __init__(self, system, environment=None):
         self.system = system
         self.environment = environment
 
