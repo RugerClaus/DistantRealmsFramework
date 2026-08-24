@@ -60,6 +60,10 @@ class Map:
 
         self.map_def = MapDef()
 
+        self.lighting_levels = 16
+        self.lighting_level = 0
+        self.light_layers = []
+
     @property
     def world_width(self):
         return self.map_width
@@ -270,37 +274,36 @@ class Map:
         self.grid_dirty = True
 
     def update_cell_colors(self):
-
         if self.environment is None:
             return
 
         brightness = self.environment.day_cycle.brightness
 
-        ambient = 0.35
-
-        light = ambient + (
-            (1.0 - ambient) * brightness
+        level = int(
+            brightness * (self.lighting_levels - 1)
         )
 
-        for cell in self.cells:
+        level = max(
+            0,
+            min(
+                self.lighting_levels - 1,
+                level
+            )
+        )
 
+        if level == self.lighting_level:
+            return
+
+        self.lighting_level = level
+
+        for cell in self.cells:
             if not cell.properties.get(
                 "receives_light",
                 False
             ):
                 continue
 
-            base_color = cell.data.get("color")
-
-            if base_color is None:
-                continue
-
-            color = tuple(
-                int(channel * light)
-                for channel in base_color
-            )
-
-            cell.set_color(color)
+            cell.set_lighting_level(level)
 
         self.layer_dirty = True
 
@@ -531,6 +534,14 @@ class Map:
                     size,
                     position,
                     cell_data
+                )
+                if cell.properties.get("receives_light", False):
+                    cell.create_light_variants(
+                        self.lighting_levels
+                    )
+
+                cell.set_lighting_level(
+                    self.lighting_level or 0
                 )
 
                 self.cells.append(cell)
