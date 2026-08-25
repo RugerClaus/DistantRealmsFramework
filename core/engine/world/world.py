@@ -10,11 +10,13 @@ class World:
         self.maps = []
         self.camera = Camera()
         self.map_loader = None
-        
-    def start_environment(self):
-        self.environment = Environment(self.system)
-        self.map_loader = MapLoader(self.system,self.environment)
-        self.load_map_files()
+
+        self.loading = False
+        self.load_progress = 0
+        self.load_message = ""
+
+        self.load_start_time = 0
+        self.load_time = 0
         
     def load_map_files(self, filename=None):
         if self.map_loader:
@@ -74,3 +76,40 @@ class World:
 
     def clean_up_states(self):
         self.system.clean_up_states([self.environment.season.state.state])
+
+    def start_environment(self):
+
+        self.loading = True
+        self.load_progress = 0
+        self.load_message = "Creating environment..."
+
+        self.load_start_time = self.system.time.performance_time()
+
+        self.environment = Environment(self.system)
+
+        self.load_progress = 0.25
+        self.load_message = "Preparing maps..."
+
+        self.map_loader = MapLoader(
+            self.system,
+            self.environment
+        )
+
+        self.load_progress = 0.50
+        self.load_message = "Loading map files..."
+
+        self.load_map_files()
+
+        self.load_progress = 1.0
+        self.load_message = "Complete"
+
+        self.load_time = (
+            self.system.time.performance_time()
+            - self.load_start_time
+        )
+
+        self.loading = False
+
+        print(
+            f"World loaded in {self.load_time:.3f}s"
+        )

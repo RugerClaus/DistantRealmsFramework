@@ -1,3 +1,4 @@
+import time
 
 class Time:
     def __init__(self,system):
@@ -19,3 +20,6 @@ class Time:
 
     def delta_time(self):
         return self.dt
+
+    def performance_time(self):
+        return time.perf_counter()
