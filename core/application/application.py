@@ -5,6 +5,7 @@ class Application:
     def __init__(self,distant_realms):
         self.distant_realms = distant_realms
         self.system = distant_realms.system
+        self.distant_realms.ui_controller.show_ui("main")
 
         # UNCOMMENT BELOW IF YOU WANT TO PLAY YOUR MUSIC FILES ON STARTUP
 
@@ -18,7 +19,7 @@ class Application:
         pass
 
     def draw(self):
-        self.distant_realms.system.window.fill((black))
+        pass
 
     def scale(self):
         pass

@@ -1,7 +1,6 @@
-from core.state.RuntimeLayer.state import RUNTIME_STATE
 from core.state.RuntimeLayer.BootSplash.state import BOOT_SPLASH_STATE
 from core.state.RuntimeLayer.BootSplash.statemanager import BootSplashStateManager
-from core.state.RuntimeLayer.Audio.SFX.state import SYSTEM_SFX_STATE
+
 from core.ui.widgets.image import Image
 from helper import asset
 
@@ -30,6 +29,21 @@ class BootSplashManager:
         self.start_time = self.system.time.get_current_time()
         self.state.set_state(BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_ONE)
 
+    def handle_event(self,event,command=None):
+        keys = self.system.input.keys
+        if event.type == self.system.input.keydown():
+            if event.key == keys.space_key() or event.key == keys.return_key() or event.key == keys.escape_key():
+                self.system.sound.stop_all_sfx()
+                self.state.set_state(BOOT_SPLASH_STATE.NONE)
+        if event.type == self.system.input.mouse_button_down() and event.button == 1:
+            if self.state.is_state(BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_ONE):
+                self.system.sound.stop_all_sfx()
+                self.state.set_state(BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_TWO)
+            elif self.state.is_state(BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_TWO):
+                self.system.clean_up_states([self.state.state])
+                self.system.sound.stop_all_sfx()
+                self.state.set_state(BOOT_SPLASH_STATE.NONE)
+
     def scale(self):
         if self.state.is_state(BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_ONE):
             self.splash_one.scale()
@@ -38,11 +52,9 @@ class BootSplashManager:
 
     def update(self):
         if self.state.is_state(BOOT_SPLASH_STATE.NONE):
-            self.system.runtime_state.set_state(RUNTIME_STATE.APPLICATION)
-        if not self.system.runtime_state.is_state(RUNTIME_STATE.SPLASH):
+            self.system.initialize_application()
+            return
 
-            self.system.sound.system_sfx_state.set_state(SYSTEM_SFX_STATE.OFF)
-        
         if self.state.is_state(BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_TWO):
             pass
 
@@ -66,7 +78,6 @@ class BootSplashManager:
 
         if el >= du:
             self.state.set_state(BOOT_SPLASH_STATE.NONE)
-            self.system.initialize_application()
 
     def draw(self):
         current_time = self.system.time.get_current_time()
@@ -80,10 +91,9 @@ class BootSplashManager:
                 self.system.sound.play_sfx("splash1")
                 self.splash_one_sfx_played = True
 
-        if current_time - self.start_time > 2500:
-            self.state.set_state(
-                BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_TWO
-            )
+        if self.state.is_state(BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_ONE) and current_time - self.start_time > 2500:
+            self.state.set_state(BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_TWO)
+
 
         if self.state.is_state(
             BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_TWO

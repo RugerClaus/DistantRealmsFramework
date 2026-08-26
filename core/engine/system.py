@@ -11,9 +11,10 @@ from core.engine.persistence.persistence import Persistence
 from core.engine.network.update import Update
 from core.engine.network.network import Network
 from core.engine.user import User
+from core.engine.telemetry import system_monitor
+from core.loading.BootSplashManager import BootSplashManager
 from core.application.app_inspector import app_inspector
 from core.application.save_schema import schema
-from core.engine.telemetry import system_monitor
 
 # state systems
 from core.state.RuntimeLayer.NetworkLayer.Login.statemanager import LoginStateManager
@@ -73,11 +74,17 @@ class System():
     
         self.system_monitor["OS"] = config.get("OS") 
 
+        self.loading = None
         self.application = None
 
         if self.control_state.is_state(DEVELOPER_MODE.ON):
             self.sound.volume = 0.0
             self.sound.sfx_volume = 0.1
+
+        if config.get("SPLASHSCREEN") == True:
+            self.loading = BootSplashManager(self)
+        else:
+            self.initialize_application()
 
     def control_state_toggle(self):
         if not self.control_state.is_state(DEVELOPER_MODE.ON):
