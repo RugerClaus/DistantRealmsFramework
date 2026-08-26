@@ -80,12 +80,23 @@ class BootSplashManager:
         self.system.sound.stop_all_sfx()
 
         self.current_splash += 1
+        self.splash_start_time = self.system.time.get_current_time()
 
         if self.current_splash >= len(self.splashes):
+
+            self.system.clean_up_states([self.state.state])
             self.state.set_state(BOOT_SPLASH_STATE.NONE)
             return
 
-        self.start_time = self.system.time.get_current_time()
+        states = [
+            BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_ONE,
+            BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_TWO,
+            BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_THREE,
+            BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_FOUR,
+            BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_FIVE,
+        ]
+
+        self.state.set_state(states[self.current_splash])
 
 
     def scale(self):

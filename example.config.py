@@ -30,9 +30,16 @@ config = {
 
         "splashpt1": "assets/images/main/splashpt1.png",
         "splashpt2": "assets/images/main/splashpt2.png",
+        "splashpt3": "assets/images/main/splashpt3.png",
+        "splashpt4": "assets/images/main/splashpt4.png",
+        "splashpt5": "assets/images/main/splashpt5.png",
+        
 
         "splash1": "assets/audio/sfx/splash1.ogg",
         "splash2": "assets/audio/sfx/splash2.ogg",
+        "splash3": "assets/audio/sfx/splash3.ogg",
+        "splash4": "assets/audio/sfx/splash4.ogg",
+        "splash5": "assets/audio/sfx/splash5.ogg",
 
         "linux_icon": "assets/images/build/linux.png",
         "windows_icon": "assets/images/build/windows.ico",

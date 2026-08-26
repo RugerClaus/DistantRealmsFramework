@@ -119,6 +119,16 @@ class AudioEngine:
                 effect_name = os.path.splitext(effect_name)[0]
                 self.sound_effects[effect_name] = self.system.backend.pygame.mixer.Sound(sfx_path)
 
+    def get_sfx_length(self, effect_name):
+        if not self.audio_available:
+            return 0
+
+        if effect_name in self.sound_effects:
+            return self.sound_effects[effect_name].get_length() * 1000
+
+        log_error(f"Sound effect '{effect_name}' not found.")
+        return 0
+
     def play_sfx(self, effect_name):
         if not self.audio_available:
             return "off"
