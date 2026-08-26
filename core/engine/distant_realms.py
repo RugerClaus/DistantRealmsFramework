@@ -27,8 +27,6 @@ class DistantRealms:
         cm["reload_ui"] = [keys.F1_key(),keys.one_key()]
         cm["reload_application"] = [keys.F1_key(),keys.two_key()]
 
-
-
     def toggle_freeze(self):
         print("toggling pause")
         if self.state.is_state(APP_STATE.FROZEN):
@@ -36,7 +34,7 @@ class DistantRealms:
         elif self.state.is_state(APP_STATE.RUNNING):
             self.state.set_state(APP_STATE.FROZEN)
 
-    def reload_actions(self):
+    def reload_ui(self):
         import importlib
         from core.ui import actionmanager, loader
         from core.ui import uicontroller
@@ -81,7 +79,7 @@ class DistantRealms:
 
         if self.system.control_state.is_state(DEVELOPER_MODE.ON):
             if command == "reload_ui":
-                self.reload_actions()
+                self.reload_ui()
                 print("Reloading User Interface...")
             elif command == "reload_application":
                 self.reload_application()
