@@ -1,101 +1,138 @@
+from helper import asset
 from core.state.RuntimeLayer.BootSplash.state import BOOT_SPLASH_STATE
 from core.state.RuntimeLayer.BootSplash.statemanager import BootSplashStateManager
 
 from core.ui.widgets.image import Image
-from helper import asset
+
 
 class BootSplashManager:
-    def __init__(self,system):
+
+    MAX_SPLASHES = 5
+
+    def __init__(self, system):
         self.system = system
         self.state = BootSplashStateManager()
-        self.splash_one = Image(
-            self.system,
-            "splash_one",
-            "splashpt1",
-            position=(0.5, 0.5),
-            scale=0.75
-        )
 
-        self.splash_two = Image(
-            self.system,
-            "splash_two",
-            "splashpt2",
-            position=(0.5, 0.5),
-            scale=0.75
-        )
-        self.splash_one_sfx_played = False
-        self.splash_two_sfx_played = False
-        self.splash_two_start_time = None
+        self.splashes = []
+        self.current_splash = 0
+
+        self.splash_sfx_played = []
+        self.splash_start_time = None
+        self.splash_durations = []
+
+        for i in range(1, self.MAX_SPLASHES + 1):
+
+            image_name = f"splashpt{i}"
+            sfx_name = f"splash{i}"
+
+            splash_asset = asset(image_name)
+
+            if splash_asset and splash_asset.exists():
+
+                image = Image(
+                    self.system,
+                    f"splash_{i}",
+                    image_name,
+                    position=(0.5, 0.5),
+                    scale=0.75
+                )
+
+                self.splashes.append({
+                    "image": image,
+                    "sfx": sfx_name
+                })
+
+                duration = self.system.sound.get_sfx_length(sfx_name)
+
+                if duration == 0:
+                    duration = 3000
+
+                self.splash_durations.append(duration)
+                self.splash_sfx_played.append(False)
+
         self.start_time = self.system.time.get_current_time()
+
         self.state.set_state(BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_ONE)
 
-    def handle_event(self,event,command=None):
+
+    def handle_event(self, event, command=None):
+
         keys = self.system.input.keys
+
         if event.type == self.system.input.keydown():
-            if event.key == keys.space_key() or event.key == keys.return_key() or event.key == keys.escape_key():
+
+            if (
+                event.key == keys.space_key()
+                or event.key == keys.return_key()
+                or event.key == keys.escape_key()
+            ):
                 self.system.sound.stop_all_sfx()
                 self.state.set_state(BOOT_SPLASH_STATE.NONE)
+
+
         if event.type == self.system.input.mouse_button_down() and event.button == 1:
-            if self.state.is_state(BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_ONE):
-                self.system.sound.stop_all_sfx()
-                self.state.set_state(BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_TWO)
-            elif self.state.is_state(BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_TWO):
-                self.system.clean_up_states([self.state.state])
-                self.system.sound.stop_all_sfx()
-                self.state.set_state(BOOT_SPLASH_STATE.NONE)
 
-    def scale(self):
-        if self.state.is_state(BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_ONE):
-            self.splash_one.scale()
-        elif self.state.is_state(BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_TWO):
-            self.splash_two.scale()
+            self.next_splash()
 
-    def update(self):
-        if self.state.is_state(BOOT_SPLASH_STATE.NONE):
-            self.system.initialize_application()
+
+    def next_splash(self):
+
+        self.system.sound.stop_all_sfx()
+
+        self.current_splash += 1
+
+        if self.current_splash >= len(self.splashes):
+            self.state.set_state(BOOT_SPLASH_STATE.NONE)
             return
 
-        if self.state.is_state(BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_TWO):
-            pass
+        self.start_time = self.system.time.get_current_time()
 
-    def play_splash_2_fade_in(self):
+
+    def scale(self):
+
+        for splash in self.splashes:
+            splash["image"].scale()
+
+
+    def update(self):
+
+        if self.state.is_state(BOOT_SPLASH_STATE.NONE):
+            self.system.initialize_application()
+
+
+    def play_current_splash(self):
+
+        if self.current_splash >= len(self.splashes):
+            self.state.set_state(BOOT_SPLASH_STATE.NONE)
+            return
+
+
         current_time = self.system.time.get_current_time()
 
-        if self.splash_two_start_time is None:
-            self.splash_two_start_time = current_time
+        splash = self.splashes[self.current_splash]
 
-            if not self.splash_two_sfx_played:
-                self.system.sound.play_sfx("splash2")
-                self.splash_two_sfx_played = True
+        image = splash["image"]
+        sfx = splash["sfx"]
 
-        el = current_time - self.splash_two_start_time
-        du = 9300
+        if not self.splash_sfx_played[self.current_splash]:
 
-        alpha = min((el / du) * 255, 255)
+            self.system.sound.play_sfx(sfx)
+            self.splash_sfx_played[self.current_splash] = True
 
-        self.splash_two.set_alpha(alpha)
-        self.splash_two.draw()
 
-        if el >= du:
-            self.state.set_state(BOOT_SPLASH_STATE.NONE)
+        image.draw()
+
+
+        elapsed = current_time - self.start_time
+
+        if elapsed >= self.splash_durations[self.current_splash]:
+
+            self.next_splash()
+
 
     def draw(self):
-        current_time = self.system.time.get_current_time()
 
-        if self.state.is_state(
-            BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_ONE
-        ):
-            self.splash_one.draw()
+        if self.state.is_state(BOOT_SPLASH_STATE.NONE):
+            return
 
-            if not self.splash_one_sfx_played:
-                self.system.sound.play_sfx("splash1")
-                self.splash_one_sfx_played = True
-
-        if self.state.is_state(BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_ONE) and current_time - self.start_time > 2500:
-            self.state.set_state(BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_TWO)
-
-
-        if self.state.is_state(
-            BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_TWO
-        ):
-            self.play_splash_2_fade_in()
+        self.play_current_splash()

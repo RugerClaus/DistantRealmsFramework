@@ -105,6 +105,29 @@ This project is becoming its own distribution ecosystem for making games, as I'v
 
 The Distant Realms Editor is a self-hosted application built on this very same framework. I presents the user with a graphical interface for creating UIs for your applications and games. Making a main menu has never been easier, as you can learn to use the drag and drop interface to create complex, rich, and highly functional user interfaces.
 
+# Splash Screens
+
+If you want to enable splash screens on startup, go to `config.py` in the root directory, and change "SPLASHSCREEN" from False to True if they are not enabled.
+- This value is set to True by default, and the framework contains 2 built in splash screens. If you can, please try to keep the Distant Realms Framework splash in your game to promote the framework and game engine/ecosystem!
+
+Before getting into the details, I'd like to point out yet another no code solution i've created for you. The Splash Screen system!
+
+So normally when you boot most commercial games, you see a splash screen or two. Showing the developer's logo, maybe a technology, and possibly even the game title. 
+
+By default the engine accepts up to 5 splash screens and all you have to do is this
+
+1: drag your image file into `assets/images/main`
+
+2: name it/replace what is there - "splashpt[number 1-5]".
+It is sequential, so if it doesn't find one, the system automatically skips to the next until it goes through all of them, and then puts you into your application.
+
+3: drag your sound effect you want to play into `assets/sounds/sfx`
+
+4: name it/replace what is there - "splash[number 1-5]"
+Again this is also sequential. The whole system is modular.
+
+By default, the length of splash screens will be 3 seconds unless you have a sound effect (splash1, 2, 3, etc...) in which case that splash screen will be the length of your sound effect by default.
+
 # Getting Started Making Games and Apps
 
 To start off you'll be wanting to work in core/application/application.py. Here you will immediately find the patterns that the engine expects you to follow.
