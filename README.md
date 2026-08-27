@@ -47,35 +47,48 @@ When you create an application with Distant Realms, the framework provides a dir
 You do not need to understand every single directory or class to get started. Think of this a bit like Laravel or another large application framework, where your primary work takes place in a few, very specific directories.
 
     DistantRealmsFramework/
-    ├── assets/              # Application assets
-    ├── core/                # Framework and application systems
-    ├── enginepersistence/   # Framework-managed data including UI files
-    ├── environment/         # Environment-specific data
-    ├── saves/               # User/application save data
-    ├── logs/                # Runtime logs
-    ├── tools/               # A directory created by installers if it does not exist, for example "install_editor_[windows|linux].sh" creates this directory
-    ├── main.py              # System application entry point
-    ├── config.py            # Application/framework configuration
-    ├── setup.sh             # Framework setup
-    ├── releaselinux.sh, snapshotlinux.sh        # Linux build script
-    ├── releasewindows.sh, snapshotwindows.sh      # Windows build script
-    ├── releasemacos.sh, snapshotmacos.sh        # macOS build script
-    └── README.md            # Framework documentation
+    ├── application/          # Your application code
+    ├── assets/               # Application assets
+    ├── core/                 # Framework and engine systems
+    ├── enginepersistence/    # Framework-managed data including UI files
+    ├── environment/          # Environment-specific data
+    ├── saves/                # User/application save data
+    ├── logs/                 # Runtime logs
+    ├── tools/                # Tools installed by framework installers
+    ├── main.py               # System application entry point
+    ├── config.py             # Application/framework configuration
+    ├── setup.sh              # Framework setup
+    ├── releaselinux.sh       # Linux release build script
+    ├── snapshotlinux.sh      # Linux snapshot build script
+    ├── releasewindows.sh     # Windows release build script
+    ├── snapshotwindows.sh    # Windows snapshot build script
+    ├── releasemacos.sh       # macOS release build script
+    ├── snapshotmacos.sh      # macOS snapshot build script
+    └── README.md             # Framework documentation
 
-You'll be doing most of your work inside the ```core/``` directory in ``` application```. Inside that directory, you'll find ```application.py``` containing a class called ```Application```. This class is where all your code goes, and anything else you add, including directories and modules, should remain beneath ```application```, unless you're creating state machines, in which case follow the documentation near the bottom of the README.
+You'll be doing most of your application development inside the `application/` directory.
 
-The ```core/``` directory is really where all the magic is happening, so I'm going to give a basic rundown on each directory inside of it:
-    
+This is where your application code belongs. The framework itself lives separately in `core/`, meaning that application code and framework code are no longer mixed together.
+
+You can create whatever directories and modules you need underneath `application/` to organize your application.
+
+The `core/` directory contains the framework itself. You generally should not need to modify most of the code inside it. Instead, Distant Realms provides APIs and services that your application can use.
+
+The framework is organized into several major areas:
+
     core/
-    ├── application/     # Your application code and application-facing APIs
-    ├── experimental/    # Experimental and in-development framework features
-    ├── engine/            # Framework internals and core runtime services
-    ├── loading/         # Boot, loading screen, and application loading systems
-    ├── state/           # State machine definitions and state management
-    ├── ui/              # Framework UI system and widgets
-    └── util/            # Shared utility classes, helpers, and supporting functionality
+    ├── engine/       # Framework internals and core runtime services
+    ├── experimental/ # Experimental and in-development framework features
+    ├── loading/     # Boot, loading screen, and application loading systems
+    ├── state/       # State machine definitions and state management
+    ├── ui/           # Framework UI system and widgets
+    └── util/         # Shared utility classes, helpers, and supporting functionality
 
-For example, ```core/util``` contains the ```DebugOverlay``` class in ```core/util/debugoverlay.py```. This is the service container for all the functionality of the debug overlay. This is the perfect example of a file, you'll likely never need to think about. The same goes for mostly anything outside of ```application```. You may find yourself using the state system as well, and you'll primarily be working in, and creating your state machines in ```core/state/ApplicationLayer/```. This will all be explained under the State Machine section of the docs.
+For example, `core/util` contains the `DebugOverlay` class in `core/util/debugoverlay.py`. This is the service container for the functionality of the debug overlay.
+
+This is a good example of a file you'll probably never need to think about directly. The same goes for most things inside `core/`. You use the framework's APIs without needing to modify the systems that provide them.
+
+You may find yourself using the state system, and you'll primarily be working in, and creating your application state machines in, `core/state/ApplicationLayer/`. This will all be explained under the State Machine section of the documentation.
 
 # About 3rd party dependencies:
 
@@ -104,6 +117,8 @@ This project is becoming its own distribution ecosystem for making games, as I'v
  ```bash install_editor_[windows|linux].sh```
 
 The Distant Realms Editor is a self-hosted application built on this very same framework. I presents the user with a graphical interface for creating UIs for your applications and games. Making a main menu has never been easier, as you can learn to use the drag and drop interface to create complex, rich, and highly functional user interfaces.
+
+The editor will soon contain a feature complete world editor for the built in world system. **DOCUMENTATION FOR THAT SYSTEM COMING SOON**
 
 # Splash Screens
 
