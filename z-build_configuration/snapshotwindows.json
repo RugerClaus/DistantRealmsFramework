@@ -1,0 +1,56 @@
+{
+    "app_name": "myapp_snapshot",
+    "main": "main.py",
+    "updater_main": "updater.py",
+    "updater_name": "updater",
+
+    "paths": {
+        "dist": "executable",
+        "build": "build",
+        "specs": "specs"
+    },
+
+    "build": {
+        "mode": "onedir",
+        "windowed": true,
+        "noconsole": true,
+        "debug": false
+    },
+
+    "assets": [
+        "assets",
+        "environment"
+    ],
+
+    "copy": [
+        "enginepersistence",
+        "changelog.txt",
+        "README.md",
+        "LICENSE",
+        "instructions.md"
+    ],
+
+    "cleanup_internal": [
+        "assets",
+        "logs",
+        "saves",
+        "environment"
+    ],
+
+    "updater": {
+        "enabled": true,
+        "mode": "onefile",
+        "console": true
+    },
+
+    "archive": {
+        "enabled": true,
+        "name": "myapp_snapshot_latest_windows.zip",
+        "directory": "myapp_snapshot_windows"
+    },
+
+    "deployment": {
+        "server": "youruser@yourhost.name",
+        "remote_dir": "/path/to/directory"
+    }
+}

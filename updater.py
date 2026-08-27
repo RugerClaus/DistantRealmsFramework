@@ -7,12 +7,14 @@ import time
 from helper import write_envar_to_file
 from systemlogging import log_event, log_error
 
+from config import config
+
 if getattr(sys, 'frozen', False):
     ROOT_DIR = os.path.dirname(sys.executable)
 else:
     ROOT_DIR = os.path.abspath(os.path.dirname(__file__))
 
-GAME_EXECUTABLE = "MyApp"
+GAME_EXECUTABLE = config.get("TITLE")
 UPDATE_ZIP = os.path.join(ROOT_DIR, "update.zip")
 
 

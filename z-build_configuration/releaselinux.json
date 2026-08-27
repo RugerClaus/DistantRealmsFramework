@@ -1,5 +1,5 @@
 {
-    "app_name": "SnowBlitz_Latest_Linux",
+    "app_name": "myapp",
     "main": "main.py",
     "updater_main": "updater.py",
     "updater_name": "updater",
@@ -12,10 +12,9 @@
 
     "build": {
         "mode": "onedir",
-        "icon": "assets/images/build/SnowBlitz_Latest_Linux.png",
         "windowed": true,
         "noconsole": true,
-        "debug": true
+        "debug": false
     },
 
     "assets": [
@@ -48,11 +47,12 @@
 
     "archive": {
         "enabled": true,
-        "name": "SnowBlitz_Latest_Linux.zip"
+        "name": "myapp_update_latest_linux.zip",
+        "directory": "myapp_update_linux"
     },
 
     "deployment": {
-        "server": "rugerclausweb@plesk17.xmission.com",
-        "remote_dir": "snowblitz.net/downloads/"
+        "server": "youruser@yourhost.name",
+        "remote_dir": "/path/to/directory"
     }
 }

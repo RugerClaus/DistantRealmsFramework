@@ -1,5 +1,5 @@
 {
-    "app_name": "myapp",
+    "app_name": "myapp_snapshot",
     "main": "main.py",
     "updater_main": "updater.py",
     "updater_name": "updater",
@@ -45,8 +45,8 @@
 
     "archive": {
         "enabled": true,
-        "name": "myapp_update_latest.zip",
-        "directory": "myapp_update_linux"
+        "name": "myapp_snapshot_latest_linux.zip",
+        "directory": "myapp_snapshot_linux"
     },
 
     "deployment": {

@@ -14,7 +14,7 @@ if [ -z "$CONFIG_NAME" ]; then
 fi
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CONFIG="$ROOT/${CONFIG_NAME}.json"
+CONFIG="$ROOT/z-build_configuration/${CONFIG_NAME}.json"
 
 if [ ! -f "$CONFIG" ]; then
   echo "Configuration not found: $CONFIG"
