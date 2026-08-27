@@ -1,6 +1,6 @@
 import os
 from systemlogging import log_event,log_error,log_warning
-from core.application.save_schema import schema
+from application.save_schema import schema
 
 class Save():
     def __init__(self):

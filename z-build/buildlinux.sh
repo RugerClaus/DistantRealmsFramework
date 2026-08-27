@@ -13,13 +13,14 @@ if [ -z "$CONFIG_NAME" ]; then
   exit 1
 fi
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CONFIG="$ROOT/z-build_configuration/${CONFIG_NAME}.json"
 
 if [ ! -f "$CONFIG" ]; then
   echo "Configuration not found: $CONFIG"
   exit 1
 fi
+
 
 APP_NAME=$(jq -r '.app_name' "$CONFIG")
 MAIN=$(jq -r '.main' "$CONFIG")
@@ -53,11 +54,11 @@ function copy_assets() {
   echo "Copying application files..."
 
   while IFS= read -r FILE; do
-    cp -R "$ROOT/$FILE" "$TARGET"
+    cp -r "$ROOT/$FILE" "$TARGET"
   done < <(jq -r '.assets[]' "$CONFIG")
 
   while IFS= read -r FILE; do
-    cp -R "$ROOT/$FILE" "$TARGET"
+    cp -r "$ROOT/$FILE" "$TARGET"
   done < <(jq -r '.copy[]' "$CONFIG")
 
   mkdir -p "$TARGET/logs"
@@ -78,7 +79,7 @@ function cleanup_internal() {
 
 
 function build_main() {
-  echo "Building $APP_NAME macOS application..."
+  echo "Building $APP_NAME executable..."
 
   TMP_DIST="$DIST_ROOT/${APP_NAME}_tmp"
   FINAL_DIST="$DIST_ROOT/$APP_NAME"
@@ -87,24 +88,25 @@ function build_main() {
 
   pyinstaller "$ROOT/$MAIN" \
     "--$BUILD_MODE" \
-    --icon="$ROOT/assets/images/build/mac.icns" \
+    --icon="assets/images/build/${APP_NAME}.png" \
     --clean \
     --name "$APP_NAME" \
+    --contents-directory distantrealms \
     --add-data "$ROOT/assets:assets" \
     --add-data "$ROOT/logs:logs" \
     --add-data "$ROOT/saves:saves" \
     --add-data "$ROOT/environment:environment" \
-    $(if [ "$WINDOWED" == "true" ]; then echo "--windowed"; fi) \
-    $(if [ "$NOCONSOLE" == "true" ]; then echo "--noconsole"; fi) \
-    $(if [ "$DEBUG" == "true" ]; then echo "--debug all"; fi) \
     --distpath "$TMP_DIST" \
     --workpath "$WORK_ROOT/$APP_NAME" \
-    --specpath "$SPEC_ROOT/$APP_NAME"
+    --specpath "$SPEC_ROOT/$APP_NAME" \
+    $(if [ "$WINDOWED" == "true" ]; then echo "--windowed"; fi) \
+    $(if [ "$NOCONSOLE" == "true" ]; then echo "--noconsole"; fi) \
+    $(if [ "$DEBUG" == "true" ]; then echo "--debug all"; fi)
 
   rm -rf "$FINAL_DIST"
   mkdir -p "$FINAL_DIST"
 
-  mv "$TMP_DIST/$APP_NAME.app" "$FINAL_DIST/$APP_NAME.app"
+  mv "$TMP_DIST/$APP_NAME"/* "$FINAL_DIST"/
   rm -rf "$TMP_DIST"
 
   copy_assets "$FINAL_DIST"
@@ -118,7 +120,7 @@ function build_updater() {
     return
   fi
 
-  echo "Building macOS updater..."
+  echo "Building updater executable..."
 
   TMP_DIST="$DIST_ROOT/updater_tmp"
   FINAL_DIST="$DIST_ROOT/$APP_NAME"
@@ -139,7 +141,6 @@ function build_updater() {
   rm -rf "$TMP_DIST"
 }
 
-
 function zip_build() {
   if [ "$ARCHIVE_ENABLED" != "true" ]; then
     return
@@ -156,7 +157,7 @@ function zip_build() {
 
   mkdir -p "$UPDATE_TMP/$ARCHIVE_DIRECTORY"
 
-  cp -R "$FINAL_DIST"/. "$UPDATE_TMP/$ARCHIVE_DIRECTORY"/
+  cp -r "$FINAL_DIST"/. "$UPDATE_TMP/$ARCHIVE_DIRECTORY"/
 
   cd "$UPDATE_TMP"
   zip -r "$ZIP_FILE" "$ARCHIVE_DIRECTORY"
@@ -203,6 +204,8 @@ rm -rf "$SPEC_ROOT"
 if [ "$ARCHIVE_ENABLED" == "true" ]; then
   zip_build
 fi
+
+rm -rf "$DIST_ROOT/_internal/assets"
 
 if [ "$DEPLOY" = true ]; then
   deploy_build

@@ -4,7 +4,7 @@ from core.engine.system import System
 from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
 
 def main():
-    parser = argparse.ArgumentParser(description="Game Startup")
+    parser = argparse.ArgumentParser(description="Application Startup")
     
     parser.add_argument('--dev', action='store_true', help="Enable developer mode")
     parser.add_argument('--devg', action='store_true', help="Enables developer mode and opens the game in Endless mode, skipping the menu")

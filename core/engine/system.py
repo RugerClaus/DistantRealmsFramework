@@ -13,8 +13,8 @@ from core.engine.network.network import Network
 from core.engine.user import User
 from core.engine.telemetry import system_monitor
 from core.loading.BootSplashManager import BootSplashManager
-from core.application.app_inspector import app_inspector
-from core.application.save_schema import schema
+from application.app_inspector import app_inspector
+from application.save_schema import schema
 
 # state systems
 from core.state.RuntimeLayer.NetworkLayer.Login.statemanager import LoginStateManager
@@ -67,13 +67,15 @@ class System():
         self.app_inspector = app_inspector # this is an observer
         self.save_telemetry = "" # this sends a message to the main menu if there is no save file found
 
+        self.system_monitor["Distant Realms Version"] = config.get("FRAMEWORK VERSION")
+
         if self.network.check_network_status():
             self.system_monitor["network"] = "Connected"
         else:
             self.system_monitor["network"] = "Not Connected"
     
         self.system_monitor["OS"] = config.get("OS") 
-
+        
         self.loading = None
         self.application = None
 

@@ -1,4 +1,4 @@
-from core.application.entities.type import EntityType
+from application.entities.type import EntityType
 
 class EntityManager:
     def __init__(self, system):

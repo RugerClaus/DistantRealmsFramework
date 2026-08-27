@@ -6,7 +6,7 @@ from core.state.RuntimeLayer.state import RUNTIME_STATE
 from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
 from core.ui.loader import UILoader
 from core.ui.actionmanager import UIActionManager
-from core.application.action_register import ActionRegistrar
+from application.action_register import ActionRegistrar
 from core.ui.uicontroller import UIController
 
 class DistantRealms:
@@ -38,7 +38,7 @@ class DistantRealms:
         import importlib
         from core.ui import actionmanager, loader
         from core.ui import uicontroller
-        from core.application import action_register
+        from application import action_register
 
         current_ui = self.ui_controller.active_name
 
@@ -59,7 +59,7 @@ class DistantRealms:
 
     def reload_application(self):
         import importlib
-        from core.application import application
+        from application import application
 
         importlib.reload(application)
 

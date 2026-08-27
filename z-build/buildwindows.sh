@@ -13,7 +13,7 @@ if [ -z "$CONFIG_NAME" ]; then
   exit 1
 fi
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CONFIG="$ROOT/z-build_configuration/${CONFIG_NAME}.json"
 
 if [ ! -f "$CONFIG" ]; then
@@ -100,6 +100,7 @@ function build_main() {
     --icon="$ASSETS_PATH_WIN/images/build/${APP_NAME}.png" \
     --clean \
     --name "$APP_NAME" \
+    --contents-directory distantrealms \
     --add-data "$ASSETS_PATH_WIN;assets" \
     --add-data "$SAVES_PATH_WIN;saves" \
     --add-data "$ENVIRONMENT_PATH_WIN;environment" \

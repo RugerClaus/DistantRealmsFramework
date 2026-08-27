@@ -1,8 +1,1 @@
-Development version Alpha 0.6.1 - 2026-08-XX
-- Added core/engine/backends with opengl and pygame
-- Initilized pygame in backend
-- Removed all imports for pygame outside of core/engine/backends/pygame.py and core/engine/input/keys.py
-- Added Window backend config to config.py and example.config
-- Added world system to engine. Migrated changes to Editor
-- Editor will be a feature complete graphical editor for all parts of games now
-- Build script is now entirely configurable and offers you the option to deploy your build using FTP to your server where you host the ZIP package
+Development version Alpha 0.7.1 - 2026-08-XX
