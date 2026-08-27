@@ -1,5 +1,5 @@
 {
-    "app_name": "myapp",
+    "app_name": "myapp_Latest_Linux",
     "main": "main.py",
     "updater_main": "updater.py",
     "updater_name": "updater",
@@ -12,9 +12,10 @@
 
     "build": {
         "mode": "onedir",
+        "icon": "assets/images/build/myapp_Latest_Linux.png",
         "windowed": true,
         "noconsole": true,
-        "debug": false
+        "debug": true
     },
 
     "assets": [
@@ -47,12 +48,12 @@
 
     "archive": {
         "enabled": true,
-        "name": "myapp_update_latest_linux.zip",
-        "directory": "myapp_update_linux"
+        "name": "myapp_Latest_Linux.zip",
+        "directory": "myapp_Latest_Linux"
     },
 
     "deployment": {
-        "server": "youruser@yourhost.name",
-        "remote_dir": "/path/to/directory"
+        "server": "user@hostname",
+        "remote_dir": "mywebsite.tld/path/to/dir/"
     }
 }
