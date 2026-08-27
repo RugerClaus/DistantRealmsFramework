@@ -57,12 +57,12 @@ You do not need to understand every single directory or class to get started. Th
     ├── main.py              # System application entry point
     ├── config.py            # Application/framework configuration
     ├── setup.sh             # Framework setup
-    ├── buildlinux.sh        # Linux build script
-    ├── buildwindows.sh      # Windows build script
-    ├── buildmacos.sh        # macOS build script
+    ├── releaselinux.sh, snapshotlinux.sh        # Linux build script
+    ├── releasewindows.sh, snapshotwindows.sh      # Windows build script
+    ├── releasemacos.sh, snapshotmacos.sh        # macOS build script
     └── README.md            # Framework documentation
 
-You'll be doing most of your work inside the ```core/``` directory in ``` core/application```. Inside that directory, you'll find ```application.py``` containing a class called ```Application```. This class is where all your code goes, and anything else you add, including directories and modules, should remain beneath ```core/application```, unless you're creating state machines, in which case follow the documentation near the bottom of the README.
+You'll be doing most of your work inside the ```core/``` directory in ``` application```. Inside that directory, you'll find ```application.py``` containing a class called ```Application```. This class is where all your code goes, and anything else you add, including directories and modules, should remain beneath ```application```, unless you're creating state machines, in which case follow the documentation near the bottom of the README.
 
 The ```core/``` directory is really where all the magic is happening, so I'm going to give a basic rundown on each directory inside of it:
     
@@ -75,7 +75,7 @@ The ```core/``` directory is really where all the magic is happening, so I'm goi
     ├── ui/              # Framework UI system and widgets
     └── util/            # Shared utility classes, helpers, and supporting functionality
 
-For example, ```core/util``` contains the ```DebugOverlay``` class in ```core/util/debugoverlay.py```. This is the service container for all the functionality of the debug overlay. This is the perfect example of a file, you'll likely never need to think about. The same goes for mostly anything outside of ```core/application```. You may find yourself using the state system as well, and you'll primarily be working in, and creating your state machines in ```core/state/ApplicationLayer/```. This will all be explained under the State Machine section of the docs.
+For example, ```core/util``` contains the ```DebugOverlay``` class in ```core/util/debugoverlay.py```. This is the service container for all the functionality of the debug overlay. This is the perfect example of a file, you'll likely never need to think about. The same goes for mostly anything outside of ```application```. You may find yourself using the state system as well, and you'll primarily be working in, and creating your state machines in ```core/state/ApplicationLayer/```. This will all be explained under the State Machine section of the docs.
 
 # About 3rd party dependencies:
 
@@ -96,7 +96,7 @@ Mutagen provides the File function for getting attributes of WAV files for all i
 
 Requests is used for networking capabilities. There are built in assumptions for http requests as well as ensuring the system is online, and having fallbacks for if it is not online.
 
-Finally PyInstaller is used by the built in buildscripts (buildlinux.sh,buildwindows.sh,buildmacos.sh) to package executables of whatever program you decide to make with the framework.
+Finally PyInstaller is used by the built in buildscripts (releaselinux.sh, snapshotlinux.sh, releasewindows.sh, snapshotwindows.sh,releasemacos.sh, snapshotmacos.sh) to package executables of whatever program you decide to make with the framework.
 
 # Included tools of the ecosystem
 
@@ -128,9 +128,75 @@ Again this is also sequential. The whole system is modular.
 
 By default, the length of splash screens will be 3 seconds unless you have a sound effect (splash1, 2, 3, etc...) in which case that splash screen will be the length of your sound effect by default.
 
+# Automated build/package and deployment system
+
+To use the automated build/package and deployment system, you'll need a couple things:
+
+1. An endpoint
+
+This is where you keep your distributable ZIP file, such as:
+
+yoursite.tld/downloads/linux
+yoursite.tld/downloads/windows
+
+The system expects you to have somewhere it can upload the finished builds.
+
+2. Build configuration
+
+Configure the application name and your server details in the appropriate files under:
+
+z-build_configuration/
+
+For example:
+
+    z-build_configuration/releaselinux.json
+    z-build_configuration/releasewindows.json
+    z-build_configuration/snapshotlinux.json
+    z-build_configuration/snapshotwindows.json
+
+3. Run the build
+
+As long as everything is configured correctly, you can run a single command to build, or build and deploy, a snapshot or release.
+
+For example:
+
+./releaselinux.sh --deploy
+
+The --deploy flag causes the deployment section of the build configuration to be used. The system connects to your server through SFTP using the configured user@server login. Once you enter your SSH password, the build will automatically be deployed to the location you configured, as long as the destination directory already exists on the server.
+
+Update files
+
+The update files contain everything that should be replaced in the user's installation directory when an update is installed.
+
+User data, such as saves, should not be included in the update ZIP. The build system is designed so that user-facing data is normally not included in the update archive in the first place.
+
+You can then configure the update ZIP in config.py using the UPDATE_ZIP_NAME setting. As long as the URL is correct, the system expects you to have platform-specific endpoints such as:
+
+yoursite.tld/linux
+yoursite.tld/windows
+
+This allows the appropriate update ZIP to be distributed for each operating system.
+
+Once everything is configured, a single command can handle the entire process:
+
+build → package → create update ZIP → deploy → deploy update ZIP
+Snapshot builds
+
+The system also supports multiplatform snapshot builds that deploy using the same process as release builds.
+
+Snapshots are intended to be throwaway builds rather than permanent releases, so they're useful for development builds, testing, or nightly builds.
+
+For example:
+
+./snapshotlinux.sh --deploy
+
+The same configuration and deployment system is used for both snapshots and releases, so once an application is configured, there isn't much else you need to do.
+
+As an addendum, the system also generates a frozen copy of your source and packages it in an archive in the `freeze_source/` directory! This is useful for having a frozen state for your build in case you want to rebuild with the same conditions.
+
 # Getting Started Making Games and Apps
 
-To start off you'll be wanting to work in core/application/application.py. Here you will immediately find the patterns that the engine expects you to follow.
+To start off you'll be wanting to work in application/application.py. Here you will immediately find the patterns that the engine expects you to follow.
 
 The core functions for frame by frame operations are as follows:
 
@@ -294,7 +360,7 @@ Save Schema:
     
     ```system.save_schema = {}```
 
-The save schema pulls from core/application/save_schema.py where you can set values and data types to be saved using the built in serializeation system set up below (see Persistence). This is useful for creating game saves in a safe, serialized format that can easily be reloaded and modified at any time.
+The save schema pulls from application/save_schema.py where you can set values and data types to be saved using the built in serializeation system set up below (see Persistence). This is useful for creating game saves in a safe, serialized format that can easily be reloaded and modified at any time.
 
 System Monitor:
 
@@ -371,7 +437,7 @@ Application:
 
     ```system.application = None```
 
-The `system.application` variable contains, when your application is running, the actual interface you interact with when building your application. You'll access this from your `Application` class, located in `core/application/application.py`, you'll access it via `Application.distant_realms`. However, that the representation of the `system.application` variable. When your application is initialized, the `System` runs its `System.initialize_application()` method. The `DistantRealms` class is assigned to ```system.application```. This makes your application entirely hot reloadable. 
+The `system.application` variable contains, when your application is running, the actual interface you interact with when building your application. You'll access this from your `Application` class, located in `application/application.py`, you'll access it via `Application.distant_realms`. However, that the representation of the `system.application` variable. When your application is initialized, the `System` runs its `System.initialize_application()` method. The `DistantRealms` class is assigned to ```system.application```. This makes your application entirely hot reloadable. 
 
 That covers the core modules set up on the System object. Calling methods on these modules will allow you full control of your application from the bottom up. With the Runtime class handling the core event loop/routing, you will never write a ```while True``` loop again when creating an application. Below we will continue with explaining how Runtime works, and following that, I will start adding the documentation for the Window, Sound, and Input systems, and I will begin discussing how to best start your project, be it a game, inventory management desktop application, or anything else!
 
@@ -1245,7 +1311,7 @@ It stores in `saves/appdata/app.sav`
 
 In order to save to it you can pass data in like this example:
 [16]
-Enter your save parameters in `core/application/save_schema.py`:
+Enter your save parameters in `application/save_schema.py`:
 
     ```
         #save_schema.py
@@ -1360,7 +1426,7 @@ This is not an instruction manual on how to use the editor. This is an instructi
 
 In the section **Project Structure**, I pointed out the `tools/` directory. Well that directory is not here by default, and that is by design. To get started with designing your own menus and input data forms, go ahead and run the following command:
 
-NOTE: At some point I may include a sprite loader in the `core/application` directory, however it is not a direct priority of the framework until I've finished the workflow.
+NOTE: At some point I may include a sprite loader in the `application` directory, however it is not a direct priority of the framework until I've finished the workflow.
 
 [21]
 Linux:
@@ -1386,7 +1452,7 @@ All you really need to know in that case, is how to show UIs, and this can be ac
                 self.system = distant_realms.system 
     ```
 
-As you can see in the above example of the usable `Application` class located in `core/application/application.py`, the distant_realms object is just a variable we have access to. This is how the entire system is injected into your application.
+As you can see in the above example of the usable `Application` class located in `application/application.py`, the distant_realms object is just a variable we have access to. This is how the entire system is injected into your application.
 
 Most framework level systems use the System object directly, but the `DistantRealms` class provides an extra barrier of interfaces that you can interact with and use. 
 
@@ -1414,7 +1480,7 @@ No fluff, nothing extra to take care of. Just clear the UI.
 
 But you're asking me, how in the world do "I, the developer" control the ui elements and dynamically change them? How do I actually connect to button actions and assign functionality to them? And we're about to explain just how to do those things, as that will complete the minimal amount of information you need to know to become productive with this framework at this point, while not having to understand the intricacies of the UI framework. 
 
-Let's begin with `core/application/action_register.py`. This file is something you'll be editing often. See, when you create a Button with the framework, one of its properities is "Action". This is arbitrary. You can name your actions whatever you want. the important part would be following the pattern in the example below, which is a direct copy of the included `action_register.py` file:
+Let's begin with `application/action_register.py`. This file is something you'll be editing often. See, when you create a Button with the framework, one of its properities is "Action". This is arbitrary. You can name your actions whatever you want. the important part would be following the pattern in the example below, which is a direct copy of the included `action_register.py` file:
 [24]
     ```
         class ActionRegistrar:
