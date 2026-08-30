@@ -4,9 +4,10 @@ from core.engine.world.map import Map
 
 class MapLoader:
 
-    def __init__(self, system, environment=None):
+    def __init__(self, system, environment):
         self.system = system
         self.environment = environment
+        self.def_loader = CellDefinitionLoader()
 
     def load(self, index_path):
         with open(index_path, "r") as file:
@@ -32,10 +33,18 @@ class MapLoader:
 
             scale = len(cell_map[0]) / 16
 
+            cell_palette = self.def_loader.load(
+                os.path.join(
+                    base_path,
+                    index["cell_palette"]
+                )
+            )
+
             map = Map(
                 self.system,
                 scale,
-                self.environment
+                self.environment,
+                cell_palette
             )
 
             map.name = os.path.splitext(filename)[0]
@@ -60,9 +69,24 @@ class MapLoader:
             map.world_y = entry.get("world_y",0)
 
             map.load_cells(cell_map)
+            map.create_layer_surface()
 
             maps.append(map)
 
         maps.sort(key=lambda map: map.z)
 
         return maps
+
+class CellDefinitionLoader:
+
+    def load(self, filename):
+
+        with open(filename, "r") as file:
+            definitions = json.load(file)
+
+        definitions = definitions.get("cell_map", {})
+
+        return {
+            int(cell_id): data
+            for cell_id, data in definitions.items()
+        }

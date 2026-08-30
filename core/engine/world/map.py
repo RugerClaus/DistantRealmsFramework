@@ -1,13 +1,12 @@
 from helper import sine
 from core.util.colors import *
 from core.engine.world.cell import Cell
-from core.engine.world.cell_map import cell_data_map
 from core.engine.world.mapdef import MapDef
 
 
 class Map:
 
-    def __init__(self, system, scale, environment=None):
+    def __init__(self, system, scale, environment=None,cell_data_map=None):
         self.system = system
         self.name = None
         self.z_index = 0
@@ -16,7 +15,7 @@ class Map:
         self.cell_positions = []
         self.grid_scale = scale
         self.scale()
-        self.cell_data_map = cell_data_map
+        self.cell_data_map = cell_data_map or {}
         self.world_x = 0
         self.world_y = 0
         self.velocity_x = 0
