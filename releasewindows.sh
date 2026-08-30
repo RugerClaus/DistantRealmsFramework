@@ -30,6 +30,7 @@ rm -f "$ARCHIVE"
 
 zip -r "$ARCHIVE" . \
     -x ".git/*" \
+    -x "config.py" \
     -x "freeze_source/*" \
     -x "$ARCHIVE"
 
