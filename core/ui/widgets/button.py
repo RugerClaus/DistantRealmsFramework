@@ -2,7 +2,6 @@ from systemlogging import log_error, log_warning
 from core.state.RuntimeLayer.UI.Button.statemanager import ButtonStateManager
 from core.state.RuntimeLayer.UI.Button.state import BUTTON_STATE
 from core.state.RuntimeLayer.Audio.Interface.state import INTERFACE_SFX_STATE
-from core.ui.font import FontEngine
 from core.ui.render.button import ButtonRenderer
 from core.ui.element import UIElement
 from core.ui.type import WIDGET
@@ -23,7 +22,7 @@ class Button(UIElement):
         self.system = system
         self.id = id
         super().__init__(position)
-        self.font = FontEngine(font_size).font
+        self.font_size = font_size
         self.text = str(text)
         self.type = WIDGET.BUTTON
         hover_background = (60,60,60)
@@ -119,7 +118,7 @@ class Button(UIElement):
         return styles
 
     def scale(self, preserve_position=False):
-
+        self.font = self.system.font.get_font(self.font_size)
         old_center = self.rect.center if preserve_position and self.rect is not None else None
 
         current_style = self.styles[self.state.state]

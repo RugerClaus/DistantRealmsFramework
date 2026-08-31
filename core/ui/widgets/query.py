@@ -1,6 +1,5 @@
 from core.ui.type import WIDGET
 from core.ui.element import UIElement
-from core.ui.font import FontEngine
 from core.util.colors import white
 class Query(UIElement):
     def __init__(self, system, id, text, font_size=40, position=(0.5, 0.2)):
@@ -9,7 +8,7 @@ class Query(UIElement):
         self.id = id
         self.type = WIDGET.QUERY
         self.text = text
-        self.font = FontEngine(font_size).font
+        self.font_size = font_size
         self.x_ratio, self.y_ratio = position
         self.default_color = white
         self.color = self.default_color
@@ -21,6 +20,7 @@ class Query(UIElement):
         self.scale()
 
     def scale(self):
+        self.font = self.system.font.get_font(self.font_size)
         x,y = self.get_screen_position()
         self.surf = self.font.render(self.text, False, self.color)
         self.rect = self.surf.get_rect(center=(x, y))

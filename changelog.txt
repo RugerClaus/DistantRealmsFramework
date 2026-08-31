@@ -1,1 +1,4 @@
-Development version Alpha 0.7.1 - 2026-08-XX
+Development version Alpha 0.7.1 - 2026-09-XX
+- Reworked the font system. Font sizes now scale dynamically with the window size.
+- Updated UI widgets and debug tools to retrieve fonts through the centralized FontEngine.
+- Font scaling now responds to window resize events.

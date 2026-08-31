@@ -67,3 +67,9 @@ class Form(UIElement):
 
     def update(self):
         self.ui.update()
+
+    def submit(self):
+        return {
+            name: element.get_return_string()
+            for name, element in self.fields.items()
+        }

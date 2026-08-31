@@ -1,4 +1,4 @@
-import math,random
+import math,random,os
 from config import config
 # core systems
 from core.engine.backends.pygame.pygame import PGInterface
@@ -13,7 +13,9 @@ from core.engine.network.network import Network
 from core.engine.user import User
 from core.engine.telemetry import system_monitor
 from core.loading.BootSplashManager import BootSplashManager
-from application.app_inspector import app_inspector
+
+from core.ui.font import FontEngine
+
 from application.save_schema import schema
 
 # state systems
@@ -32,6 +34,7 @@ class System():
 
         self.math = math
         self.random = random
+        self.os = os
 
         self.runtime_state = RuntimeStateManager()
         self.overlay_state = DebugStateManager()
@@ -61,10 +64,11 @@ class System():
         self.user = User(self)
 
         self.window = Window(self)
+        self.font = FontEngine(self)
         self.sound = AudioEngine(self)
         self.input = InputManager(self)
 
-        self.app_inspector = app_inspector # this is an observer
+        self.app_inspector = {} # this is an observer
         self.save_telemetry = "" # this sends a message to the main menu if there is no save file found
 
         self.system_monitor["Distant Realms Version"] = config.get("FRAMEWORK VERSION")

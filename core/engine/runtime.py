@@ -3,7 +3,6 @@ from core.util.colors import black
 from core.state.RuntimeLayer.state import RUNTIME_STATE
 from core.state.RuntimeLayer.DevTools.Debug.state import DEBUG_OVERLAY_STATE
 from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
-from core.state.RuntimeLayer.BootSplash.state import BOOT_SPLASH_STATE
 from core.util.debugoverlay import DebugOverlay
 
 class Runtime:
@@ -13,10 +12,10 @@ class Runtime:
         self.debug_overlay = DebugOverlay(system)
     
     def handle_events(self):
-        
         for event in self.system.input.input_event():
             command = self.system.input.handle_event(event)
             if event.type == self.system.input.video_resize_event():
+                self.system.font.scale(event.w,event.h)
                 self.debug_overlay.scale()
                 if self.system.loading:
                     self.system.loading.scale()

@@ -1,7 +1,6 @@
 from core.engine.input.controls import Controls
 from core.engine.input.CommandModule import CommandModule
 from core.engine.input.keys import Keys
-from core.ui.font import FontEngine
 
 
 class InputManager:
@@ -12,7 +11,7 @@ class InputManager:
         self.released_keys = set()
         self.key_history = {}
         self.surface = self.system.window.make_surface(self.system.window.get_width(), self.system.window.get_height(), True)
-        self.font = FontEngine("keypress").font
+        self.font = system.font.get_font("keypress")
         self.last_key = None
         self.last_key_time = 0
         self.key_display_timeout = 1000

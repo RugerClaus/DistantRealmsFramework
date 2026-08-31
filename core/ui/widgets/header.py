@@ -1,6 +1,5 @@
 from core.ui.type import WIDGET
 from core.ui.element import UIElement
-from core.ui.font import FontEngine
 from core.util.colors import white
 class Header(UIElement):
     def __init__(self, system, id, text, font_size=60, position=(0.5, 0.1),color=white):
@@ -9,7 +8,7 @@ class Header(UIElement):
         self.id = id
         self.type = WIDGET.HEADER
         self.text = text
-        self.font = FontEngine(font_size).font
+        self.font_size = font_size
         self.x_ratio, self.y_ratio = position
         self.color = color
         self.scale()
@@ -19,6 +18,7 @@ class Header(UIElement):
         self.color = color if color else self.default_color
 
     def scale(self):
+        self.font = self.system.font.get_font(self.font_size)
         x,y = self.get_screen_position()
         self.surf = self.font.render(self.text, False, self.color)
         self.rect = self.surf.get_rect(center=(x, y))

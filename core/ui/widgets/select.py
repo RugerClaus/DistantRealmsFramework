@@ -1,6 +1,5 @@
 from core.ui.type import WIDGET
 from core.ui.element import UIElement
-from core.ui.font import FontEngine
 from core.util.colors import red, white, black
 import ast
 
@@ -16,7 +15,7 @@ class Select(UIElement):
         self.id = id
 
         self.font_size = int(font_size)
-        self.font = FontEngine(self.font_size).font
+        self.font_size = font_size
 
         self.background_color = white
 
@@ -125,6 +124,7 @@ class Select(UIElement):
         self.scale()
 
     def scale(self):
+        self.font = self.system.font.get_font(self.font_size)
         window_width = self.system.window.get_width()
         window_height = self.system.window.get_height()
 

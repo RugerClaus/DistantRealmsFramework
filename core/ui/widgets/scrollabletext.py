@@ -1,6 +1,5 @@
 from core.ui.type import WIDGET
 from core.ui.element import UIElement
-from core.ui.font import FontEngine
 from core.util.colors import white
 
 
@@ -15,7 +14,7 @@ class ScrollableText(UIElement):
         self.type = WIDGET.SCROLLABLETEXT
 
         self.font_size = font_size
-        self.font = FontEngine(font_size).font
+        self.font_size = font_size
 
         self.position = tuple(position)
         self.x_ratio, self.y_ratio = self.position
@@ -119,6 +118,7 @@ class ScrollableText(UIElement):
         self.line_spacing = float(spacing)
 
     def scale(self):
+        self.font = self.system.font.get_font(self.font_size)
         screen_width = self.system.window.get_width()
         screen_height = self.system.window.get_height()
 

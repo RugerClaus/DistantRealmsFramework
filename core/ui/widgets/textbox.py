@@ -1,23 +1,20 @@
 from core.ui.type import WIDGET
 from core.ui.element import UIElement
-from core.ui.font import FontEngine
 from core.util.colors import red, white, black
 
 
 class TextBox(UIElement):
 
-    def __init__(self,system,id,position,dimensions=(0.1432, 0.0926),
-                 font_size=30,is_active=False,is_password=False,text=None,char_limit=21):
-        super().__init__(focusable=True, position=position)
+    def __init__(self,system,id,position,dimensions=(0.1432,0.0926),font_size=30,is_active=False,is_password=False,text=None,char_limit=21):
+        super().__init__(focusable=True,position=position)
 
         self.system = system
         self.id = id
-
-        self.font = FontEngine(font_size).font
+        self.font_size = font_size
 
         self.background_color = black
 
-        self.width, self.height = dimensions
+        self.width,self.height = dimensions
 
         self.text_width = 0.9091
         self.text_height = 0.5
@@ -50,7 +47,7 @@ class TextBox(UIElement):
     def clear_error(self):
         self.background_color = black
 
-    def set_text(self, text):
+    def set_text(self,text):
         text = str(text)
 
         if self.limit is not None:
@@ -61,11 +58,7 @@ class TextBox(UIElement):
         self.cursor_visible = True
         self.cursor_timer = self.system.time.get_current_time()
 
-    def handle_event(self, event):
-        if event.type == self.system.input.video_resize_event():
-            self.scale()
-            return
-
+    def handle_event(self,event):
         if not self.is_active:
             return
 
@@ -82,10 +75,10 @@ class TextBox(UIElement):
         if event.unicode and event.unicode.isprintable():
             self.add_key_to_box(event.unicode)
 
-    def contains_point(self, position):
+    def contains_point(self,position):
         return self.bounding_box_rect.collidepoint(position)
 
-    def set_active(self, state):
+    def set_active(self,state):
         self.is_active = state
         self.cursor_visible = True
         self.cursor_timer = self.system.time.get_current_time()
@@ -103,7 +96,7 @@ class TextBox(UIElement):
         return ""
 
     def scale(self):
-        x, y = self.get_screen_position()
+        x,y = self.get_screen_position()
 
         ww = self.system.window.get_width()
         wh = self.system.window.get_height()
@@ -113,14 +106,14 @@ class TextBox(UIElement):
 
         self.bounding_box = self.system.window.make_surface(width,height)
 
-        self.bounding_box_rect = self.bounding_box.get_rect(center=(x, y))
+        self.bounding_box_rect = self.bounding_box.get_rect(center=(x,y))
 
         self.bounding_box.fill(self.background_color)
 
         border = 2
 
-        text_width = max(1, width - border * 2)
-        text_height = max(1, height - border * 2)
+        text_width = max(1,width - border * 2)
+        text_height = max(1,height - border * 2)
 
         self.text_box = self.system.window.make_surface(text_width,text_height)
 
@@ -128,7 +121,7 @@ class TextBox(UIElement):
 
         self.text_box.fill(white)
 
-    def add_key_to_box(self, character):
+    def add_key_to_box(self,character):
         if self.limit is not None and len(self.box) >= self.limit:
             return
 
@@ -150,11 +143,11 @@ class TextBox(UIElement):
     def update(self):
         pass
 
-    def _get_visible_text(self, text, available_width):
+    def _get_visible_text(self,text,available_width,font):
         if not text:
             return ""
 
-        full_surface = self.font.render(text, False, black)
+        full_surface = font.render(text,False,black)
 
         if full_surface.get_width() <= available_width:
             return text
@@ -163,8 +156,7 @@ class TextBox(UIElement):
 
         for character in reversed(text):
             candidate = character + visible
-
-            candidate_surface = self.font.render(candidate,False,black)
+            candidate_surface = font.render(candidate,False,black)
 
             if candidate_surface.get_width() > available_width:
                 break
@@ -174,6 +166,8 @@ class TextBox(UIElement):
         return visible
 
     def draw(self):
+        font = self.system.font.get_font(self.font_size)
+
         if self.is_password:
             text = "*" * len(self.box)
         else:
@@ -181,15 +175,13 @@ class TextBox(UIElement):
 
         self.bounding_box.fill(self.background_color)
 
-        self.system.window.blit(self.bounding_box, self.bounding_box_rect)
-
-        self.system.window.blit(self.text_box, self.text_box_rect)
+        self.system.window.blit(self.bounding_box,self.bounding_box_rect)
+        self.system.window.blit(self.text_box,self.text_box_rect)
 
         cursor_surf = None
 
         if self.is_active:
-            cursor_surf = self.font.render("|",False,black)
-
+            cursor_surf = font.render("|",False,black)
             cursor_width = cursor_surf.get_width()
         else:
             cursor_width = 0
@@ -199,21 +191,20 @@ class TextBox(UIElement):
         if self.is_active:
             available_width -= cursor_width
 
-        available_width = max(1, available_width)
+        available_width = max(1,available_width)
 
-        visible_text = self._get_visible_text(text,available_width)
+        visible_text = self._get_visible_text(text,available_width,font)
 
-        surf = self.font.render(visible_text,False,black)
-        
+        surf = font.render(visible_text,False,black)
+
         if self.is_active:
-            text_right = (self.text_box_rect.right - cursor_width)
-
-            rect = surf.get_rect(midright=(text_right, self.text_box_rect.centery))
+            text_right = self.text_box_rect.right - cursor_width
+            rect = surf.get_rect(midright=(text_right,self.text_box_rect.centery))
         else:
             rect = surf.get_rect(center=self.text_box_rect.center)
 
-        self.system.window.blit(surf, rect)
+        self.system.window.blit(surf,rect)
 
         if self.draw_cursor():
-            cursor_rect = cursor_surf.get_rect(midleft=(rect.right, rect.centery))
-            self.system.window.blit(cursor_surf, cursor_rect)
+            cursor_rect = cursor_surf.get_rect(midleft=(rect.right,rect.centery))
+            self.system.window.blit(cursor_surf,cursor_rect)
