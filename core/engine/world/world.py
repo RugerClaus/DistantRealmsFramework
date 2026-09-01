@@ -18,14 +18,20 @@ class World:
         self.load_start_time = 0
         self.load_time = 0
         
-    def load_map_files(self, filename=None):
-        if self.map_loader:
-            if filename:
-                path = f"enginepersistence/world/{filename}.json"
-            else:
-                path = "enginepersistence/world/world.json"
+    def load_world(self, filename=None):
+        if not self.map_loader:
+            return
 
-            self.maps = self.map_loader.load(path)
+        for map in self.maps:
+            map.unload()
+
+        path = (
+            f"enginepersistence/world/{filename}.json"
+            if filename
+            else "enginepersistence/world/world.json"
+        )
+
+        self.maps = self.map_loader.load(path)
 
     def is_map_visible(self, map):
         if map.wrap_x or map.wrap_y:
@@ -98,7 +104,7 @@ class World:
         self.load_progress = 0.50
         self.load_message = "Loading map files..."
 
-        self.load_map_files()
+        self.load_world()
 
         self.load_progress = 1.0
         self.load_message = "Complete"
