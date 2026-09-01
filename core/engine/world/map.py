@@ -62,6 +62,22 @@ class Map:
     def total_rows(self):
         return self.rows * self.map_height
 
+    def set_cell(self, column, row, cell_id):
+        if column < 0 or column >= self.columns:
+            return
+
+        if row < 0 or row >= self.rows:
+            return
+
+        if cell_id not in self.cell_data_map:
+            raise ValueError(f"Unknown cell type: {cell_id}")
+
+        self.cell_map[row][column] = cell_id
+
+        self.load_cells(self.cell_map)
+
+        self.layer_dirty = True
+
     def get_cell_rect(self, column, row):
         ww = self.system.window.get_width()
         wh = self.system.window.get_height()

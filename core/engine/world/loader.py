@@ -48,6 +48,7 @@ class MapLoader:
             )
 
             map.name = os.path.splitext(filename)[0]
+            map.filename = filename
 
             map.z = entry.get("z", 0)
 

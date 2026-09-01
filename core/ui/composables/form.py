@@ -26,6 +26,27 @@ class Form(UIElement):
 
         return None
 
+    def set_values(self, values):
+
+        if not isinstance(values, dict):
+            return
+
+        for name, value in values.items():
+
+            element = self.fields.get(name)
+
+            if element is None:
+                continue
+
+            if hasattr(element, "set_value"):
+                element.set_value(value)
+
+            elif hasattr(element, "set_text"):
+                element.set_text(str(value))
+
+            elif hasattr(element, "text"):
+                element.text = str(value)
+
     def add_child(self, element):
         self.children.append(element)
         self.ui.add(element)

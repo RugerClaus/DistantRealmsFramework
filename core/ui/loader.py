@@ -151,14 +151,23 @@ class UILoader:
             )
 
         elif element_type == "select":
+            padding = data.get("padding", 10)
+
+            print(
+                "LOADING SELECT:",
+                element_id,
+                "JSON PADDING:",
+                padding
+            )
+
             return Select(
                 self.system,
                 element_id,
                 tuple(data.get("position", [0, 0])),
                 data.get("options"),
-                font_size=data.get("font_size",30),
+                padding=padding,
+                font_size=data.get("font_size", 30),
                 width=data.get("width", 0.1),
                 height=data.get("height", 0.1)
             )
-
         log_error(f"Unknown UI element type: {element_type}")

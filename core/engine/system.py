@@ -1,4 +1,4 @@
-import math,random,os
+import math,random,os,json
 from config import config
 # core systems
 from core.engine.backends.pygame.pygame import PGInterface
@@ -35,6 +35,7 @@ class System():
         self.math = math
         self.random = random
         self.os = os
+        self.json = json
 
         self.runtime_state = RuntimeStateManager()
         self.overlay_state = DebugStateManager()
