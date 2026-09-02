@@ -3,7 +3,7 @@ import platform
 config = {
     "TITLE": "Snow Blitz Beta prelease 1 -",
     "VERSION": "1.0.0-beta",
-    "FRAMEWORK VERSION": "0.6.1-alpha",
+    "FRAMEWORK VERSION": "0.7.1-alpha",
     "OS": platform.system(),
     "OSV": platform.version(),
     "OSR": platform.release(),

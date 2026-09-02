@@ -1,11 +1,9 @@
 import math,random,os,json
 from config import config
 # core systems
-from core.engine.backends.pygame.pygame import PGInterface
-from core.engine.backends.opengl.opengl import GLInterface
+from core.engine.backends.backend import Backend
 from core.engine.input.inputmanager import InputManager
 from core.engine.audioengine import AudioEngine
-from core.engine.window import Window
 from core.engine.time import Time
 from core.engine.persistence.persistence import Persistence
 from core.engine.network.update import Update
@@ -43,13 +41,7 @@ class System():
         self.state_monitor_state = StateMonitorStateManager()
         self.login_state = LoginStateManager()
 
-        windo_backend = config.get("WINDOW_BACKEND")
-        window_backend = windo_backend.lower()
-
-        if window_backend == "pygame":
-            self.backend = PGInterface()
-        elif window_backend == "opengl":
-            self.backend = GLInterface()
+        self.backend = Backend()
 
         self.time = Time(self)
 
@@ -64,7 +56,10 @@ class System():
 
         self.user = User(self)
 
-        self.window = Window(self)
+        print("pygame initialized:", self.backend.pygame.get_init())
+        print("display initialized:", self.backend.pygame.display.get_init())
+
+        self.load_window()
         self.font = FontEngine(self)
         self.sound = AudioEngine(self)
         self.input = InputManager(self)
@@ -129,3 +124,23 @@ class System():
             for collection in collections:
                 if state in collection:
                     collection.remove(state)
+
+    def load_window(self):
+        import importlib
+        import sys
+
+        backend = config.get("WINDOW_BACKEND", "pygame").lower()
+
+        if backend == "pygame":
+            module_name = "core.engine.window.pgwindow"
+        elif backend == "opengl":
+            module_name = "core.engine.window.glwindow"
+        else:
+            raise ValueError(f"Unknown window backend: {backend}")
+
+        if module_name in sys.modules:
+            module = importlib.reload(sys.modules[module_name])
+        else:
+            module = importlib.import_module(module_name)
+
+        self.window = module.Window(self)

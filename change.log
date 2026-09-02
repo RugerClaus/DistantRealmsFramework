@@ -91,8 +91,10 @@ Development version Alpha 0.7.0 - 2026-08-27
 - Removed application/ from core/. It is no longer part of the framework, but depends on it
 - Designed a fully modular, reusable, configurable build system with built in deployment via sftp
 
-Development version Alpha 0.7.1 - 2026-09-XX
+Development version Alpha 0.7.1 - 2026-09-02
 ------------------------------------------------
 - Reworked the font system. Font sizes now scale dynamically with the window size.
 - Updated UI widgets and debug tools to retrieve fonts through the centralized FontEngine.
 - Font scaling now responds to window resize events.
+- Decided on official boundary for hardware Acceleration
+- Began construction of DRAW (Distant Realms Ascended Window) pygame like interface that wraps complex opengl operations
