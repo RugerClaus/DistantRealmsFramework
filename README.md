@@ -15,7 +15,7 @@ This project has a few dependencies. The only third-party assets are the fonts i
 
 It uses the OpenSansPX font, a modified version of Open Sans, under the Apache License 2.0. See `LICENSE.txt` in the `assets/font` directory for details.
 
-There is no requirements.txt because there are only four dependencies.
+Dependencies listed in requirements.txt. `setup.py` handles installation.
 
 ## Setup
 
