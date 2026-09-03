@@ -5,7 +5,7 @@ from core.state.RuntimeLayer.DevTools.StateMonitor.state import MONITOR_STATE
 class DebugOverlay:
     def __init__(self, system):
         self.system = system
-        self.surface = system.window.draw_overlay((0, 0, 0), 128)
+        self.surface = system.window.make_surface(system.window.get_width(),system.window.get_height(),True)
         self.rect = self.surface.get_rect()
 
         self.font_left = 35
@@ -29,7 +29,7 @@ class DebugOverlay:
         pass
 
     def scale(self):
-        self.surface = self.system.window.draw_overlay((0, 0, 0), 128)
+        self.surface = self.system.window.make_surface(self.system.window.get_width(),self.system.window.get_height(),True)
         self.rect = self.surface.get_rect()
 
     def normalized_to_pixel(self, x, y):
@@ -58,7 +58,7 @@ class DebugOverlay:
             self.opacity = max(0,self.opacity - 32)
 
     def draw(self):
-        text_color = (255,255,255)
+        text_color = (0,0,0)
 
         font_left = self.system.font.get_font(self.font_left)
         font_right = self.system.font.get_font(self.font_right)

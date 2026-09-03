@@ -1,4 +1,4 @@
-import math,random,os,json
+import math,random,os,json,sys
 from config import config
 # core systems
 from core.engine.backends.backend import Backend
@@ -34,6 +34,7 @@ class System():
         self.random = random
         self.os = os
         self.json = json
+        self.sys = sys
 
         self.runtime_state = RuntimeStateManager()
         self.overlay_state = DebugStateManager()
@@ -41,7 +42,7 @@ class System():
         self.state_monitor_state = StateMonitorStateManager()
         self.login_state = LoginStateManager()
 
-        self.backend = Backend()
+        self.backend = Backend(self)
 
         self.time = Time(self)
 
@@ -104,6 +105,12 @@ class System():
         if self.application:
             self.application.clean_up()
         self.runtime_state.set_state(RUNTIME_STATE.QUIT)
+        if config["WINDOW_BACKEND"] == "pygame":
+            self.backend.pygame.quit()
+            self.sys.exit()
+        elif config["WINDOW_BACKEND"] == "draw":
+            self.backend.draw.quit()
+            self.sys.exit()
 
     def initialize_application(self):
         from core.engine.distant_realms import DistantRealms
@@ -133,8 +140,8 @@ class System():
 
         if backend == "pygame":
             module_name = "core.engine.window.pgwindow"
-        elif backend == "opengl":
-            module_name = "core.engine.window.glwindow"
+        elif backend == "draw":
+            module_name = "core.engine.window.drwindow"
         else:
             raise ValueError(f"Unknown window backend: {backend}")
 

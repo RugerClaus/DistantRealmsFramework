@@ -5,14 +5,12 @@
 ######
 
 import pygame
-import core.draw as draw
+import core.draw.draw as draw
 from OpenGL import GL, GLU
 class Backend:
-    def __init__(self):
+    def __init__(self,system):
         self.pygame = pygame
         self.pygame.init()
         self.pygame.font.init()
-        self.opengl = GL
-        self.openglu = GLU
         self.draw = draw
-        self.draw.init()
+        self.draw.init(GL,GLU,pygame)

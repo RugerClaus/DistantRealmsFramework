@@ -135,12 +135,13 @@ class Map:
 
         if not self.layer_dirty:
             return
-
+        
         self.layer_surface.fill((0, 0, 0, 0))
 
         for cell, (column, row) in zip(self.cells, self.cell_positions):
             rect = self.get_cell_rect(column, row)
             if cell.color:
+                print("CELL COLOR:", repr(cell.color), type(cell.color))
                 self.layer_surface.fill(cell.color, rect)
 
         self.layer_dirty = False

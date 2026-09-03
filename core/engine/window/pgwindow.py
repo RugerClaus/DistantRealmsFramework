@@ -157,6 +157,3 @@ class Window:
         return f"""{self.system.backend.pygame.display.Info()}\n,self.system.backend.PYGAMEDRIVER: \n{self.system.backend.pygame.display.get_driver()}
                 ,\n self.system.backend.PYGAMENUMDISPLAYS: {self.system.backend.pygame.display.get_num_displays()}
         """
-    
-    def quit(self):
-        return self.system.backend.pygame.quit()

@@ -1,4 +1,5 @@
 from helper import asset
+from config import config
 
 class FontEngine:
     PRESETS = {
@@ -50,9 +51,19 @@ class FontEngine:
         if type not in self.fonts:
             size = max(1, round(base_size * self.scale_factor))
 
-            self.fonts[type] = self.system.backend.pygame.font.Font(
-                asset("default_font"),
-                size
-            )
+            if config["WINDOW_BACKEND"] == "pygame":
+                font = self.system.backend.pygame.font.Font(
+                    asset("default_font"),
+                    size
+                )
+
+            elif config["WINDOW_BACKEND"] == "draw":
+                font = self.system.backend.draw.Font(
+                    self.system,
+                    asset("default_font"),
+                    size
+                )
+
+            self.fonts[type] = font
 
         return self.fonts[type]

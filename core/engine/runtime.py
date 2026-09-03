@@ -1,4 +1,3 @@
-import sys
 from core.util.colors import black
 from core.state.RuntimeLayer.state import RUNTIME_STATE
 from core.state.RuntimeLayer.DevTools.Debug.state import DEBUG_OVERLAY_STATE
@@ -44,6 +43,7 @@ class Runtime:
     def run(self):
         while not self.system.runtime_state.is_state(RUNTIME_STATE.QUIT):
             self.system.window.fill(black)
+            self.system.backend.draw.process_gpu_tasks()
             self.handle_events()
 
             if self.system.runtime_state.is_state(RUNTIME_STATE.SPLASH):
@@ -55,8 +55,7 @@ class Runtime:
                     self.system.application.update()
                     self.system.application.draw()
             elif self.system.runtime_state.is_state(RUNTIME_STATE.QUIT):
-                self.system.window.quit()
-                sys.exit()
+                self.system.quit()
             if self.system.overlay_state.is_state(DEBUG_OVERLAY_STATE.ON):
                 self.debug_overlay.update()
                 self.debug_overlay.draw()

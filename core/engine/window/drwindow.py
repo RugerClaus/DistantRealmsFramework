@@ -22,6 +22,9 @@ class Window:
 
         self.Rect = self.system.backend.pygame.Rect
 
+        self.test_surface = system.backend.draw.Surface(system, (200, 200), True)
+        self.test_surface.fill((255, 0, 0, 255))
+
     # ---------------------------------------------------------
     # Compatibility / Utility
     # ---------------------------------------------------------
@@ -34,16 +37,34 @@ class Window:
         return self.Rect(x, y, w, h)
 
     def make_surface(self, width, height, alpha=False):
-        flags = self.system.backend.pygame.SRCALPHA if alpha else 0
-        return self.system.backend.pygame.Surface(
+        return self.system.backend.draw.Surface(
+            self.system,
             (width, height),
-            flags
+            alpha
         )
 
     def load_image(self, file_like):
         image = self.system.backend.pygame.image.load(file_like)
-        image = image.convert_alpha()
-        return image.copy()
+
+        print(
+            "IMAGE:",
+            image.get_size(),
+            image.get_flags(),
+            image.get_alpha()
+        )
+
+        surface = self.system.backend.draw.Surface(
+            self.system,
+            image.get_size(),
+            image.get_alpha() is not None
+        )
+
+        self.system.backend.draw.upload_surface(
+            surface,
+            image
+        )
+
+        return surface
 
     def transform_scale(
         self,
@@ -51,7 +72,7 @@ class Window:
         new_surface_width,
         new_surface_height
     ):
-        return self.system.backend.pygame.transform.scale(
+        return self.system.backend.draw.transform.scale(
             original_surface,
             (
                 new_surface_width,
@@ -86,10 +107,12 @@ class Window:
         self.width = width
         self.height = height
 
-        self.system.backend.draw.init(
+        self.system.backend.draw.set_mode(
+            self.system,
             width,
             height,
             title=f"{config['TITLE']} {config['VERSION']}",
+            resizable=True,
             fullscreen=self.fullscreen
         )
 
@@ -131,16 +154,11 @@ class Window:
             color = color
 
         elif isinstance(color, tuple) and len(color) == 3:
-            alpha = (
-                alpha
-                if alpha is not None
-                else 255
-            )
-
-            color = (*color, alpha)
+            alpha = alpha if alpha is not None else 255
 
         elif isinstance(color, tuple) and len(color) == 4:
-            color = color
+            alpha = color[3]
+            color = color[:3]
 
         else:
             raise ValueError(
@@ -148,7 +166,7 @@ class Window:
                 "tuples or color strings"
             )
 
-        self.system.backend.draw.draw.clear(color)
+        self.system.backend.draw.clear(color, alpha)
 
     def draw_overlay(self, color, alpha):
 
@@ -158,7 +176,7 @@ class Window:
             alpha=True
         )
 
-        overlay.fill((*color, alpha))
+        overlay.fill(color,alpha)
 
         return overlay
 
@@ -173,7 +191,7 @@ class Window:
 
         if isinstance(color, tuple):
 
-            self.system.backend.draw.draw.line(
+            self.system.backend.draw.line(
                 surface,
                 point_a,
                 point_b,
@@ -191,7 +209,7 @@ class Window:
         points
     ):
 
-        self.system.backend.draw.draw.polygon(
+        self.system.backend.draw.polygon(
             surface,
             color,
             points
@@ -208,7 +226,7 @@ class Window:
 
         if not isinstance(
             surface,
-            self.system.backend.pygame.Surface
+            self.system.backend.draw.Surface
         ):
             log_error(
                 "circle surface must be a Surface",
@@ -246,7 +264,7 @@ class Window:
             )
 
         else:
-            self.system.backend.draw.draw.circle(
+            self.system.backend.draw.circle(
                 surface,
                 color,
                 center,
@@ -264,31 +282,23 @@ class Window:
         object=None
     ):
 
-        if not isinstance(
-            surface,
-            self.system.backend.pygame.Surface
-        ):
-            log_error(
-                "rect surface must be a Surface",
-                object
-            )
-            return
 
-        elif not isinstance(color, tuple):
+        if not isinstance(color, tuple):
             log_error(
                 "color must be a tuple",
                 object
             )
 
-        elif not isinstance(
+        if not isinstance(
             rect,
             self.system.backend.pygame.Rect
         ):
             log_error(
                 "rect must be a self.system.backend.pygame.Rect"
             )
+            return
 
-        self.system.backend.draw.draw.rect(
+        self.system.backend.draw.rect(
             surface,
             color,
             rect,
@@ -314,7 +324,7 @@ class Window:
                 h
             )
 
-        self.system.backend.draw.draw.blit(
+        self.system.backend.draw.blit(
             surface,
             destination,
             area
@@ -328,7 +338,12 @@ class Window:
         return self.system.backend.draw.get_screen()
 
     def update(self):
-        self.system.backend.draw.present()
+        self.blit(
+            self.test_surface,
+            self.system.backend.pygame.Rect(0, 500, 200, 200)
+        )
+
+        self.system.backend.draw.flip()
 
     # ---------------------------------------------------------
     # Miscellaneous
@@ -339,6 +354,3 @@ class Window:
 
     def get_info(self):
         return self.system.backend.draw.get_info()
-
-    def quit(self):
-        return self.system.backend.draw.quit()
