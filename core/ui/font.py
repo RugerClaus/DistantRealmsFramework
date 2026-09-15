@@ -42,25 +42,29 @@ class FontEngine:
 
         self.fonts.clear()
 
-    def get_font(self, type="default"):
+    def get_font(self, type="default", ttf=None):
         if isinstance(type, int):
             base_size = type
         else:
             base_size = self.PRESETS.get(type, self.PRESETS["default"])
+
+        if not ttf:
+            ttf = "default_font"
+        else: ttf = ttf
 
         if type not in self.fonts:
             size = max(1, round(base_size * self.scale_factor))
 
             if config["WINDOW_BACKEND"] == "pygame":
                 font = self.system.backend.pygame.font.Font(
-                    asset("default_font"),
+                    asset(ttf),
                     size
                 )
 
             elif config["WINDOW_BACKEND"] == "draw":
                 font = self.system.backend.draw.Font(
                     self.system,
-                    asset("default_font"),
+                    asset(ttf),
                     size
                 )
 

@@ -45,6 +45,9 @@ class Window:
 
     def transform_smoothscale(self,original,newW,newH):
         return self.system.backend.pygame.transform.smoothscale(original,(newW,newH))
+
+    def transform_rotate(self,surface,angle):
+        return self.system.backend.pygame.transform.rotate(surface,angle)
     
     def toggle_fullscreen(self):
         if not self.fullscreen:
