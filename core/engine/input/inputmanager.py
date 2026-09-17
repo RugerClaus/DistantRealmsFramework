@@ -84,6 +84,8 @@ class InputManager:
         self.surface = self.system.window.make_surface(w,h,True)
         self.draw_most_recent_keypress()
 
+    def window_resize_event(self):
+        return self.system.backend.pygame.WINDOWRESIZED
 
     def draw_most_recent_keypress(self):
         self.surface.fill((0, 0, 0, 0))  

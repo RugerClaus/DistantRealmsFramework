@@ -31,6 +31,7 @@ class Select(UIElement):
         self.scroll_offset = 0
         self.surface = None
         self.rect = None
+        self.render_rect = None
         self.select_rect = None
         self.option_rects = []
         self.scale()
@@ -190,6 +191,7 @@ class Select(UIElement):
             total_height += visible_count * option_height
 
         self.surface = self.system.window.make_surface(width, total_height)
+        self.render_rect = self.surface.get_rect(midtop=(x, y - height // 2))
         self.option_rects = []
 
         if not self.is_open:
@@ -313,4 +315,4 @@ class Select(UIElement):
 
                 self.system.window.draw_rect(self.surface, black, rect, 1)
 
-        self.system.window.blit(self.surface, self.rect)
+        self.system.window.blit(self.surface, self.render_rect)

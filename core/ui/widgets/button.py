@@ -1,4 +1,5 @@
 from systemlogging import log_error, log_warning
+from core.util.colors import *
 from core.state.RuntimeLayer.UI.Button.statemanager import ButtonStateManager
 from core.state.RuntimeLayer.UI.Button.state import BUTTON_STATE
 from core.state.RuntimeLayer.Audio.Interface.state import INTERFACE_SFX_STATE
@@ -8,7 +9,7 @@ from core.ui.type import WIDGET
 
 class Style:
     def __init__(self,background=None,border=None,border_width=0,
-                 border_radius=0,padding=5,text_color=(255,255,255)):
+                 border_radius=0,padding=5,text_color=white):
         self.background = background
         self.border = border
         self.border_width = border_width
@@ -25,11 +26,11 @@ class Button(UIElement):
         self.font_size = font_size
         self.text = str(text)
         self.type = WIDGET.BUTTON
-        hover_background = (60,60,60)
-        idle_background = (40,40,40)
+        hover_background = dark_gray
+        idle_background = dark_gray
 
         if styles == "special_button":
-            idle_background = (255, 165, 0)
+            idle_background = orange
 
         self.action = action
         self.active = active
@@ -51,36 +52,36 @@ class Button(UIElement):
         self.styles = {
             BUTTON_STATE.IDLE: Style(
                 background=idle_background,
-                border=(255,255,255),
+                border=white,
                 border_width=2,
                 border_radius=8
             ),
 
             BUTTON_STATE.HOVER: Style(
                 background=hover_background,
-                border=(200,20,20),
+                border=red,
                 border_width=3,
                 border_radius=8
             ),
 
             BUTTON_STATE.PRESS: Style(
-                background=(20,20,20),
-                border=(255,255,255),
+                background=black,
+                border=white,
                 border_width=2,
                 border_radius=8
             ),
 
             BUTTON_STATE.DISABLE: Style(
-                background=(20,20,20),
-                border=(100,100,100),
+                background=dark_gray,
+                border=gray,
                 border_width=2,
                 border_radius=8,
-                text_color=(100,100,100)
+                text_color=gray
             ),
 
             BUTTON_STATE.FOCUSED: Style(
-                background=(40,40,40),
-                border=(0,255,255),
+                background=dark_gray,
+                border=teal,
                 border_width=3,
                 border_radius=8
             )
@@ -169,8 +170,7 @@ class Button(UIElement):
         print(f"Changing '{self.text}' -> '{text}'")
         self.text = str(text)
         self.scale()
-
-
+        
     def is_clicked(self, mouse_pos, mouse_click):
         if self.active and self.rect.collidepoint(mouse_pos) and mouse_click:
             if self.action:

@@ -1,5 +1,5 @@
 from helper import asset
-from config import config
+
 
 class FontEngine:
     PRESETS = {
@@ -24,6 +24,7 @@ class FontEngine:
         self.scale()
 
     def scale(self, width=None, height=None):
+
         if width is None:
             width = self.system.window.get_width()
 
@@ -38,35 +39,40 @@ class FontEngine:
 
         scale_x = width / self.REFERENCE_WIDTH
         scale_y = height / self.REFERENCE_HEIGHT
-        self.scale_factor = min(scale_x, scale_y)
+
+        self.scale_factor = min(
+            scale_x,
+            scale_y
+        )
 
         self.fonts.clear()
 
     def get_font(self, type="default", ttf=None):
+
         if isinstance(type, int):
             base_size = type
         else:
-            base_size = self.PRESETS.get(type, self.PRESETS["default"])
+            base_size = self.PRESETS.get(
+                type,
+                self.PRESETS["default"]
+            )
 
         if not ttf:
             ttf = "default_font"
-        else: ttf = ttf
 
         if type not in self.fonts:
-            size = max(1, round(base_size * self.scale_factor))
 
-            if config["WINDOW_BACKEND"] == "pygame":
-                font = self.system.backend.pygame.font.Font(
-                    asset(ttf),
-                    size
+            size = max(
+                1,
+                round(
+                    base_size * self.scale_factor
                 )
+            )
 
-            elif config["WINDOW_BACKEND"] == "draw":
-                font = self.system.backend.draw.Font(
-                    self.system,
-                    asset(ttf),
-                    size
-                )
+            font = self.system.backend.pygame.font.Font(
+                asset(ttf),
+                size
+            )
 
             self.fonts[type] = font
 

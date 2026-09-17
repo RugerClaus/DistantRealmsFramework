@@ -18,6 +18,9 @@ class Window:
     def mask(self,surface):
         return self.system.backend.pygame.mask.from_surface(surface)
 
+    def update_surface(self, surface):
+        pass
+
     def set_mode(self, width=None, height=None, mode=None):
 
         width = width if width is not None else self.default_width

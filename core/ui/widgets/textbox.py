@@ -2,8 +2,8 @@ from core.ui.type import WIDGET
 from core.ui.element import UIElement
 from core.util.colors import red, white, black
 
-
 class TextBox(UIElement):
+
 
     def __init__(self,system,id,position,dimensions=(0.1432,0.0926),font_size=30,is_active=False,is_password=False,text=None,char_limit=21):
         super().__init__(focusable=True,position=position)
@@ -20,8 +20,6 @@ class TextBox(UIElement):
         self.text_height = 0.5
 
         self.limit = char_limit
-
-        self.scale()
 
         initial_text = "" if text is None else str(text)
 
@@ -41,6 +39,19 @@ class TextBox(UIElement):
         self.type = WIDGET.TEXTBOX
         self.loaded = False
 
+        self.font = None
+        self.cursor_surf = None
+        self.text_surf = None
+        self.rendered_text = None
+        self.rendered_available_width = None
+
+        self.bounding_box = None
+        self.text_box = None
+        self.bounding_box_rect = None
+        self.text_box_rect = None
+
+        self.scale()
+
     def error_back(self):
         self.background_color = red
 
@@ -57,6 +68,8 @@ class TextBox(UIElement):
 
         self.cursor_visible = True
         self.cursor_timer = self.system.time.get_current_time()
+
+        self._update_text_surface()
 
     def handle_event(self,event):
         if not self.is_active:
@@ -82,6 +95,7 @@ class TextBox(UIElement):
         self.is_active = state
         self.cursor_visible = True
         self.cursor_timer = self.system.time.get_current_time()
+        self._update_text_surface()
 
     def draw_cursor(self):
         if self.is_active:
@@ -104,6 +118,9 @@ class TextBox(UIElement):
         width = int(ww * self.width)
         height = int(wh * self.height)
 
+        self.bounding_box = None
+        self.text_box = None
+
         self.bounding_box = self.system.window.make_surface(width,height)
 
         self.bounding_box_rect = self.bounding_box.get_rect(center=(x,y))
@@ -121,6 +138,14 @@ class TextBox(UIElement):
 
         self.text_box.fill(white)
 
+        self.font = self.system.font.get_font(self.font_size)
+        self.cursor_surf = self.font.render("|",False,black)
+
+        self.rendered_text = None
+        self.rendered_available_width = None
+
+        self._update_text_surface()
+
     def add_key_to_box(self,character):
         if self.limit is not None and len(self.box) >= self.limit:
             return
@@ -129,6 +154,8 @@ class TextBox(UIElement):
 
         self.cursor_visible = True
         self.cursor_timer = self.system.time.get_current_time()
+
+        self._update_text_surface()
 
     def get_return_string(self):
         return ''.join(self.box).strip()
@@ -139,6 +166,8 @@ class TextBox(UIElement):
 
         self.cursor_visible = True
         self.cursor_timer = self.system.time.get_current_time()
+
+        self._update_text_surface()
 
     def update(self):
         pass
@@ -165,27 +194,16 @@ class TextBox(UIElement):
 
         return visible
 
-    def draw(self):
-        font = self.system.font.get_font(self.font_size)
+    def _update_text_surface(self):
+        if self.font is None or self.text_box is None:
+            return
 
         if self.is_password:
             text = "*" * len(self.box)
         else:
             text = ''.join(self.box)
 
-        self.bounding_box.fill(self.background_color)
-
-        self.system.window.blit(self.bounding_box,self.bounding_box_rect)
-        self.system.window.blit(self.text_box,self.text_box_rect)
-
-        cursor_surf = None
-
-        if self.is_active:
-            cursor_surf = font.render("|",False,black)
-            cursor_width = cursor_surf.get_width()
-        else:
-            cursor_width = 0
-
+        cursor_width = self.cursor_surf.get_width() if self.is_active else 0
         available_width = self.text_box.get_width()
 
         if self.is_active:
@@ -193,18 +211,33 @@ class TextBox(UIElement):
 
         available_width = max(1,available_width)
 
-        visible_text = self._get_visible_text(text,available_width,font)
+        visible_text = self._get_visible_text(text,available_width,self.font)
 
-        surf = font.render(visible_text,False,black)
+        if visible_text == self.rendered_text and available_width == self.rendered_available_width:
+            return
+
+        self.text_surf = None
+
+        self.text_surf = self.font.render(visible_text,False,black)
+        self.rendered_text = visible_text
+        self.rendered_available_width = available_width
+
+    def draw(self):
+        self.bounding_box.fill(self.background_color)
+
+        self.system.window.blit(self.bounding_box,self.bounding_box_rect)
+        self.system.window.blit(self.text_box,self.text_box_rect)
+
+        self._update_text_surface()
 
         if self.is_active:
-            text_right = self.text_box_rect.right - cursor_width
-            rect = surf.get_rect(midright=(text_right,self.text_box_rect.centery))
+            text_right = self.text_box_rect.right - self.cursor_surf.get_width()
+            rect = self.text_surf.get_rect(midright=(text_right,self.text_box_rect.centery))
         else:
-            rect = surf.get_rect(center=self.text_box_rect.center)
+            rect = self.text_surf.get_rect(center=self.text_box_rect.center)
 
-        self.system.window.blit(surf,rect)
+        self.system.window.blit(self.text_surf,rect)
 
         if self.draw_cursor():
-            cursor_rect = cursor_surf.get_rect(midleft=(rect.right,rect.centery))
-            self.system.window.blit(cursor_surf,cursor_rect)
+            cursor_rect = self.cursor_surf.get_rect(midleft=(rect.right,rect.centery))
+            self.system.window.blit(self.cursor_surf,cursor_rect)

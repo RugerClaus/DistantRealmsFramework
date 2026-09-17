@@ -96,6 +96,7 @@ function build_main() {
     --add-data "$ROOT/logs:logs" \
     --add-data "$ROOT/saves:saves" \
     --add-data "$ROOT/environment:environment" \
+    --add-data "$ROOT/shaders:shaders" \
     --distpath "$TMP_DIST" \
     --workpath "$WORK_ROOT/$APP_NAME" \
     --specpath "$SPEC_ROOT/$APP_NAME" \

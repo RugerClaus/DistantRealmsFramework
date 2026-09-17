@@ -108,8 +108,10 @@ class System():
         if config["WINDOW_BACKEND"] == "pygame":
             self.backend.pygame.quit()
             self.sys.exit()
+        elif config["WINDOW_BACKEND"] == "backcompat":
+            self.backend.backcompat.quit()
+            self.sys.exit()
         elif config["WINDOW_BACKEND"] == "draw":
-            self.backend.draw.quit()
             self.sys.exit()
 
     def initialize_application(self):
@@ -133,21 +135,17 @@ class System():
                     collection.remove(state)
 
     def load_window(self):
-        import importlib
-        import sys
-
         backend = config.get("WINDOW_BACKEND", "pygame").lower()
 
+
         if backend == "pygame":
-            module_name = "core.engine.window.pgwindow"
+            from core.engine.window.pgwindow import Window
+            self.window = Window(self)
+        elif backend == "backcompat":
+            from core.engine.window.compatwindow import Window
+            self.window = Window(self)
         elif backend == "draw":
-            module_name = "core.engine.window.drwindow"
+            from core.engine.window.drwindow import Window
+            self.window = Window(self)
         else:
             raise ValueError(f"Unknown window backend: {backend}")
-
-        if module_name in sys.modules:
-            module = importlib.reload(sys.modules[module_name])
-        else:
-            module = importlib.import_module(module_name)
-
-        self.window = module.Window(self)

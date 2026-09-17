@@ -40,6 +40,14 @@ class World:
         camera_x = self.camera.x if map.camera_follow_x else 0
         camera_y = self.camera.y if map.camera_follow_y else 0
 
+        view_x, view_y, view_width, view_height = self.camera.get_view()
+
+        if not map.camera_follow_x:
+            view_x = 0
+
+        if not map.camera_follow_y:
+            view_y = 0
+
         left = map.world_x - camera_x
         right = left + map.map_width
 
@@ -47,12 +55,12 @@ class World:
         bottom = top + map.map_height
 
         return (
-            right > 0 and
-            left < 1 and
-            bottom > 0 and
-            top < 1
+            right > view_x and
+            left < view_x + view_width and
+            bottom > view_y and
+            top < view_y + view_height
         )
-
+    
     def scale(self):
         for map in self.maps:
             map.scale()

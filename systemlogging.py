@@ -48,3 +48,15 @@ def log_state_transition(from_state, to_state, state_type, ticks=None, log_file=
     log_file = os.path.join(log_dir, f"{state_type.lower()}_transitions.log")
     with open(log_file, "a") as f:
         f.write(json.dumps(log_data) + "\n")
+
+
+def log_debug(error,object=None):
+    log_file = f"logs/debug.log"
+    log_data = {
+        "timestamp": datetime.now().isoformat(),
+        "error": f"What happened: {error}"
+    }
+    if object is not None:
+        log_data["object"] = str(object)
+    with open(log_file,"a") as f:
+        f.write(json.dumps(log_data) + "\n")

@@ -1,3 +1,5 @@
+from config import config
+
 from core.util.colors import black
 from core.state.RuntimeLayer.state import RUNTIME_STATE
 from core.state.RuntimeLayer.DevTools.Debug.state import DEBUG_OVERLAY_STATE
@@ -9,6 +11,8 @@ class Runtime:
 
         self.system = system
         self.debug_overlay = DebugOverlay(system)
+
+        self.system.input.CommandModule.sequences["quick_quit"] = [self.system.input.keys.F12_key()]
     
     def handle_events(self):
         for event in self.system.input.input_event():
@@ -38,12 +42,16 @@ class Runtime:
             elif command == "developer":
                 self.system.control_state_toggle()
 
+            elif command == "quick_quit":
+                self.system.quit()
+
             if self.system.loading:
                 self.system.loading.handle_event(event,command)
     def run(self):
         while not self.system.runtime_state.is_state(RUNTIME_STATE.QUIT):
             self.system.window.fill(black)
-            self.system.backend.draw.process_gpu_tasks()
+            if config["WINDOW_BACKEND"] == "backcompat":
+                self.system.backend.backcompat.process_gpu_tasks()
             self.handle_events()
 
             if self.system.runtime_state.is_state(RUNTIME_STATE.SPLASH):

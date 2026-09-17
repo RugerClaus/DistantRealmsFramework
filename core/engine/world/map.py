@@ -42,7 +42,7 @@ class Map:
         self.grid_dirty = True
 
         self.map_def = MapDef()
-        self.lighting_levels = 16
+        self.lighting_levels = 32
         self.lighting_level = 0
         self.light_layers = []
 
@@ -141,10 +141,10 @@ class Map:
         for cell, (column, row) in zip(self.cells, self.cell_positions):
             rect = self.get_cell_rect(column, row)
             if cell.color:
-                print("CELL COLOR:", repr(cell.color), type(cell.color))
                 self.layer_surface.fill(cell.color, rect)
 
         self.layer_dirty = False
+        self.system.window.mark_surface_dirty(self.layer_surface)
 
     def render_debug_grid(self):
         ww = self.system.window.get_width()

@@ -10,18 +10,37 @@ class ButtonRenderer:
 
         style = button.styles[button.state.state]
 
-        button.surface.fill((0, 0, 0, 0))
-
-        rect = button.surface.get_rect()
+        rect = button.rect
 
         if style.border:
-            self.system.window.draw_rect(button.surface,style.border,rect,border_radius=style.border_radius + style.border_width)
+            self.system.window.draw_rect(
+                target,
+                style.border,
+                rect.inflate(
+                    style.border_width * 2,
+                    style.border_width * 2
+                ),
+                border_radius=style.border_radius + style.border_width
+            )
 
         if style.background:
-            background_rect = rect.inflate(-style.border_width * 2, -style.border_width * 2)
+            background_rect = rect.inflate(
+                -style.border_width * 2,
+                -style.border_width * 2
+            )
 
-            self.system.window.draw_rect(button.surface,style.background,background_rect,border_radius=style.border_radius)
+            self.system.window.draw_rect(
+                target,
+                style.background,
+                background_rect,
+                border_radius=style.border_radius
+            )
 
-        button.surface.blit(button.text_surface,button.text_rect)
+        text_rect = button.text_surface.get_rect(
+            center=rect.center
+        )
 
-        target.blit(button.surface,button.rect)
+        target.blit(
+            button.text_surface,
+            text_rect
+        )

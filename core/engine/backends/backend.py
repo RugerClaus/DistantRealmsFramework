@@ -5,12 +5,12 @@
 ######
 
 import pygame
-import core.draw.draw as draw
+import core.draw.backcompat as backcompat
 from OpenGL import GL, GLU
 class Backend:
     def __init__(self,system):
         self.pygame = pygame
         self.pygame.init()
         self.pygame.font.init()
-        self.draw = draw
-        self.draw.init(GL,GLU,pygame)
+        self.backcompat = backcompat
+        self.backcompat.init(GL,GLU,pygame)
