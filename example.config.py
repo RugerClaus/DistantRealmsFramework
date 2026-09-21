@@ -1,8 +1,8 @@
 import platform
 
 config = {
-    "TITLE": "My app -",
-    "VERSION": "1.0.0-beta",
+    "TITLE": "My App -",
+    "VERSION": "0.0.1",
     "FRAMEWORK VERSION": "0.8.0-alpha",
     "OS": platform.system(),
     "OSV": platform.version(),
@@ -11,7 +11,6 @@ config = {
     "UPDATER_WINDOWS": "updater.exe",
     "UPDATER_LINUX": "updater",
     "UPDATER_VERSION": "0.0.2",
-    "WINDOW_BACKEND": "backcompat",
     "NSTATURL": "https://snowblitz.net",
     "SPLASHSCREEN": True,
     "API_KEY": "",
@@ -46,6 +45,12 @@ config = {
 
         "linux_icon": "assets/images/build/linux.png",
         "windows_icon": "assets/images/build/windows.ico",
+        "tree1": "assets/images/main/tree1.png",
+        "star": "assets/images/main/star.png",
+
+        "prismm": "meshes/prism.mesh",
+        "cubem": "meshes/cube.mesh",
+        "plane":"meshes/plane.mesh",
 
         #shaders
         "v": "shaders/v.glsl",
@@ -57,6 +62,10 @@ config = {
         "rectpulse": "shaders/rectpulse.glsl",
         "fcellshader": "shaders/fcellshader.glsl",
         "roundedrectf": "shaders/roundedrectf.glsl",
-        "roundedrectv": "shaders/roundedrectv.glsl"
+        "roundedrectv": "shaders/roundedrectv.glsl",
+        "sunf": "shaders/sun.fragment.glsl",
+        "billboardv": "shaders/billboard.vertex.glsl",
+        "billboardf": "shaders/billboard.fragment.glsl",
+        "billboardnolight": "shaders/billboardnolight.fragment.glsl"
     }
 }

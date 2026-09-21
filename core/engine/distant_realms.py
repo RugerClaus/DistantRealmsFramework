@@ -23,12 +23,10 @@ class DistantRealms:
 
         keys = self.system.input.keys
         cm = self.system.input.CommandModule.sequences
-
         cm["reload_ui"] = [keys.F1_key(),keys.one_key()]
         cm["reload_application"] = [keys.F1_key(),keys.two_key()]
 
     def toggle_freeze(self):
-        print("toggling pause")
         if self.state.is_state(APP_STATE.FROZEN):
             self.state.set_state(APP_STATE.RUNNING)
         elif self.state.is_state(APP_STATE.RUNNING):

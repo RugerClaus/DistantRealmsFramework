@@ -77,6 +77,14 @@ class Shader:
             "light_texture"
         )
 
+        self.billboard_texture_location = gl.glGetUniformLocation(
+            self.program,
+            "billboard_texture"
+        )
+
+        self.light_direction_location=gl.glGetUniformLocation(self.program,"light_direction")
+        self.ambient_location=gl.glGetUniformLocation(self.program,"ambient")
+
         self.shadervals = [
             gl.glGetUniformLocation(
                 self.program,

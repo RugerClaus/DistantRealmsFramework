@@ -153,13 +153,6 @@ class UILoader:
         elif element_type == "select":
             padding = data.get("padding", 10)
 
-            print(
-                "LOADING SELECT:",
-                element_id,
-                "JSON PADDING:",
-                padding
-            )
-
             return Select(
                 self.system,
                 element_id,

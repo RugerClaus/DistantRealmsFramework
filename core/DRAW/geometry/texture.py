@@ -1,3 +1,5 @@
+import numpy
+
 class Texture:
     def __init__(self, x, y, w, h, vao, vbo, texture,shader=None):
         self.x = x
@@ -12,3 +14,7 @@ class Texture:
         self.dimension = 2
         self.orientation = "center"
         self.color = (0.0,0.0,0.0,1.0)
+
+    @property
+    def position(self):
+        return numpy.asarray((self.x,self.y),dtype=numpy.float32)

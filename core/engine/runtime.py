@@ -50,8 +50,7 @@ class Runtime:
     def run(self):
         while not self.system.runtime_state.is_state(RUNTIME_STATE.QUIT):
             self.system.window.fill(black)
-            if config["WINDOW_BACKEND"] == "backcompat":
-                self.system.backend.backcompat.process_gpu_tasks()
+            self.system.backend.backcompat.process_gpu_tasks()
             self.handle_events()
 
             if self.system.runtime_state.is_state(RUNTIME_STATE.SPLASH):

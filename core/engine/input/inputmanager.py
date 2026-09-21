@@ -21,6 +21,12 @@ class InputManager:
     def video_resize_event(self):
         return self.system.backend.pygame.VIDEORESIZE
 
+    def set_relative_mouse_mode(self,bool):
+        return self.system.backend.pygame.mouse.set_relative_mode(bool)
+
+    def set_mouse_visible(self,bool):
+        return self.system.backend.pygame.mouse.set_visible(bool)
+
     def mouse_button_down(self):
         return self.system.backend.pygame.MOUSEBUTTONDOWN
     

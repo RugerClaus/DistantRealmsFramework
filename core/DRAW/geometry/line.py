@@ -1,3 +1,5 @@
+import numpy
+
 class Line:
 
     def __init__(
@@ -20,3 +22,7 @@ class Line:
         self.color = color
         self.shader = shader
         self.dimension = 2
+
+    @property
+    def position(self):
+        return numpy.asarray((self.x,self.y),dtype=numpy.float32)

@@ -1,3 +1,4 @@
+from helper import asset
 from core.ui.widgets.image import Image
 
 
@@ -26,6 +27,35 @@ class TextureAtlas:
                 self.cells.append(self.image.original_surf.subsurface(rect).copy())
 
     def get(self, index):
+        return self.cells[index]
+
+    def __len__(self):
+        return len(self.cells)
+
+class TextureAtlas3D:
+
+    def __init__(self,system,id,image,columns,rows):
+        self.system = system
+        self.id = id
+        self.image = system.backend.pygame.image.load(asset(image))
+
+        self.columns = columns
+        self.rows = rows
+
+        self.cell_width = self.image.get_width() // columns
+        self.cell_height = self.image.get_height() // rows
+
+        self.cells = []
+
+        self.load()
+
+    def load(self):
+        for row in range(self.rows):
+            for column in range(self.columns):
+                rect = (column * self.cell_width,row * self.cell_height,self.cell_width,self.cell_height)
+                self.cells.append(self.image.subsurface(rect).copy())
+
+    def get(self,index):
         return self.cells[index]
 
     def __len__(self):

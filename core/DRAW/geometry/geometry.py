@@ -1,12 +1,14 @@
 import numpy
 import OpenGL.GL as gl
-from core.draw.vertex import Vertex
-from core.draw.geometry.rect import Rect
-from core.draw.geometry.circle import Circle
-from core.draw.geometry.cube import Cube
-from core.draw.geometry.plane import Plane
-from core.draw.geometry.texture import Texture
-from core.draw.geometry.line import Line
+from core.DRAW.vertex import Vertex
+from core.DRAW.geometry.rect import Rect
+from core.DRAW.geometry.circle import Circle
+from core.DRAW.geometry.cube import Cube
+from core.DRAW.geometry.plane import Plane
+from core.DRAW.geometry.texture import Texture
+from core.DRAW.geometry.line import Line
+from core.DRAW.geometry.model import Model
+from core.DRAW.geometry.billboard import Billboard
 
 class Geometry:
 
@@ -77,28 +79,13 @@ class Geometry:
         gl.glBufferSubData(gl.GL_ARRAY_BUFFER, 0, vertices.nbytes, vertices)
 
     @classmethod
-    def line(
-        cls,
-        x1,
-        y1,
-        x2,
-        y2,
-        color=(0.5, 0.5, 0.5, 1.0),
-        width=1,
-        shader=None
-    ):
+    def line(cls,x1,y1,x2,y2,color=(0.5, 0.5, 0.5, 1.0),width=1,shader=None):
 
         rw, rh = cls.renderer.resolution
 
         vertices = numpy.array([
-            (
-                (x1 / rw) * 2 - 1,
-                1 - (y1 / rh) * 2
-            ),
-            (
-                (x2 / rw) * 2 - 1,
-                1 - (y2 / rh) * 2
-            )
+            ((x1 / rw) * 2 - 1, 1 - (y1 / rh) * 2),
+            ((x2 / rw) * 2 - 1, 1 - (y2 / rh) * 2)
         ], dtype=numpy.float32)
 
         indices = numpy.array(
@@ -109,16 +96,7 @@ class Geometry:
         vertex = Vertex(vertices, indices)
         vertex.create_data()
 
-        return Line(
-            (x1, y1),
-            (x2, y2),
-            width,
-            vertex.vao,
-            vertex.vbo,
-            len(indices),
-            color,
-            shader
-        )
+        return Line((x1, y1),(x2, y2),width,vertex.vao,vertex.vbo,len(indices),color,shader)
 
     @classmethod
     def update_line(cls, line):
@@ -129,14 +107,8 @@ class Geometry:
         x2, y2 = line.point_b
 
         vertices = numpy.array([
-            (
-                (x1 / rw) * 2 - 1,
-                1 - (y1 / rh) * 2
-            ),
-            (
-                (x2 / rw) * 2 - 1,
-                1 - (y2 / rh) * 2
-            )
+            ((x1 / rw) * 2 - 1, 1 - (y1 / rh) * 2),
+            ((x2 / rw) * 2 - 1, 1 - (y2 / rh) * 2)
         ], dtype=numpy.float32)
 
         gl.glBindBuffer(
@@ -212,75 +184,101 @@ class Geometry:
 
     @classmethod
     def cube(cls, x, y, z, size, color=(0.5, 0.5, 0.5, 1.0), shader=None):
-        vertices = numpy.array([
+        vertices=numpy.array([
             # Front
-            (-size/2, -size/2, -size/2),
-            ( size/2, -size/2, -size/2),
-            ( size/2,  size/2, -size/2),
-            (-size/2,  size/2, -size/2),
-            # Back
-            (-size/2, -size/2,  size/2),
-            ( size/2, -size/2,  size/2),
-            ( size/2,  size/2,  size/2),
-            (-size/2,  size/2,  size/2)
-        ], dtype=numpy.float32)
-
-        indices = numpy.array([
-            # Front
-            0, 1, 2,
-            0, 2, 3,
+            (-size/2,-size/2,-size/2,0,0,-1),
+            ( size/2,-size/2,-size/2,0,0,-1),
+            ( size/2, size/2,-size/2,0,0,-1),
+            (-size/2, size/2,-size/2,0,0,-1),
 
             # Back
-            4, 6, 5,
-            4, 7, 6,
+            (-size/2,-size/2, size/2,0,0,1),
+            ( size/2,-size/2, size/2,0,0,1),
+            ( size/2, size/2, size/2,0,0,1),
+            (-size/2, size/2, size/2,0,0,1),
 
             # Left
-            0, 3, 7,
-            0, 7, 4,
+            (-size/2,-size/2,-size/2,-1,0,0),
+            (-size/2, size/2,-size/2,-1,0,0),
+            (-size/2, size/2, size/2,-1,0,0),
+            (-size/2,-size/2, size/2,-1,0,0),
 
             # Right
-            1, 5, 6,
-            1, 6, 2,
+            (size/2,-size/2,-size/2,1,0,0),
+            (size/2,-size/2, size/2,1,0,0),
+            (size/2, size/2, size/2,1,0,0),
+            (size/2, size/2,-size/2,1,0,0),
 
             # Top
-            3, 2, 6,
-            3, 6, 7,
+            (-size/2,size/2,-size/2,0,1,0),
+            ( size/2,size/2,-size/2,0,1,0),
+            ( size/2,size/2, size/2,0,1,0),
+            (-size/2,size/2, size/2,0,1,0),
 
             # Bottom
-            0, 4, 5,
-            0, 5, 1
-        ], dtype=numpy.uint32)
+            (-size/2,-size/2,-size/2,0,-1,0),
+            ( size/2,-size/2,-size/2,0,-1,0),
+            ( size/2,-size/2, size/2,0,-1,0),
+            (-size/2,-size/2, size/2,0,-1,0)
+        ],dtype=numpy.float32)
+
+        indices=numpy.array([
+            0,1,2,0,2,3,
+            4,6,5,4,7,6,
+            8,9,10,8,10,11,
+            12,13,14,12,14,15,
+            16,17,18,16,18,19,
+            20,22,21,20,23,22
+        ],dtype=numpy.uint32)
 
         vertex = Vertex(vertices, indices)
-        vertex.create_data_3d()
+        vertex.create_data_3d(6)
 
         return Cube(x, y, z,size,vertex.vao,vertex.vbo,len(indices),color,shader)
 
     @classmethod
-    def update_cube(cls, cube):
-        half = cube.size / 2
-
-        vertices = numpy.array([
+    def update_cube(cls,cube):
+        half=cube.size/2
+        vertices=numpy.array([
             # Front
-            (-half, -half, -half),
-            ( half, -half, -half),
-            ( half,  half, -half),
-            (-half,  half, -half),
+            (-half,-half,-half,0,0,-1),
+            ( half,-half,-half,0,0,-1),
+            ( half, half,-half,0,0,-1),
+            (-half, half,-half,0,0,-1),
 
             # Back
-            (-half, -half,  half),
-            ( half, -half,  half),
-            ( half,  half,  half),
-            (-half,  half,  half)
-        ], dtype=numpy.float32)
+            (-half,-half,half,0,0,1),
+            ( half,-half,half,0,0,1),
+            ( half, half,half,0,0,1),
+            (-half, half,half,0,0,1),
 
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, cube.vbo)
-        gl.glBufferSubData(
-            gl.GL_ARRAY_BUFFER,
-            0,
-            vertices.nbytes,
-            vertices
-        )
+            # Left
+            (-half,-half,-half,-1,0,0),
+            (-half, half,-half,-1,0,0),
+            (-half, half,half,-1,0,0),
+            (-half,-half,half,-1,0,0),
+
+            # Right
+            (half,-half,-half,1,0,0),
+            (half,-half,half,1,0,0),
+            (half, half,half,1,0,0),
+            (half, half,-half,1,0,0),
+
+            # Top
+            (-half,half,-half,0,1,0),
+            ( half,half,-half,0,1,0),
+            ( half,half,half,0,1,0),
+            (-half,half,half,0,1,0),
+
+            # Bottom
+            (-half,-half,-half,0,-1,0),
+            ( half,-half,-half,0,-1,0),
+            ( half,-half,half,0,-1,0),
+            (-half,-half,half,0,-1,0)
+        ],dtype=numpy.float32)
+
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER,cube.vbo)
+        gl.glBufferSubData(gl.GL_ARRAY_BUFFER,0,vertices.nbytes,vertices)
 
     @classmethod
     def plane(cls, x, y, z, width, depth, color=(0.5, 0.5, 0.5, 1.0), shader=None):
@@ -386,6 +384,55 @@ class Geometry:
         )
 
     @classmethod
+    def model(cls,x,y,z,mesh_name=None,vertices=None,faces=None,color=(0.5,0.5,0.5,1.0),shader=None):
+        model=Model(vertices,faces,mesh_name,(x,y,z),color=color,shader=shader)
+        indices=model.faces.flatten()
+        vertex=Vertex(model.vertices,indices)
+        vertex.create_data_3d(6)
+        model.vao=vertex.vao
+        model.vbo=vertex.vbo
+        model.vertex_count=len(indices)
+        return model
+
+    @classmethod
+    def update_model(cls, model):
+        vertices = numpy.asarray(model.vertices, dtype=numpy.float32)
+
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, model.vbo)
+        gl.glBufferSubData(gl.GL_ARRAY_BUFFER, 0, vertices.nbytes, vertices)
+
+    @classmethod
+    def billboard(cls,x,y,z,width,height,texture,shader=None):
+        vertices=numpy.array([
+            (-width/2,-height/2,0.0,0.0,0.0),
+            ( width/2,-height/2,0.0,1.0,0.0),
+            ( width/2, height/2,0.0,1.0,1.0),
+            (-width/2, height/2,0.0,0.0,1.0)
+        ],dtype=numpy.float32)
+
+        indices=numpy.array([0,1,2,0,2,3],dtype=numpy.uint32)
+
+        vertex=Vertex(vertices,indices)
+        vertex.create_data_textured_3d()
+
+        return Billboard(x,y,z,width,height,vertex.vao,vertex.vbo,texture,shader)
+
+    @classmethod
+    def update_billboard(cls,billboard):
+        width = billboard.width
+        height = billboard.height
+
+        vertices=numpy.array([
+            (-width/2,-height/2,0.0,0.0,0.0),
+            ( width/2,-height/2,0.0,1.0,0.0),
+            ( width/2, height/2,0.0,1.0,1.0),
+            (-width/2, height/2,0.0,0.0,1.0)
+        ],dtype=numpy.float32)
+
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER,billboard.vbo)
+        gl.glBufferSubData(gl.GL_ARRAY_BUFFER,0,vertices.nbytes,vertices)
+
+    @classmethod
     def update(cls,objects):
         for object in objects:
             if isinstance(object,Rect):
@@ -400,3 +447,7 @@ class Geometry:
                 cls.update_texture(object)
             elif isinstance(object, Line):
                 cls.update_line(object)
+            elif isinstance(object,Model):
+                cls.update_model(object)
+            elif isinstance(object,Billboard):
+                cls.update_billboard(object)

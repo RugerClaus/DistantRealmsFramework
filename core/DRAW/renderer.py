@@ -4,11 +4,11 @@ import numpy
 
 from helper import asset
 
-from core.draw.camera import Camera3D
-from core.draw.shader import Shader
-from core.draw.batching.texturebatch import TextureBatch
-from core.draw.geometry.line import Line
-
+from core.DRAW.camera import Camera3D
+from core.DRAW.shader import Shader
+from core.DRAW.batching.texturebatch import TextureBatch
+from core.DRAW.geometry.line import Line
+from core.DRAW.geometry.plane import Plane
 
 class Renderer:
 
@@ -25,6 +25,11 @@ class Renderer:
         self.texture_batch_vao = None
         self.texture_batch_vbo = None
         self.texture_batch_ebo = None
+
+        self.draw_distance = 25.00
+
+        self.light_direction=(-1.0,-1.0,-1.0)
+        self.ambient=0.25
 
         self.initialize_opengl()
         self.initialize_texture_batch()
@@ -82,6 +87,8 @@ class Renderer:
         gl.glEnable(gl.GL_DEPTH_TEST)
         gl.glUniform4f(shader.color_location, *object.color)
         gl.glUniform1f(shader.time_location, time)
+        gl.glUniform3f(shader.light_direction_location,*self.light_direction)
+        gl.glUniform1f(shader.ambient_location,self.ambient)
 
         gl.glUniformMatrix4fv(shader.model_location, 1, gl.GL_TRUE, object.model_matrix())
         gl.glUniformMatrix4fv(shader.view_location, 1, gl.GL_TRUE, self.camera.view_matrix())
@@ -97,13 +104,42 @@ class Renderer:
 
         gl.glUniform1i(shader.texture_location, 0)
 
-    def render(self, object, time):
+    def render_billboard(self,object,shader,time):
+        gl.glEnable(gl.GL_DEPTH_TEST)
+        gl.glUniform1f(shader.time_location,time)
+        gl.glUniform3f(shader.light_direction_location,*self.light_direction)
+        gl.glUniform1f(shader.ambient_location,self.ambient)
 
-        shader = object.shader or self.default_shader
+        gl.glActiveTexture(gl.GL_TEXTURE0)
+        gl.glBindTexture(gl.GL_TEXTURE_2D,object.texture.id)
+        gl.glUniform1i(shader.texture_location,0)
+
+        gl.glUniformMatrix4fv(shader.model_location,1,gl.GL_TRUE,object.model_matrix(self.camera))
+        gl.glUniformMatrix4fv(shader.view_location,1,gl.GL_TRUE,self.camera.view_matrix())
+        gl.glUniformMatrix4fv(shader.projection_location,1,gl.GL_TRUE,self.camera.projection_matrix(self.window.size[0]/self.window.size[1]))
+
+    def render(self,object,time):
+        if object.dimension==3 and not isinstance(object,Plane) and not getattr(object,"always_visible",False):
+            if hasattr(object,"position"):
+                position=object.position
+            else:
+                position=(object.x,object.y,object.z)
+
+            dx=position[0]-self.camera.position[0]
+            dz=position[2]-self.camera.position[2]
+
+            if dx*dx+dz*dz>self.draw_distance*self.draw_distance:
+                return
+
+        shader=object.shader or self.default_shader
 
         gl.glUseProgram(shader.program)
 
-        if getattr(object, "texture", None):
+        if getattr(object,"billboard",False):
+
+            self.render_billboard(object,shader,time)
+
+        elif getattr(object, "texture", None):
 
             self.render_texture(object, shader, time)
 

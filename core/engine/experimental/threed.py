@@ -1,5 +1,5 @@
 from core.util.experimental.math3d import rotate_x, rotate_y, rotate_z, Vec3, facing, triangle_depth
-from core.util.experimental.model import load_mesh,Model
+from core.draw.geometry.model import load_mesh,Model
 from core.util.triangle import Triangle
 from application.camera import Camera
 from core.util.colors import *

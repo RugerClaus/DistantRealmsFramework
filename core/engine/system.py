@@ -105,14 +105,8 @@ class System():
         if self.application:
             self.application.clean_up()
         self.runtime_state.set_state(RUNTIME_STATE.QUIT)
-        if config["WINDOW_BACKEND"] == "pygame":
-            self.backend.pygame.quit()
-            self.sys.exit()
-        elif config["WINDOW_BACKEND"] == "backcompat":
-            self.backend.backcompat.quit()
-            self.sys.exit()
-        elif config["WINDOW_BACKEND"] == "draw":
-            self.sys.exit()
+        self.backend.pygame.quit()
+        self.sys.exit()
 
     def initialize_application(self):
         from core.engine.distant_realms import DistantRealms
@@ -135,17 +129,5 @@ class System():
                     collection.remove(state)
 
     def load_window(self):
-        backend = config.get("WINDOW_BACKEND", "pygame").lower()
-
-
-        if backend == "pygame":
-            from core.engine.window.pgwindow import Window
-            self.window = Window(self)
-        elif backend == "backcompat":
-            from core.engine.window.compatwindow import Window
-            self.window = Window(self)
-        elif backend == "draw":
-            from core.engine.window.drwindow import Window
-            self.window = Window(self)
-        else:
-            raise ValueError(f"Unknown window backend: {backend}")
+        from core.engine.window import Window
+        self.window = Window(self)

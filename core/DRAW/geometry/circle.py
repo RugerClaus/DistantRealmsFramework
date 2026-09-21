@@ -1,3 +1,4 @@
+import numpy
 class Circle:
     def __init__(self, x, y, radius, vao, vbo, segments, vertex_count, color=(0.5, 0.5, 0.5, 1.0), shader=None):
         self.x = x
@@ -10,3 +11,7 @@ class Circle:
         self.color = color
         self.shader = shader
         self.dimension = 2
+
+    @property
+    def position(self):
+        return numpy.asarray((self.x,self.y),dtype=numpy.float32)

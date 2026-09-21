@@ -1,7 +1,5 @@
-Development version Alpha 0.8.0 - 2026-09-17
-- Added DRAW (Distant Realms Accelerated Window)
-- Added DRAW rendering pipeline using opengl
-- Added backwards compatibility for preserving the pygame like contract so existing apps can seamlessly switch between pygame and DRAW
-- Added shaders
-- Added 3D capabilities
-- Officially an actual game engine ;)
+Development version Alpha 0.8.1 - 2026-09-XX
+- Added support for loading models from meshes/
+- Added shaders for camera facing sprite entities
+- Added shader for objects affected by sunlight
+- Added dynamic lighting

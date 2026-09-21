@@ -72,38 +72,33 @@ class Vertex:
 
         gl.glBindVertexArray(0)
 
-    def create_data_3d(self):
-        self.vao = gl.glGenVertexArrays(1)
-        self.vbo = gl.glGenBuffers(1)
-        self.ebo = gl.glGenBuffers(1)
+    def create_data_3d(self,attributes=3):
+        self.vao=gl.glGenVertexArrays(1)
+        self.vbo=gl.glGenBuffers(1)
+        self.ebo=gl.glGenBuffers(1)
 
         gl.glBindVertexArray(self.vao)
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER,self.vbo)
+        gl.glBufferData(gl.GL_ARRAY_BUFFER,self.vertices.nbytes,self.vertices,gl.GL_DYNAMIC_DRAW)
 
-        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.vbo)
-        gl.glBufferData(
-            gl.GL_ARRAY_BUFFER,
-            self.vertices.nbytes,
-            self.vertices,
-            gl.GL_DYNAMIC_DRAW
-        )
+        if attributes==3:
+            stride=3*self.vertices.itemsize
+            gl.glVertexAttribPointer(0,3,gl.GL_FLOAT,gl.GL_FALSE,stride,None)
+            gl.glEnableVertexAttribArray(0)
 
-        gl.glVertexAttribPointer(
-            0,
-            3,
-            gl.GL_FLOAT,
-            gl.GL_FALSE,
-            3 * self.vertices.itemsize,
-            None
-        )
-        gl.glEnableVertexAttribArray(0)
+        elif attributes==6:
+            stride=6*self.vertices.itemsize
+            gl.glVertexAttribPointer(0,3,gl.GL_FLOAT,gl.GL_FALSE,stride,None)
+            gl.glEnableVertexAttribArray(0)
+            gl.glVertexAttribPointer(1,3,gl.GL_FLOAT,gl.GL_FALSE,stride,gl.ctypes.c_void_p(3*self.vertices.itemsize))
+            gl.glEnableVertexAttribArray(1)
 
-        gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER, self.ebo)
-        gl.glBufferData(
-            gl.GL_ELEMENT_ARRAY_BUFFER,
-            self.indices.nbytes,
-            self.indices,
-            gl.GL_DYNAMIC_DRAW
-        )
+        else:
+            raise ValueError(f"Unsupported 3D vertex attribute format: {attributes}")
+
+        gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER,self.ebo)
+        gl.glBufferData(gl.GL_ELEMENT_ARRAY_BUFFER,self.indices.nbytes,self.indices,gl.GL_DYNAMIC_DRAW)
+        gl.glBindVertexArray(0)
 
     def create_data_textured(self):
         self.vao = gl.glGenVertexArrays(1)
@@ -160,3 +155,26 @@ class Vertex:
         if self.ebo is not None:
             gl.glDeleteBuffers(1, [self.ebo])
             self.ebo = None
+
+    def create_data_textured_3d(self):
+        self.vao = gl.glGenVertexArrays(1)
+        self.vbo = gl.glGenBuffers(1)
+        self.ebo = gl.glGenBuffers(1)
+
+        gl.glBindVertexArray(self.vao)
+
+        gl.glBindBuffer(gl.GL_ARRAY_BUFFER, self.vbo)
+        gl.glBufferData(gl.GL_ARRAY_BUFFER,self.vertices.nbytes,self.vertices,gl.GL_DYNAMIC_DRAW)
+
+        stride = 5 * self.vertices.itemsize
+
+        gl.glVertexAttribPointer(0,3,gl.GL_FLOAT,gl.GL_FALSE,stride,None)
+        gl.glEnableVertexAttribArray(0)
+
+        gl.glVertexAttribPointer(1,2,gl.GL_FLOAT,gl.GL_FALSE,stride,gl.ctypes.c_void_p(3 * self.vertices.itemsize))
+        gl.glEnableVertexAttribArray(1)
+
+        gl.glBindBuffer(gl.GL_ELEMENT_ARRAY_BUFFER,self.ebo)
+        gl.glBufferData(gl.GL_ELEMENT_ARRAY_BUFFER,self.indices.nbytes,self.indices,gl.GL_DYNAMIC_DRAW)
+
+        gl.glBindVertexArray(0)

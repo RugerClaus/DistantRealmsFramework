@@ -5,9 +5,9 @@ import threading,weakref
 from queue import Queue, Empty
 from concurrent.futures import Future
 
-from core.draw.renderer import Renderer
-from core.draw.geometry.geometry import Geometry
-from core.draw.texture import Texture
+from core.DRAW.renderer import Renderer
+from core.DRAW.geometry.geometry import Geometry
+from core.DRAW.texture import Texture
 
 blit_cache = {}
 texture_delete_queue = []
@@ -298,12 +298,6 @@ def get_texture(surface):
 
     blit_cache[surface_ref] = texture
 
-    print(
-        "NEW TEXTURE:",
-        surface.get_size(),
-        id(surface)
-    )
-
     return texture
 
 def make_surface(system, size, alpha=False):
@@ -401,11 +395,6 @@ def flip():
     renderer.flush_texture_batch()
 
     process_deleted_textures()
-
-    print(
-        "textures:",len(blit_cache),
-        "gpu queue:",gpu_queue.qsize()
-    )
 
     return window.flip()
 

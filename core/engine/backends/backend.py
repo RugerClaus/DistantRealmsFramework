@@ -5,7 +5,7 @@
 ######
 
 import pygame
-import core.draw.backcompat as backcompat
+import core.DRAW.backcompat as backcompat
 from OpenGL import GL, GLU
 class Backend:
     def __init__(self,system):
