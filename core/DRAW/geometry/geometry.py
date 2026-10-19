@@ -20,7 +20,6 @@ class Geometry:
 
     @classmethod
     def rect(cls, x, y, w, h, color=(0.5, 0.5, 0.5, 1.0), border_radius=None, shader=None):
-
         rw, rh = cls.renderer.window.size
 
         x1 = ((x - w / 2) / rw) * 2 - 1
@@ -51,7 +50,6 @@ class Geometry:
 
     @classmethod
     def update_rect(cls, rect):
-
         rw, rh = cls.renderer.resolution
 
         if rect.orientation == "topleft":
@@ -80,7 +78,6 @@ class Geometry:
 
     @classmethod
     def line(cls,x1,y1,x2,y2,color=(0.5, 0.5, 0.5, 1.0),width=1,shader=None):
-
         rw, rh = cls.renderer.resolution
 
         vertices = numpy.array([
@@ -100,7 +97,6 @@ class Geometry:
 
     @classmethod
     def update_line(cls, line):
-
         rw, rh = cls.renderer.resolution
 
         x1, y1 = line.point_a

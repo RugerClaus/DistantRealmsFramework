@@ -26,10 +26,11 @@ class Renderer:
         self.texture_batch_vbo = None
         self.texture_batch_ebo = None
 
-        self.draw_distance = 25.00
+        self.draw_distance = 125.00
 
         self.light_direction=(-1.0,-1.0,-1.0)
         self.ambient=0.25
+        self.point_lights=[]
 
         self.initialize_opengl()
         self.initialize_texture_batch()
@@ -38,6 +39,15 @@ class Renderer:
     def set_res(self, resolution):
 
         self.resolution = resolution
+
+    def get_nearest_point_light(self,object):
+        if not self.visible_point_lights:
+            return None
+
+        return min(
+            self.visible_point_lights,
+            key=lambda light:numpy.sum((light.position-object.position)**2)
+        )
 
     def shader(self,vertex_filename,fragment_filename):
 
@@ -82,17 +92,39 @@ class Renderer:
                 object.border_radius
             )
 
-    def render_3d(self, object, shader, time):
+    def update_visible_lights(self):
+        distance=self.draw_distance*self.draw_distance
+        camera=self.camera.position
+        self.visible_point_lights=[]
 
+        for light in self.point_lights:
+            dx=light.position[0]-camera[0]
+            dz=light.position[2]-camera[2]
+            if dx*dx+dz*dz<=distance:
+                self.visible_point_lights.append(light)
+
+    def render_3d(self,object,shader,time):
         gl.glEnable(gl.GL_DEPTH_TEST)
-        gl.glUniform4f(shader.color_location, *object.color)
-        gl.glUniform1f(shader.time_location, time)
+        gl.glUniform4f(shader.color_location,*object.color)
+        gl.glUniform1f(shader.time_location,time)
         gl.glUniform3f(shader.light_direction_location,*self.light_direction)
         gl.glUniform1f(shader.ambient_location,self.ambient)
 
-        gl.glUniformMatrix4fv(shader.model_location, 1, gl.GL_TRUE, object.model_matrix())
-        gl.glUniformMatrix4fv(shader.view_location, 1, gl.GL_TRUE, self.camera.view_matrix())
-        gl.glUniformMatrix4fv(shader.projection_location, 1, gl.GL_TRUE, self.camera.projection_matrix(self.window.size[0] / self.window.size[1]))
+        light=self.get_nearest_point_light(object)
+        if light is not None:
+            gl.glUniform3f(shader.point_light_position_location,*light.position)
+            gl.glUniform3f(shader.point_light_color_location,*light.color)
+            gl.glUniform1f(shader.point_light_radius_location,light.radius)
+            gl.glUniform1f(shader.point_light_intensity_location,light.intensity)
+        else:
+            gl.glUniform3f(shader.point_light_position_location,0.0,0.0,0.0)
+            gl.glUniform3f(shader.point_light_color_location,0.0,0.0,0.0)
+            gl.glUniform1f(shader.point_light_radius_location,0.0)
+            gl.glUniform1f(shader.point_light_intensity_location,0.0)
+
+        gl.glUniformMatrix4fv(shader.model_location,1,gl.GL_TRUE,object.model_matrix())
+        gl.glUniformMatrix4fv(shader.view_location,1,gl.GL_TRUE,self.camera.view_matrix())
+        gl.glUniformMatrix4fv(shader.projection_location,1,gl.GL_TRUE,self.camera.projection_matrix(self.window.size[0]/self.window.size[1]))
 
     def render_texture(self, object, shader, time):
 

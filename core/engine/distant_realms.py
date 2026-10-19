@@ -4,6 +4,7 @@ from core.state.ApplicationLayer.state import APP_STATE
 from core.state.ApplicationLayer.statemanager import AppStateManager
 from core.state.RuntimeLayer.state import RUNTIME_STATE
 from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
+from core.state.RuntimeLayer.DevTools.Console.state import CONSOLE_STATE
 from core.ui.loader import UILoader
 from core.ui.actionmanager import UIActionManager
 from application.action_register import ActionRegistrar
@@ -25,6 +26,7 @@ class DistantRealms:
         cm = self.system.input.CommandModule.sequences
         cm["reload_ui"] = [keys.F1_key(),keys.one_key()]
         cm["reload_application"] = [keys.F1_key(),keys.two_key()]
+
 
     def toggle_freeze(self):
         if self.state.is_state(APP_STATE.FROZEN):
@@ -67,10 +69,7 @@ class DistantRealms:
         self.application.register_debug_telemetry()
         
     def handle_event(self, event,command=None):
-        self.ui_controller.handle_event(event)
-        
         if event.type == self.system.input.video_resize_event():
-
             if self.application:
                 self.application.scale()
             self.ui_controller.scale()
@@ -85,6 +84,9 @@ class DistantRealms:
         if self.application:
             if self.state.is_state(APP_STATE.RUNNING):
                 self.application.handle_event(event,command)
+
+        if self.ui_controller:
+            self.ui_controller.handle_event(event)
 
     def draw(self):
         if self.application:
@@ -103,7 +105,8 @@ class DistantRealms:
         self.application.reset()
 
     def update(self):
-        self.ui_controller.update()
+        if self.system.console_state.is_state(CONSOLE_STATE.OFF):
+            self.ui_controller.update()
         if self.state.is_state(APP_STATE.RUNNING):
             if self.application:
                 self.application.update()

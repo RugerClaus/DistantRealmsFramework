@@ -1,11 +1,13 @@
 import numpy
 from helper import asset
+from core.DRAW.geometry.geometry3d import Geometry3D
+from core.DRAW.geometry.bounds import Bounds
 
-class Model:
+class Model(Geometry3D):
     def __init__(self,vertices=None,faces=None,mesh_name=None,position=(0,0,0),vao=None,vbo=None,count=0,color=(0.5,0.5,0.5,1.0),shader=None):
+        super().__init__(*position)
         self.mesh_name=mesh_name
         self.vertices,self.faces=self.load_mesh() if mesh_name else (vertices,faces)
-        self.position=numpy.asarray(position,dtype=numpy.float32)
         self.rotation=numpy.zeros(3,dtype=numpy.float32)
         self.scale=numpy.ones(3,dtype=numpy.float32)
         self.vao=vao
@@ -15,6 +17,7 @@ class Model:
         self.shader=shader
         self.dimension=3
         self.always_visible=False
+        self.name = "model"
 
     def model_matrix(self):
         matrix=numpy.eye(4,dtype=numpy.float32)
@@ -88,3 +91,18 @@ class Model:
                     faces.append((b,c,d))
 
         return numpy.asarray(vertices,dtype=numpy.float32),numpy.asarray(faces,dtype=numpy.uint32)
+
+    def get_bounds(self):
+        vertices=self.vertices[:,:3]
+
+        minimum=vertices.min(axis=0)
+        maximum=vertices.max(axis=0)
+
+        return Bounds(
+            self.position[0]+minimum[0]*self.scale[0],
+            self.position[1]+minimum[1]*self.scale[1],
+            self.position[2]+minimum[2]*self.scale[2],
+            self.position[0]+maximum[0]*self.scale[0],
+            self.position[1]+maximum[1]*self.scale[1],
+            self.position[2]+maximum[2]*self.scale[2]
+        )

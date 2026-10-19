@@ -108,3 +108,15 @@ Development version Alpha 0.8.0 - 2026-09-17
 - Added shaders
 - Added 3D capabilities
 - Officially an actual game engine ;)
+
+Development version Alpha 0.9.0 - 2026-10-18
+------------------------------------------------
+- Added full support for 3D environments via system.window.renderer
+- 2D and 3D rendering is handled via the same pipeline
+- DRAW has full backwards compatibility with older rendering code. 
+--You may have to optimize it using system.window.make_surface_dirty() 
+--- You're going to have to dig in core.engine.window for details as this
+---- isn't documented yet
+- Added default shaders, and a model loading system
+- Removed configurable rendering backends. Everything is contained in
+-- system.window via the Distant Realms Accelerated Window (DRAW) API.

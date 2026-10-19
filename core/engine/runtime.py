@@ -4,13 +4,11 @@ from core.util.colors import black
 from core.state.RuntimeLayer.state import RUNTIME_STATE
 from core.state.RuntimeLayer.DevTools.Debug.state import DEBUG_OVERLAY_STATE
 from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
-from core.util.debugoverlay import DebugOverlay
+from core.state.RuntimeLayer.DevTools.Console.state import CONSOLE_STATE
 
 class Runtime:
     def __init__(self,system):
-
         self.system = system
-        self.debug_overlay = DebugOverlay(system)
 
         self.system.input.CommandModule.sequences["quick_quit"] = [self.system.input.keys.F12_key()]
     
@@ -19,10 +17,13 @@ class Runtime:
             command = self.system.input.handle_event(event)
             if event.type == self.system.input.video_resize_event():
                 self.system.font.scale(event.w,event.h)
-                self.debug_overlay.scale()
+                self.system.debug_overlay.scale()
+                self.system.command_console.scale()
                 if self.system.loading:
                     self.system.loading.scale()
                 self.system.input.scale(event.w,event.h)
+
+            
 
             if event.type == self.system.input.quit_event():
                 self.system.runtime_state.set_state(RUNTIME_STATE.QUIT)
@@ -32,7 +33,11 @@ class Runtime:
                     self.system.application.handle_event(event,command)
 
             if self.system.overlay_state.is_state(DEBUG_OVERLAY_STATE.ON):
-                self.debug_overlay.handle_event(event,command)
+                self.system.debug_overlay.handle_event(event,command)
+
+            if self.system.console_state.is_state(CONSOLE_STATE.ON):
+                self.system.command_console.handle_event(event,command)
+                continue
 
             self.system.sound.handle_music_event(event)
 
@@ -41,6 +46,9 @@ class Runtime:
             
             elif command == "developer":
                 self.system.control_state_toggle()
+
+            elif command == "console":
+                self.system.console_state_toggle()
 
             elif command == "quick_quit":
                 self.system.quit()
@@ -64,11 +72,15 @@ class Runtime:
             elif self.system.runtime_state.is_state(RUNTIME_STATE.QUIT):
                 self.system.quit()
             if self.system.overlay_state.is_state(DEBUG_OVERLAY_STATE.ON):
-                self.debug_overlay.update()
-                self.debug_overlay.draw()
+                self.system.debug_overlay.update()
+                self.system.debug_overlay.draw()
             
             if self.system.control_state.is_state(DEVELOPER_MODE.ON):
                 pass
-            
+
+            if self.system.console_state.is_state(CONSOLE_STATE.ON) or self.system.command_console.console_output.fading:
+                self.system.command_console.update()
+                self.system.command_console.draw()
+                
             self.system.time.timer()
             self.system.window.update()

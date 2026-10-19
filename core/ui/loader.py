@@ -1,4 +1,5 @@
 import json
+from helper import asset
 from systemlogging import log_error
 
 from core.ui.composables.form import Form
@@ -137,8 +138,8 @@ class UILoader:
                 height=data.get("height", 0.6),
                 align=data.get("align", "left"),
                 line_spacing=data.get("line_spacing", 0.01),
+                source=data.get("text")
             )
-            element.load_source(data.get("text"))
             return element
 
         elif element_type == "center_text":

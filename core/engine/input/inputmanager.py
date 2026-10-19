@@ -29,7 +29,11 @@ class InputManager:
 
     def mouse_button_down(self):
         return self.system.backend.pygame.MOUSEBUTTONDOWN
-    
+
+    def clear_mouse_button_events(self):
+        self.system.backend.pygame.event.clear(
+            self.system.backend.pygame.MOUSEBUTTONDOWN
+        )
     def mouse_button_up(self):
         return self.system.backend.pygame.MOUSEBUTTONUP
 

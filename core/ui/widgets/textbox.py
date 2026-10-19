@@ -2,8 +2,8 @@ from core.ui.type import WIDGET
 from core.ui.element import UIElement
 from core.util.colors import red, white, black
 
-class TextBox(UIElement):
 
+class TextBox(UIElement):
 
     def __init__(self,system,id,position,dimensions=(0.1432,0.0926),font_size=30,is_active=False,is_password=False,text=None,char_limit=21):
         super().__init__(focusable=True,position=position)
@@ -12,7 +12,10 @@ class TextBox(UIElement):
         self.id = id
         self.font_size = font_size
 
-        self.background_color = black
+        self.background_color = white
+        self.text_color = black
+        self.border_color = black
+        self.border_width = 2
 
         self.width,self.height = dimensions
 
@@ -52,11 +55,32 @@ class TextBox(UIElement):
 
         self.scale()
 
+    def set_background_color(self,color):
+        self.background_color = color
+        self.scale()
+
+    def set_text_color(self,color):
+        self.text_color = color
+
+        if self.font is not None:
+            self.cursor_surf = self.font.render("|",False,self.text_color)
+
+        self.rendered_text = None
+        self._update_text_surface()
+
+    def set_border_color(self,color):
+        self.border_color = color
+        self.scale()
+
+    def set_border_width(self,width):
+        self.border_width = max(0,int(width))
+        self.scale()
+
     def error_back(self):
-        self.background_color = red
+        self.set_border_color(red)
 
     def clear_error(self):
-        self.background_color = black
+        self.set_border_color(black)
 
     def set_text(self,text):
         text = str(text)
@@ -118,28 +142,21 @@ class TextBox(UIElement):
         width = int(ww * self.width)
         height = int(wh * self.height)
 
-        self.bounding_box = None
-        self.text_box = None
-
-        self.bounding_box = self.system.window.make_surface(width,height)
-
+        self.bounding_box = self.system.window.make_surface(width,height,True)
         self.bounding_box_rect = self.bounding_box.get_rect(center=(x,y))
 
-        self.bounding_box.fill(self.background_color)
+        self.bounding_box.fill(self.border_color)
 
-        border = 2
+        text_width = max(1,width - self.border_width * 2)
+        text_height = max(1,height - self.border_width * 2)
 
-        text_width = max(1,width - border * 2)
-        text_height = max(1,height - border * 2)
-
-        self.text_box = self.system.window.make_surface(text_width,text_height)
-
+        self.text_box = self.system.window.make_surface(text_width,text_height,True)
         self.text_box_rect = self.text_box.get_rect(center=self.bounding_box_rect.center)
 
-        self.text_box.fill(white)
+        self.text_box.fill(self.background_color)
 
         self.font = self.system.font.get_font(self.font_size)
-        self.cursor_surf = self.font.render("|",False,black)
+        self.cursor_surf = self.font.render("|",False,self.text_color)
 
         self.rendered_text = None
         self.rendered_available_width = None
@@ -176,7 +193,7 @@ class TextBox(UIElement):
         if not text:
             return ""
 
-        full_surface = font.render(text,False,black)
+        full_surface = font.render(text,False,self.text_color)
 
         if full_surface.get_width() <= available_width:
             return text
@@ -185,7 +202,7 @@ class TextBox(UIElement):
 
         for character in reversed(text):
             candidate = character + visible
-            candidate_surface = font.render(candidate,False,black)
+            candidate_surface = font.render(candidate,False,self.text_color)
 
             if candidate_surface.get_width() > available_width:
                 break
@@ -216,14 +233,12 @@ class TextBox(UIElement):
         if visible_text == self.rendered_text and available_width == self.rendered_available_width:
             return
 
-        self.text_surf = None
-
-        self.text_surf = self.font.render(visible_text,False,black)
+        self.text_surf = self.font.render(visible_text,False,self.text_color)
         self.rendered_text = visible_text
         self.rendered_available_width = available_width
 
     def draw(self):
-        self.bounding_box.fill(self.background_color)
+        self.bounding_box.fill(self.border_color)
 
         self.system.window.blit(self.bounding_box,self.bounding_box_rect)
         self.system.window.blit(self.text_box,self.text_box_rect)
@@ -231,8 +246,8 @@ class TextBox(UIElement):
         self._update_text_surface()
 
         if self.is_active:
-            text_right = self.text_box_rect.right - self.cursor_surf.get_width()
-            rect = self.text_surf.get_rect(midright=(text_right,self.text_box_rect.centery))
+            text_left = self.text_box_rect.left + self.cursor_surf.get_width()
+            rect = self.text_surf.get_rect(midleft=(text_left,self.text_box_rect.centery))
         else:
             rect = self.text_surf.get_rect(center=self.text_box_rect.center)
 

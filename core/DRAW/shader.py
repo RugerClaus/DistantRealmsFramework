@@ -85,6 +85,26 @@ class Shader:
         self.light_direction_location=gl.glGetUniformLocation(self.program,"light_direction")
         self.ambient_location=gl.glGetUniformLocation(self.program,"ambient")
 
+        self.point_light_position_location=gl.glGetUniformLocation(
+            self.program,
+            "point_light_position"
+        )
+
+        self.point_light_color_location=gl.glGetUniformLocation(
+            self.program,
+            "point_light_color"
+        )
+
+        self.point_light_radius_location=gl.glGetUniformLocation(
+            self.program,
+            "point_light_radius"
+        )
+
+        self.point_light_intensity_location=gl.glGetUniformLocation(
+            self.program,
+            "point_light_intensity"
+        )
+
         self.shadervals = [
             gl.glGetUniformLocation(
                 self.program,

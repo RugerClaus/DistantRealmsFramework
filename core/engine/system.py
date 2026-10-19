@@ -11,6 +11,8 @@ from core.engine.network.network import Network
 from core.engine.user import User
 from core.engine.telemetry import system_monitor
 from core.loading.BootSplashManager import BootSplashManager
+from core.util.debugoverlay import DebugOverlay
+from core.engine.console import CommandConsole
 
 from core.ui.font import FontEngine
 
@@ -21,11 +23,13 @@ from core.state.RuntimeLayer.NetworkLayer.Login.statemanager import LoginStateMa
 from core.state.RuntimeLayer.statemanager import RuntimeStateManager
 from core.state.RuntimeLayer.DevTools.Debug.statemanager import DebugStateManager
 from core.state.RuntimeLayer.DevTools.DeveloperMode.statemanager import DeveloperModeStateManager
+from core.state.RuntimeLayer.DevTools.Console.statemanager import ConsoleStateManager
 from core.state.RuntimeLayer.DevTools.StateMonitor.statemanager import StateMonitorStateManager
 
 from core.state.RuntimeLayer.state import RUNTIME_STATE
 from core.state.RuntimeLayer.DevTools.Debug.state import DEBUG_OVERLAY_STATE
 from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
+from core.state.RuntimeLayer.DevTools.Console.state import CONSOLE_STATE
 from core.state.RuntimeLayer.DevTools.StateMonitor.state import MONITOR_STATE
 class System():
     def __init__(self):
@@ -39,6 +43,7 @@ class System():
         self.runtime_state = RuntimeStateManager()
         self.overlay_state = DebugStateManager()
         self.control_state = DeveloperModeStateManager()
+        self.console_state = ConsoleStateManager()
         self.state_monitor_state = StateMonitorStateManager()
         self.login_state = LoginStateManager()
 
@@ -88,6 +93,15 @@ class System():
             self.loading = BootSplashManager(self)
         else:
             self.initialize_application()
+
+        self.debug_overlay = DebugOverlay(self)
+        self.command_console = CommandConsole(self)
+
+    def console_state_toggle(self):
+        if not self.control_state.is_state(CONSOLE_STATE.ON):
+            self.console_state.set_state(CONSOLE_STATE.ON)
+        else:
+            self.console_state.set_state(CONSOLE_STATE.OFF)
 
     def control_state_toggle(self):
         if not self.control_state.is_state(DEVELOPER_MODE.ON):

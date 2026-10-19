@@ -8,6 +8,7 @@ class CommandModule:
         self.sequences = {
             "debug": [self.keys.F9_key()],
             "developer": [self.keys.F2_key()],
+            "console": [self.keys.t_key()]
         }
         self.buffer = []
         self.buffer_timer = 0
