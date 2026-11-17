@@ -2,9 +2,9 @@ from systemlogging import log_warning
 
 from core.state.ApplicationLayer.state import APP_STATE
 from core.state.ApplicationLayer.statemanager import AppStateManager
-from core.state.RuntimeLayer.state import RUNTIME_STATE
-from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
-from core.state.RuntimeLayer.DevTools.Console.state import CONSOLE_STATE
+from core.state.SystemLayer.state import SYSTEM_STATE
+from core.state.SystemLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
+from core.state.SystemLayer.DevTools.Console.state import CONSOLE_STATE
 from core.ui.loader import UILoader
 from core.ui.actionmanager import UIActionManager
 from application.action_register import ActionRegistrar
@@ -97,7 +97,7 @@ class DistantRealms:
         main_menu = self.system.persistence.get_menu("MAIN")
         if main_menu.exists():
             self.ui_controller.show_ui("MAIN")
-        self.system.runtime_state.set_state(RUNTIME_STATE.APPLICATION)
+        self.system.system_state.set_state(SYSTEM_STATE.APPLICATION)
         self.reload_application()
         self.action_registrar.register()
 

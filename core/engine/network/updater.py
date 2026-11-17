@@ -10,10 +10,10 @@ import zipfile
 import shutil
 from systemlogging import log_error, log_event
 from config import config
-from core.state.RuntimeLayer.NetworkLayer.Loading.state import FETCH_STATE
-from core.state.RuntimeLayer.NetworkLayer.Loading.statemanager import FetchStateManager
-from core.state.RuntimeLayer.NetworkLayer.Patch.state import PATCH_STATE
-from core.state.RuntimeLayer.NetworkLayer.Patch.statemanager import PatchStateManager
+from core.state.SystemLayer.NetworkLayer.Loading.state import FETCH_STATE
+from core.state.SystemLayer.NetworkLayer.Loading.statemanager import FetchStateManager
+from core.state.SystemLayer.NetworkLayer.Patch.state import PATCH_STATE
+from core.state.SystemLayer.NetworkLayer.Patch.statemanager import PatchStateManager
 
 TIMEOUT_SECONDS = 60
 

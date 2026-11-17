@@ -8,3 +8,6 @@ Development version Alpha 0.9.0 - 2026-10-18
 - Added default shaders, and a model loading system
 - Removed configurable rendering backends. Everything is contained in
 -- system.window via the Distant Realms Accelerated Window (DRAW) API.
+- Removed concept of RUNTIME_STATE as well as RuntimeLayer being renamed to SystemLayer
+-- this is to ensure that there are only 2 ultimate layers for the state driven event 
+--- system to deal with. It also cleans up any confusion on what is what layer.

@@ -1,5 +1,5 @@
-from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
-from core.state.RuntimeLayer.DevTools.StateMonitor.state import MONITOR_STATE
+from core.state.SystemLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
+from core.state.SystemLayer.DevTools.StateMonitor.state import MONITOR_STATE
 
 
 class DebugOverlay:
@@ -20,9 +20,8 @@ class DebugOverlay:
         cm=self.system.input.CommandModule.sequences
 
         cm["monitor_system_states"]=[keys.F8_key(),keys.one_key()]
-        cm["monitor_runtime_states"]=[keys.F8_key(),keys.two_key()]
-        cm["monitor_application_states"]=[keys.F8_key(),keys.three_key()]
-        cm["monitor_all_states"]=[keys.F8_key(),keys.four_key()]
+        cm["monitor_application_states"]=[keys.F8_key(),keys.two_key()]
+        cm["monitor_all_states"]=[keys.F8_key(),keys.three_key()]
         cm["raise_opacity"]=[keys.F8_key(),keys.five_key()]
         cm["lower_opacity"]=[keys.F8_key(),keys.six_key()]
 
@@ -44,9 +43,6 @@ class DebugOverlay:
 
         if command=="monitor_system_states":
             self.system.state_monitor_state.set_state(MONITOR_STATE.SYSTEM)
-
-        elif command=="monitor_runtime_states":
-            self.system.state_monitor_state.set_state(MONITOR_STATE.RUNTIME)
 
         elif command=="monitor_application_states":
             self.system.state_monitor_state.set_state(MONITOR_STATE.APPLICATION)
@@ -144,19 +140,15 @@ class DebugOverlay:
         right_x,right_y=self.normalized_to_pixel(1.0-right_margin,top_margin)
 
         if self.system.state_monitor_state.is_state(MONITOR_STATE.SYSTEM):
-            states=self.system.runtime_state.get_global_active_system_states()
-            font=font_right
-
-        elif self.system.state_monitor_state.is_state(MONITOR_STATE.RUNTIME):
-            states=self.system.runtime_state.get_global_active_runtime_states()
+            states=self.system.system_state.get_global_active_system_states()
             font=font_right
 
         elif self.system.state_monitor_state.is_state(MONITOR_STATE.APPLICATION):
-            states=self.system.runtime_state.get_global_active_application_states()
+            states=self.system.system_state.get_global_active_application_states()
             font=font_right
 
         else:
-            states=self.system.runtime_state.get_all_global_active_states()
+            states=self.system.system_state.get_all_global_active_states()
             font=font_right_all
 
         for state in states:

@@ -6,8 +6,7 @@ from systemlogging import log_warning,log_error
 from core.ui.UIManager import UIManager
 from core.ui.widgets.textbox import TextBox
 from core.ui.widgets.scrollabletext import ScrollableText
-from core.state.RuntimeLayer.DevTools.Console.state import CONSOLE_STATE
-
+from core.state.SystemLayer.DevTools.Console.state import CONSOLE_STATE
 
 class CommandConsole:
 

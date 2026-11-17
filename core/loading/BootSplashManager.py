@@ -1,6 +1,12 @@
+#BootSplashManager.py
+
+# This class is for initializing the splash screen system for the engine. Simply import your files to assets/sounds/sfx and assets/images/main
+# wherever within you want to put them, and modify the config.py. sound effects should be named splash1-splash5.ext with a format of mp3, ogg, or WAV. 
+# Eventually you will be able to import these from the editor suite. Which will likely become the engine system itself utilizing this framework
+
 from helper import asset
-from core.state.RuntimeLayer.BootSplash.state import BOOT_SPLASH_STATE
-from core.state.RuntimeLayer.BootSplash.statemanager import BootSplashStateManager
+from core.state.SystemLayer.BootSplash.state import BOOT_SPLASH_STATE
+from core.state.SystemLayer.BootSplash.statemanager import BootSplashStateManager
 
 from core.ui.widgets.image import Image
 
@@ -50,7 +56,8 @@ class BootSplashManager:
                 self.splash_durations.append(duration)
                 self.splash_sfx_played.append(False)
 
-        self.start_time = self.system.time.get_current_time()
+        self.splash_start_time = self.system.time.get_current_time()
+
 
         self.state.set_state(BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_ONE)
 
@@ -80,13 +87,14 @@ class BootSplashManager:
         self.system.sound.stop_all_sfx()
 
         self.current_splash += 1
-        self.splash_start_time = self.system.time.get_current_time()
 
         if self.current_splash >= len(self.splashes):
 
             self.system.clean_up_states([self.state.state])
             self.state.set_state(BOOT_SPLASH_STATE.NONE)
             return
+
+        self.splash_start_time = self.system.time.get_current_time()
 
         states = [
             BOOT_SPLASH_STATE.BOOT_SPLASH_SCREEN_ONE,
@@ -117,7 +125,6 @@ class BootSplashManager:
             self.state.set_state(BOOT_SPLASH_STATE.NONE)
             return
 
-
         current_time = self.system.time.get_current_time()
 
         splash = self.splashes[self.current_splash]
@@ -130,15 +137,14 @@ class BootSplashManager:
             self.system.sound.play_sfx(sfx)
             self.splash_sfx_played[self.current_splash] = True
 
-
         image.draw()
 
-
-        elapsed = current_time - self.start_time
+        elapsed = current_time - self.splash_start_time
 
         if elapsed >= self.splash_durations[self.current_splash]:
 
             self.next_splash()
+
 
 
     def draw(self):

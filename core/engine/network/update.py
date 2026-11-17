@@ -2,10 +2,10 @@ import os,sys,subprocess
 import requests
 from systemlogging import log_error, log_event
 from config import config
-from core.state.RuntimeLayer.NetworkLayer.Loading.state import FETCH_STATE
-from core.state.RuntimeLayer.NetworkLayer.Loading.statemanager import FetchStateManager
-from core.state.RuntimeLayer.NetworkLayer.Update.state import UPDATE_STATE
-from core.state.RuntimeLayer.NetworkLayer.Update.statemanager import UpdateStateManager
+from core.state.SystemLayer.NetworkLayer.Loading.state import FETCH_STATE
+from core.state.SystemLayer.NetworkLayer.Loading.statemanager import FetchStateManager
+from core.state.SystemLayer.NetworkLayer.Update.state import UPDATE_STATE
+from core.state.SystemLayer.NetworkLayer.Update.statemanager import UpdateStateManager
 
 TIMEOUT_SECONDS = 60
 

@@ -19,18 +19,18 @@ from core.ui.font import FontEngine
 from application.save_schema import schema
 
 # state systems
-from core.state.RuntimeLayer.NetworkLayer.Login.statemanager import LoginStateManager
-from core.state.RuntimeLayer.statemanager import RuntimeStateManager
-from core.state.RuntimeLayer.DevTools.Debug.statemanager import DebugStateManager
-from core.state.RuntimeLayer.DevTools.DeveloperMode.statemanager import DeveloperModeStateManager
-from core.state.RuntimeLayer.DevTools.Console.statemanager import ConsoleStateManager
-from core.state.RuntimeLayer.DevTools.StateMonitor.statemanager import StateMonitorStateManager
+from core.state.SystemLayer.NetworkLayer.Login.statemanager import LoginStateManager
+from core.state.SystemLayer.statemanager import SystemStateManager
+from core.state.SystemLayer.DevTools.Debug.statemanager import DebugStateManager
+from core.state.SystemLayer.DevTools.DeveloperMode.statemanager import DeveloperModeStateManager
+from core.state.SystemLayer.DevTools.Console.statemanager import ConsoleStateManager
+from core.state.SystemLayer.DevTools.StateMonitor.statemanager import StateMonitorStateManager
 
-from core.state.RuntimeLayer.state import RUNTIME_STATE
-from core.state.RuntimeLayer.DevTools.Debug.state import DEBUG_OVERLAY_STATE
-from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
-from core.state.RuntimeLayer.DevTools.Console.state import CONSOLE_STATE
-from core.state.RuntimeLayer.DevTools.StateMonitor.state import MONITOR_STATE
+from core.state.SystemLayer.state import SYSTEM_STATE
+from core.state.SystemLayer.DevTools.Debug.state import DEBUG_OVERLAY_STATE
+from core.state.SystemLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
+from core.state.SystemLayer.DevTools.Console.state import CONSOLE_STATE
+from core.state.SystemLayer.DevTools.StateMonitor.state import MONITOR_STATE
 class System():
     def __init__(self):
 
@@ -40,7 +40,7 @@ class System():
         self.json = json
         self.sys = sys
 
-        self.runtime_state = RuntimeStateManager()
+        self.system_state = SystemStateManager()
         self.overlay_state = DebugStateManager()
         self.control_state = DeveloperModeStateManager()
         self.console_state = ConsoleStateManager()
@@ -118,23 +118,22 @@ class System():
     def quit(self):
         if self.application:
             self.application.clean_up()
-        self.runtime_state.set_state(RUNTIME_STATE.QUIT)
+        self.system_state.set_state(SYSTEM_STATE.QUIT)
         self.backend.pygame.quit()
         self.sys.exit()
 
     def initialize_application(self):
         from core.engine.distant_realms import DistantRealms
-        self.runtime_state.set_state(RUNTIME_STATE.APPLICATION)
+        self.system_state.set_state(SYSTEM_STATE.APPLICATION)
         self.state_monitor_state.set_state(MONITOR_STATE.APPLICATION)
         self.application = DistantRealms(self)
         self.application.init()
 
     def clean_up_states(self, states):
         collections = (
-            self.runtime_state.active_application_states,
-            self.runtime_state.active_system_states,
-            self.runtime_state.active_runtime_states,
-            self.runtime_state.all_active_states,
+            self.system_state.active_application_states,
+            self.system_state.active_system_states,
+            self.system_state.all_active_states,
         )
 
         for state in states:

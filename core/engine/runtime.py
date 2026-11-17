@@ -1,10 +1,10 @@
 from config import config
 
 from core.util.colors import black
-from core.state.RuntimeLayer.state import RUNTIME_STATE
-from core.state.RuntimeLayer.DevTools.Debug.state import DEBUG_OVERLAY_STATE
-from core.state.RuntimeLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
-from core.state.RuntimeLayer.DevTools.Console.state import CONSOLE_STATE
+from core.state.SystemLayer.state import SYSTEM_STATE
+from core.state.SystemLayer.DevTools.Debug.state import DEBUG_OVERLAY_STATE
+from core.state.SystemLayer.DevTools.DeveloperMode.state import DEVELOPER_MODE
+from core.state.SystemLayer.DevTools.Console.state import CONSOLE_STATE
 
 class Runtime:
     def __init__(self,system):
@@ -26,9 +26,9 @@ class Runtime:
             
 
             if event.type == self.system.input.quit_event():
-                self.system.runtime_state.set_state(RUNTIME_STATE.QUIT)
+                self.system.system_state.set_state(SYSTEM_STATE.QUIT)
             
-            elif self.system.runtime_state.is_state(RUNTIME_STATE.APPLICATION):
+            elif self.system.system_state.is_state(SYSTEM_STATE.APPLICATION):
                 if self.system.application is not None:
                     self.system.application.handle_event(event,command)
 
@@ -56,20 +56,20 @@ class Runtime:
             if self.system.loading:
                 self.system.loading.handle_event(event,command)
     def run(self):
-        while not self.system.runtime_state.is_state(RUNTIME_STATE.QUIT):
+        while not self.system.system_state.is_state(SYSTEM_STATE.QUIT):
             self.system.window.fill(black)
             self.system.backend.backcompat.process_gpu_tasks()
             self.handle_events()
 
-            if self.system.runtime_state.is_state(RUNTIME_STATE.SPLASH):
+            if self.system.system_state.is_state(SYSTEM_STATE.SPLASH):
                 self.system.loading.update()
                 self.system.loading.draw()
 
-            elif self.system.runtime_state.is_state(RUNTIME_STATE.APPLICATION):
+            elif self.system.system_state.is_state(SYSTEM_STATE.APPLICATION):
                 if self.system.application is not None:
                     self.system.application.update()
                     self.system.application.draw()
-            elif self.system.runtime_state.is_state(RUNTIME_STATE.QUIT):
+            elif self.system.system_state.is_state(SYSTEM_STATE.QUIT):
                 self.system.quit()
             if self.system.overlay_state.is_state(DEBUG_OVERLAY_STATE.ON):
                 self.system.debug_overlay.update()

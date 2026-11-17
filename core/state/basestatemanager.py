@@ -4,7 +4,6 @@ class BaseStateManager:
 
     # this is observable only. no weird state tricks here, just data to send to the debug overlay
     _global_active_system_states = []
-    _global_active_runtime_states = []
     _global_active_application_states = []
     _global_active_states = []
 
@@ -18,15 +17,11 @@ class BaseStateManager:
         self.type = type
         self.all_active_states = BaseStateManager._global_active_states
         self.active_system_states = BaseStateManager._global_active_system_states
-        self.active_runtime_states = BaseStateManager._global_active_runtime_states
         self.active_application_states = BaseStateManager._global_active_application_states
 
         if self.type == "SYSTEM":
             if self.state not in self.active_system_states:
                 self.active_system_states.append(self.state)
-        if self.type == "RUNTIME":
-            if self.state not in self.active_runtime_states:
-                self.active_runtime_states.append(self.state)
         if self.type == "APPLICATION":
             if self.state not in self.active_application_states:
                 self.active_application_states.append(self.state)
@@ -50,9 +45,6 @@ class BaseStateManager:
         if self.type == "SYSTEM":
             if self.state not in self.active_system_states:
                 self.active_system_states.append(self.state)
-        if self.type == "RUNTIME":
-            if self.state not in self.active_runtime_states:
-                self.active_runtime_states.append(self.state)
         if self.type == "APPLICATION":
             if self.state not in self.active_application_states:
                 self.active_application_states.append(self.state)
@@ -63,8 +55,6 @@ class BaseStateManager:
         if self.previous_state != self.state:
             if self.previous_state in self.active_system_states:
                 self.active_system_states.remove(self.previous_state)
-            if self.previous_state in self.active_runtime_states:
-                self.active_runtime_states.remove(self.previous_state)
             if self.previous_state in self.active_application_states:
                 self.active_application_states.remove(self.previous_state)
             if self.previous_state in self.all_active_states:
@@ -87,10 +77,6 @@ class BaseStateManager:
     @classmethod
     def get_global_active_system_states(cls):
         return cls._global_active_system_states.copy()
-    
-    @classmethod
-    def get_global_active_runtime_states(cls):
-        return cls._global_active_runtime_states.copy()
     
     @classmethod
     def get_global_active_application_states(cls):
